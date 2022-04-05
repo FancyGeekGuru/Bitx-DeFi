@@ -201,11 +201,12 @@ const Btx2BtxStakingCard = () => {
               (a: any) => a?.identifier === BTX_TOKEN_ID
             );
             
+            let _balance = 0;
             if (tokens.length > 0) {
               console.log('tokens[0]', tokens[0]);
-              const _balance = convertWeiToEgld(tokens[0].balance);
-              setBalance(_balance);
+              _balance = convertWeiToEgld(tokens[0].balance);
             }
+            setBalance(_balance);
           }
         });
       }
@@ -284,7 +285,7 @@ const Btx2BtxStakingCard = () => {
         BytesValue.fromUTF8('stake'),
       ];
       const { argumentsString } = new ArgSerializer().valuesToString(args);
-      const data = new TransactionPayload(`ESDTTransfer@${argumentsString}`);
+      const data = new TransactionPayload(`ESDTTransfer@${argumentsString}`).toString();
 
       const tx = {
         receiver: BTX2BTX_CONTRACT_ADDRESS,
