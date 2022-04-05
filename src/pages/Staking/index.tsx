@@ -26,6 +26,7 @@ import {
 
 import axios from 'axios';
 import Modal from 'react-modal';
+import { Modal as BsModal, Button } from 'react-bootstrap';
 
 import bgVector from '../../assets/img/bgVector.png';
 import down from '../../assets/img/down.png';
@@ -35,7 +36,7 @@ import dollarPot from '../../assets/img/dollarPot.png';
 import stake_reward_bg from '../../assets/img/stake_reward_bg.png';
 import arrow from '../../assets/img/arrow.png';
 import './index.scss';
-
+import AlertModal from '../../components/AlertModal';
 
 import {
   BTX2BTX_CONTRACT_ADDRESS,
@@ -54,7 +55,6 @@ import {
   IStakeSetting,
   IStakeAccount,
 } from '../../utils';
-
 
 const Btx2BtxStakingCard = () => {
     const { account } = useGetAccountInfo();
@@ -75,6 +75,9 @@ const Btx2BtxStakingCard = () => {
 
     const [modalInfoMesssage, setModalInfoMesssage] = React.useState<string>('');
     const [modalButtonDisabled, setModalButtonDisabled] = React.useState<boolean>(true);
+
+    const [alertModalShow, setAlertModalShow] = React.useState<boolean>(false);
+    const [alertModalText, setAlertModalText] = React.useState<string>('');
 
     // load smart contract abi and parse it to SmartContract object for tx
     React.useEffect(() => {
@@ -271,11 +274,15 @@ const Btx2BtxStakingCard = () => {
       onModalInputAmountChange(value);
     }
 
+    function onShowAlertModal(text: string) {
+      setAlertModalText(text);
+      setAlertModalShow(true);
+    }
     async function stake(e : any) {
       e.preventDefault();
 
       if (balance == 0) {
-        alert(`You don\'t have ${BTX_TOKEN_NAME} in your wallet.`);
+        onShowAlertModal(`You don\'t have ${BTX_TOKEN_NAME} in your wallet.`);
         return;
       }
 
@@ -305,7 +312,7 @@ const Btx2BtxStakingCard = () => {
       e.preventDefault();
 
       if (stakeAccount.staked_amount == 0) {
-        alert('You don\'t have staked tokens.');
+        onShowAlertModal('You don\'t have staked tokens.');
         return;
       }
 
@@ -327,12 +334,12 @@ const Btx2BtxStakingCard = () => {
       e.preventDefault();
 
       if (!account.address) {
-        alert('You should connect your wallet first!');
+        onShowAlertModal('You should connect your wallet first!');
         return;
       }
 
       if (stakeAccount.reward_amount == 0) {
-        alert('You don\'t have reward to be claimed.');
+        onShowAlertModal('You don\'t have reward to be claimed.');
         return;
       }
 
@@ -340,7 +347,7 @@ const Btx2BtxStakingCard = () => {
       const claimLockEndTimestamp = (stakeAccount.last_claim_timestamp + stakeSetting.claim_lock_period) * SECOND_IN_MILLI;
       console.log(`currentTimestamp: ${currentTimestamp} ----- claimLockEndTimestamp: ${claimLockEndTimestamp}`);
       if (currentTimestamp < claimLockEndTimestamp) {
-        alert(`Cannot claim before ${convertTimestampToDateTime(claimLockEndTimestamp)}`);
+        onShowAlertModal(`Cannot claim before ${convertTimestampToDateTime(claimLockEndTimestamp)}`);
         return;
       }
 
@@ -359,12 +366,12 @@ const Btx2BtxStakingCard = () => {
       e.preventDefault();
 
       if (!account.address) {
-        alert('You should connect your wallet first!');
+        onShowAlertModal('You should connect your wallet first!');
         return;
       }
 
       if (stakeAccount.collectable_amount == 0) {
-        alert('You don\'t have undelegated tokens to be collected.');
+        onShowAlertModal('You don\'t have undelegated tokens to be collected.');
         return;
       }
 
@@ -522,8 +529,12 @@ const Btx2BtxStakingCard = () => {
                   </button>
                 )
               }
-              
           </Modal>
+          <AlertModal
+            show={alertModalShow}
+            onHide={() => setAlertModalShow(false)}
+            alertModalText={alertModalText}
+          />
         </div>
     );
 };
