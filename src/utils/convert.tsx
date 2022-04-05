@@ -1,9 +1,10 @@
 import {
-    ONE_DAY_IN_SECONDS
-} from './const';
-import {
     Egld,
 } from '@elrondnetwork/erdjs';
+import {
+    ONE_DAY_IN_SECONDS
+} from '.';
+
 
 function padTo2Digits(num: number) {
     return num.toString().padStart(2, '0');

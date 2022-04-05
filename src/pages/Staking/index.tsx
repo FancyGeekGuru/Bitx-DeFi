@@ -17,7 +17,6 @@ import {
   SmartContractAbi,
   SmartContract,
   Interaction,
-  QueryResponseBundle,
   ProxyProvider,
   TypedValue,
   BytesValue,
@@ -28,6 +27,7 @@ import {
   Transaction,
   GasLimit,
   ContractFunction,
+  DefaultSmartContractController,
 } from '@elrondnetwork/erdjs';
 import {
   refreshAccount,
@@ -50,46 +50,65 @@ import {
   convertTimestampToDateTime,
 } from '../../utils/convert';
 import {
+  IContractInteractor,
   IStakeSetting,
   IStakeAccount,
 } from '../../utils/state';
 import {
-  SECOND_IN_MILLI
-} from '../../utils/const';
+  SECOND_IN_MILLI,
+  TIMEOUT
+} from '../../utils';
 
 const Btx2BtxStakingCard = () => {
     const { account } = useGetAccountInfo();
-    const { network, proxy } = useGetNetworkConfig();
+    const { network } = useGetNetworkConfig();
     const { hasPendingTransactions } = useGetPendingTransactions();
+    const provider = new ProxyProvider(network.apiAddress, { timeout: TIMEOUT });
 
     const [showModal, setShowModal] = useState(false);
     const [isStakeModal, setIsStakeModal] = useState(true);
     const [modalInputAmount, setModalInputAmount] = useState(0);
     
     // load smart contract abi and parse it to SmartContract object for tx
-    const [stakingContract, setStakingContract] = React.useState<any>(undefined);
+    const [stakeContractInteractor, setStakeContractInteractor] = React.useState<IContractInteractor | undefined>();
     React.useEffect(() => {
         (async() => {
-            const abiRegistry = await AbiRegistry.load({
-                urls: [BTX2BTX_CONTRACT_ABI],
-            });
-            const contract = new SmartContract({
-                address: new Address(BTX2BTX_CONTRACT_ADDRESS),
-                abi: new SmartContractAbi(abiRegistry, [BTX2BTX_CONTRACT_NAME]),
-            });
-            setStakingContract(contract);
+            // const abiRegistry = await AbiRegistry.load({
+            //     urls: [BTX2BTX_CONTRACT_ABI],
+            // });
+            // const contract = new SmartContract({
+            //     address: new Address(BTX2BTX_CONTRACT_ADDRESS),
+            //     abi: new SmartContractAbi(abiRegistry, [BTX2BTX_CONTRACT_NAME]),
+            // });
+            // setStakingContract(contract);
 
-            console.log('Btx2Btx StakingContract', contract);
+            const registry = await AbiRegistry.load({ urls: [BTX2BTX_CONTRACT_ABI] });
+            const abi = new SmartContractAbi(registry, [BTX2BTX_CONTRACT_NAME]);
+            const contract = new SmartContract({ address: new Address(BTX2BTX_CONTRACT_ADDRESS), abi: abi });
+            const controller = new DefaultSmartContractController(abi, provider);
+
+            console.log('stakeContractInteractor', {
+                contract,
+                controller,
+            });
+
+            setStakeContractInteractor({
+                contract,
+                controller,
+            });
         })();
     }, []); // [] makes useEffect run once
 
     const [stakeSetting, setStakeSetting] = React.useState<IStakeSetting | undefined>();
     React.useEffect(() => {
         (async () => {
-            if (!stakingContract) return;
-            const interaction: Interaction = stakingContract.methods.getCurrentStakeSetting();
-            const queryResponse = await stakingContract.runQuery(proxy, interaction.buildQuery());
-            const res = interaction.interpretQueryResponse(queryResponse);
+            if (!stakeContractInteractor) return;
+            // const interaction: Interaction = stakingContract.methods.getCurrentStakeSetting();
+            // const queryResponse = await stakingContract.runQuery(proxy, interaction.buildQuery());
+            // const res = interaction.interpretQueryResponse(queryResponse);
+
+            const interaction = stakeContractInteractor.contract.methods.getCurrentStakeSetting();
+            const res = await stakeContractInteractor.controller.query(interaction);
 
             if (!res || !res.returnCode.isSuccess()) return;
             const value = res.firstValue.valueOf();
@@ -122,16 +141,20 @@ const Btx2BtxStakingCard = () => {
 
             setStakeSetting(result);
         })();
-    }, [stakingContract]);
+    }, [stakeContractInteractor]);
 
     const [stakeAccount, setStakeAccount] = React.useState<IStakeAccount | undefined>();
     React.useEffect(() => {
         (async () => {
-            if (!stakingContract || !account.address) return;
+            if (!stakeContractInteractor || !account.address) return;
+            // const args = [new AddressValue(new Address(account.address))];
+            // const interaction: Interaction = stakingContract.methods.getCurrentStakeAccount(args);
+            // const queryResponse = await stakingContract.runQuery(proxy, interaction.buildQuery());
+            // const res = interaction.interpretQueryResponse(queryResponse);
+
             const args = [new AddressValue(new Address(account.address))];
-            const interaction: Interaction = stakingContract.methods.getCurrentStakeAccount(args);
-            const queryResponse = await stakingContract.runQuery(proxy, interaction.buildQuery());
-            const res = interaction.interpretQueryResponse(queryResponse);
+            const interaction = stakeContractInteractor.contract.methods.getCurrentStakeAccount(args);
+            const res = await stakeContractInteractor.controller.query(interaction);
 
             if (!res || !res.returnCode.isSuccess()) return;
             const value = res.firstValue.valueOf();
@@ -161,7 +184,7 @@ const Btx2BtxStakingCard = () => {
             console.log('getCurrentStakeAccount', result);
             setStakeAccount(result);
         })();
-    }, [account, stakingContract, hasPendingTransactions]);
+    }, [account, stakeContractInteractor, hasPendingTransactions]);
 
     const [balance, setBalance] = React.useState<any>(undefined);
     React.useEffect(() => {
@@ -258,11 +281,11 @@ const Btx2BtxStakingCard = () => {
       const { argumentsString } = new ArgSerializer().valuesToString(args);
       const data = new TransactionPayload(`ESDTTransfer@${argumentsString}`);
 
-      const tx = new Transaction({
-        receiver: new Address(BTX2BTX_CONTRACT_ADDRESS),
+      const tx = {
+        receiver: BTX2BTX_CONTRACT_ADDRESS,
         gasLimit: new GasLimit(10000000),
         data: data,
-      });
+      };
 
       await refreshAccount();
       sendTransactions({
@@ -280,11 +303,12 @@ const Btx2BtxStakingCard = () => {
         return;
       }
 
-      const tx = stakingContract.call({
-        func: new ContractFunction('unstake'),
+      const tx = {
+        receiver: BTX2BTX_CONTRACT_ADDRESS,
+        data: 'unstake',
         gasLimit: new GasLimit(6000000),
         args: [new BigUIntValue(Egld(modalInputAmount).valueOf())],
-      });
+      };
       await refreshAccount();
       await sendTransactions({
         transactions: tx,
@@ -314,10 +338,11 @@ const Btx2BtxStakingCard = () => {
         return;
       }
 
-      const tx = stakingContract.call({
-        func: new ContractFunction('claim'),
+      const tx = {
+        receiver: BTX2BTX_CONTRACT_ADDRESS,
+        data: 'claim',
         gasLimit: new GasLimit(6000000),
-      });
+      };
       await refreshAccount();
       await sendTransactions({
         transactions: tx,
@@ -337,10 +362,11 @@ const Btx2BtxStakingCard = () => {
         return;
       }
 
-      const tx = stakingContract.call({
-        func: new ContractFunction('collect'),
+      const tx = {
+        receiver: BTX2BTX_CONTRACT_ADDRESS,
+        data: 'collect',
         gasLimit: new GasLimit(6000000),
-      });
+      };
       await refreshAccount();
       await sendTransactions({
         transactions: tx,
