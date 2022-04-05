@@ -292,7 +292,7 @@ const Btx2BtxStakingCard = () => {
         BytesValue.fromUTF8('stake'),
       ];
       const { argumentsString } = new ArgSerializer().valuesToString(args);
-      const data = new TransactionPayload(`ESDTTransfer@${argumentsString}`).toString();
+      const data = `ESDTTransfer@${argumentsString}`;
 
       const tx = {
         receiver: BTX2BTX_CONTRACT_ADDRESS,
@@ -317,10 +317,10 @@ const Btx2BtxStakingCard = () => {
       }
 
       const args: TypedValue[] = [
-        BytesValue.fromUTF8('unstake'),
         new BigUIntValue(Egld(modalInputAmount).valueOf()),
       ];
       const { argumentsString } = new ArgSerializer().valuesToString(args);
+      const data = `unstake@${argumentsString}`;
 
       const tx = {
         receiver: BTX2BTX_CONTRACT_ADDRESS,
