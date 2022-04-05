@@ -316,11 +316,16 @@ const Btx2BtxStakingCard = () => {
         return;
       }
 
+      const args: TypedValue[] = [
+        BytesValue.fromUTF8('unstake'),
+        new BigUIntValue(Egld(modalInputAmount).valueOf()),
+      ];
+      const { argumentsString } = new ArgSerializer().valuesToString(args);
+
       const tx = {
         receiver: BTX2BTX_CONTRACT_ADDRESS,
-        data: 'unstake',
+        data: argumentsString,
         gasLimit: new GasLimit(6000000),
-        args: [new BigUIntValue(Egld(modalInputAmount).valueOf())],
       };
       await refreshAccount();
       await sendTransactions({
