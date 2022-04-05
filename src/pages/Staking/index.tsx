@@ -324,7 +324,7 @@ const Btx2BtxStakingCard = () => {
 
       const tx = {
         receiver: BTX2BTX_CONTRACT_ADDRESS,
-        data: argumentsString,
+        data: data,
         gasLimit: new GasLimit(6000000),
       };
       await refreshAccount();
