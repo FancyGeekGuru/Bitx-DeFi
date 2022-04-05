@@ -1,34 +1,5 @@
 import React, {useState} from 'react';
-import axios from 'axios';
-import bgVector from '../../assets/img/bgVector.png';
-import down from '../../assets/img/down.png';
-import up from '../../assets/img/up.png';
-import btxLogo from '../../assets/img/bitx-logo.jpg';
-import dollarPot from '../../assets/img/dollarPot.png';
-import stake_reward_bg from '../../assets/img/stake_reward_bg.png';
-import arrow from '../../assets/img/arrow.png';
-import Modal from 'react-modal';
-import './index.scss';
 
-import {
-  Address,
-  AddressValue,
-  AbiRegistry,
-  SmartContractAbi,
-  SmartContract,
-  Interaction,
-  ProxyProvider,
-  TypedValue,
-  BytesValue,
-  Egld,
-  BigUIntValue,
-  ArgSerializer,
-  TransactionPayload,
-  Transaction,
-  GasLimit,
-  ContractFunction,
-  DefaultSmartContractController,
-} from '@elrondnetwork/erdjs';
 import {
   refreshAccount,
   sendTransactions,
@@ -36,6 +7,35 @@ import {
   useGetNetworkConfig,
   useGetPendingTransactions,
 } from '@elrondnetwork/dapp-core';
+import {
+  Address,
+  AddressValue,
+  AbiRegistry,
+  SmartContractAbi,
+  SmartContract,
+  ProxyProvider,
+  TypedValue,
+  BytesValue,
+  Egld,
+  BigUIntValue,
+  ArgSerializer,
+  TransactionPayload,
+  GasLimit,
+  DefaultSmartContractController,
+} from '@elrondnetwork/erdjs';
+
+import axios from 'axios';
+import Modal from 'react-modal';
+
+import bgVector from '../../assets/img/bgVector.png';
+import down from '../../assets/img/down.png';
+import up from '../../assets/img/up.png';
+import btxLogo from '../../assets/img/bitx-logo.jpg';
+import dollarPot from '../../assets/img/dollarPot.png';
+import stake_reward_bg from '../../assets/img/stake_reward_bg.png';
+import arrow from '../../assets/img/arrow.png';
+import './index.scss';
+
 
 import {
   BTX2BTX_CONTRACT_ADDRESS,
@@ -46,18 +46,15 @@ import {
 } from '../../config';
 
 import {
+  SECOND_IN_MILLI,
+  TIMEOUT,
   convertWeiToEgld,
   convertTimestampToDateTime,
-} from '../../utils/convert';
-import {
   IContractInteractor,
   IStakeSetting,
   IStakeAccount,
-} from '../../utils/state';
-import {
-  SECOND_IN_MILLI,
-  TIMEOUT
 } from '../../utils';
+
 
 const Btx2BtxStakingCard = () => {
     const { account } = useGetAccountInfo();
@@ -69,8 +66,17 @@ const Btx2BtxStakingCard = () => {
     const [isStakeModal, setIsStakeModal] = useState(true);
     const [modalInputAmount, setModalInputAmount] = useState(0);
     
-    // load smart contract abi and parse it to SmartContract object for tx
+    
     const [stakeContractInteractor, setStakeContractInteractor] = React.useState<IContractInteractor | undefined>();
+    const [stakeSetting, setStakeSetting] = React.useState<IStakeSetting | undefined>();
+    const [stakeAccount, setStakeAccount] = React.useState<IStakeAccount | undefined>();
+
+    const [balance, setBalance] = React.useState<any>(undefined);
+
+    const [modalInfoMesssage, setModalInfoMesssage] = React.useState<string>('');
+    const [modalButtonDisabled, setModalButtonDisabled] = React.useState<boolean>(true);
+
+    // load smart contract abi and parse it to SmartContract object for tx
     React.useEffect(() => {
         (async() => {
             // const abiRegistry = await AbiRegistry.load({
@@ -99,7 +105,7 @@ const Btx2BtxStakingCard = () => {
         })();
     }, []); // [] makes useEffect run once
 
-    const [stakeSetting, setStakeSetting] = React.useState<IStakeSetting | undefined>();
+    
     React.useEffect(() => {
         (async () => {
             if (!stakeContractInteractor) return;
@@ -143,7 +149,7 @@ const Btx2BtxStakingCard = () => {
         })();
     }, [stakeContractInteractor]);
 
-    const [stakeAccount, setStakeAccount] = React.useState<IStakeAccount | undefined>();
+    
     React.useEffect(() => {
         (async () => {
             if (!stakeContractInteractor || !account.address) return;
@@ -186,7 +192,7 @@ const Btx2BtxStakingCard = () => {
         })();
     }, [account, stakeContractInteractor, hasPendingTransactions]);
 
-    const [balance, setBalance] = React.useState<any>(undefined);
+    
     React.useEffect(() => {
       if (account.address) {
         axios.get(`${network.apiAddress}/accounts/${account.address}/tokens?search=${BTX_TOKEN_NAME}`).then((res: any) => {
@@ -197,15 +203,15 @@ const Btx2BtxStakingCard = () => {
             
             if (tokens.length > 0) {
               console.log('tokens[0]', tokens[0]);
-              const balance = convertWeiToEgld(tokens[0].balance);
-              setBalance(balance);
+              const _balance = convertWeiToEgld(tokens[0].balance);
+              setBalance(_balance);
             }
           }
         });
       }
     }, [account, hasPendingTransactions]);
 
-    function onShowStakeModal(e: any) {
+    function onShowStakeModal() {
       if (!account.address) {
         alert('You should connect your wallet first!');
         return;
@@ -216,7 +222,7 @@ const Btx2BtxStakingCard = () => {
       setShowModal(true);
     }
 
-    function onShowUnstakeModal(e: any) {
+    function onShowUnstakeModal() {
       if (!account.address) {
         alert('You should connect your wallet first!');
         return;
@@ -227,36 +233,35 @@ const Btx2BtxStakingCard = () => {
       setShowModal(true);
     }
 
-    const [modalInfoMesssage, setModalInfoMesssage] = React.useState<string>('');
-    const [modalButtonDisabled, setModalButtonDisabled] = React.useState<boolean>(true);
-
     function onModalInputAmountChange(value: any) {
-      let modalInfoMesssage = '';
-      let modalButtonDisabled = true;
+      if (!account.address || !stakeAccount) return;
+      
+      let _modalInfoMesssage = '';
+      let _modalButtonDisabled = true;
       const currentTimestamp = (new Date()).getTime();
 
       if (isStakeModal) { // stake
         if (value > balance) {
-          modalInfoMesssage = 'Not enough tokens in your wallet.';
+          _modalInfoMesssage = 'Not enough tokens in your wallet.';
         } else if (value < stakeSetting.min_stake_limit) {
-          modalInfoMesssage = `Cannot stake less than ${stakeSetting.min_stake_limit} ${BTX_TOKEN_NAME}.`;
+          _modalInfoMesssage = `Cannot stake less than ${stakeSetting.min_stake_limit} ${BTX_TOKEN_NAME}.`;
         } else {
-          modalButtonDisabled = false;
+          _modalButtonDisabled = false;
         }
       } else {  // unstake
         if (value > stakeAccount.staked_amount) {
-          modalInfoMesssage = 'Cannot unstake more than staked amount.';
+          _modalInfoMesssage = 'Cannot unstake more than staked amount.';
         } else if (value <= 0) {
-          modalInfoMesssage = 'Invalid amount.';
+          _modalInfoMesssage = 'Invalid amount.';
         } else if (currentTimestamp < stakeAccount.lock_end_timestamp * SECOND_IN_MILLI) {
-          modalInfoMesssage = `Cannot unstake before ${convertTimestampToDateTime(stakeAccount.lock_end_timestamp * SECOND_IN_MILLI)}`;
+          _modalInfoMesssage = `Cannot unstake before ${convertTimestampToDateTime(stakeAccount.lock_end_timestamp * SECOND_IN_MILLI)}`;
         } else {
-          modalButtonDisabled = false;
+          _modalButtonDisabled = false;
         }
       }
 
-      setModalInfoMesssage(modalInfoMesssage);
-      setModalButtonDisabled(modalButtonDisabled);
+      setModalInfoMesssage(_modalInfoMesssage);
+      setModalButtonDisabled(_modalButtonDisabled);
       setModalInputAmount(value);
     }
 
