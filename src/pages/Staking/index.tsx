@@ -217,22 +217,26 @@ const Btx2BtxStakingCard = () => {
 
     function onShowStakeModal() {
       if (!account.address) {
-        alert('You should connect your wallet first!');
+        onShowAlertModal('You should connect your wallet first!');
         return;
       }
 
       setModalInputAmount(0);
+      setModalInfoMesssage('');
+      setModalButtonDisabled(true);
       setIsStakeModal(true);
       setShowModal(true);
     }
 
     function onShowUnstakeModal() {
       if (!account.address) {
-        alert('You should connect your wallet first!');
+        onShowAlertModal('You should connect your wallet first!');
         return;
       }
 
       setModalInputAmount(0);
+      setModalInfoMesssage('');
+      setModalButtonDisabled(true);
       setIsStakeModal(false);
       setShowModal(true);
     }
@@ -343,8 +347,8 @@ const Btx2BtxStakingCard = () => {
         return;
       }
 
-      if (stakeAccount.reward_amount == 0) {
-        onShowAlertModal('You don\'t have reward to be claimed.');
+      if (stakeAccount.reward_amount == 0 && stakeAccount.collectable_amount == 0) {
+        onShowAlertModal('You don\'t have rewards or collectables to be claimed.');
         return;
       }
 
@@ -367,29 +371,29 @@ const Btx2BtxStakingCard = () => {
       });
     }
 
-    async function collect(e: any) {
-      e.preventDefault();
+    // async function collect(e: any) {
+    //   e.preventDefault();
 
-      if (!account.address) {
-        onShowAlertModal('You should connect your wallet first!');
-        return;
-      }
+    //   if (!account.address) {
+    //     onShowAlertModal('You should connect your wallet first!');
+    //     return;
+    //   }
 
-      if (stakeAccount.collectable_amount == 0) {
-        onShowAlertModal('You don\'t have undelegated tokens to be collected.');
-        return;
-      }
+    //   if (stakeAccount.collectable_amount == 0) {
+    //     onShowAlertModal('You don\'t have undelegated tokens to be collected.');
+    //     return;
+    //   }
 
-      const tx = {
-        receiver: BTX2BTX_CONTRACT_ADDRESS,
-        data: 'collect',
-        gasLimit: new GasLimit(6000000),
-      };
-      await refreshAccount();
-      await sendTransactions({
-        transactions: tx,
-      });
-    }
+    //   const tx = {
+    //     receiver: BTX2BTX_CONTRACT_ADDRESS,
+    //     data: 'collect',
+    //     gasLimit: new GasLimit(6000000),
+    //   };
+    //   await refreshAccount();
+    //   await sendTransactions({
+    //     transactions: tx,
+    //   });
+    // }
 
     return (
         <div className='card'>
@@ -429,8 +433,8 @@ const Btx2BtxStakingCard = () => {
                     <p className='data'>{stakeAccount ? stakeAccount.staked_amount : '-'} BTX</p>
                 </div>
                 <div>
-                    <p className='heading'>My Reward</p>
-                    <p className='data'>{stakeAccount ? stakeAccount.reward_amount : '-'} BTX</p>
+                    <p className='heading'>My Unstaked</p>
+                    <p className='data'>{stakeAccount ? stakeAccount.unstaked_amount : '-'} BTX</p>
                 </div>
             </div>
             <div className='buttonDiv'>
@@ -438,29 +442,25 @@ const Btx2BtxStakingCard = () => {
                     <p>Stake</p>
                     <img src={down}/>
                 </button>
-                <button className='claimReward_button' onClick={claim}>
-                    <p>Claim</p>
-                    <img src={dollarPot}/>
+                <button className='unstake_button' onClick={onShowUnstakeModal}>
+                    <p>Unstake</p>
+                    <img src={up}/>
                 </button>
             </div>
             <div className='stake_reward'>
                 <img src={stake_reward_bg}/>
                 <div>
-                    <p className='heading'>My Unstaked</p>
-                    <p className='data'>{stakeAccount ? stakeAccount.unstaked_amount : '-'} BTX</p>
+                    <p className='heading'>My Reward</p>
+                    <p className='data'>{stakeAccount ? stakeAccount.reward_amount : '-'} BTX</p>
                 </div>
                 <div>
                     <p className='heading'>My Collectable</p>
                     <p className='data'>{stakeAccount ? stakeAccount.collectable_amount : '-'} BTX</p>
                 </div>
             </div>
-            <div className='buttonDiv'>
-                <button className='unstake_button' onClick={onShowUnstakeModal}>
-                    <p>Unstake</p>
-                    <img src={up}/>
-                </button>
-                <button className='claimReward_button' onClick={collect}>
-                    <p>Collect</p>
+            <div className=''>
+                <button className='claimReward_button' onClick={claim}>
+                    <p>Claim</p>
                     <img src={dollarPot}/>
                 </button>
             </div>
@@ -475,7 +475,7 @@ const Btx2BtxStakingCard = () => {
             >
               <div className='modaldiv'>
                 <h3 className='modal-header'>
-                  {isStakeModal ? 'STAKING' : 'Unstake'}
+                  {isStakeModal ? 'Stake' : 'Unstake'}
                 </h3>
               </div>
               <p className='modal-description'>
@@ -489,8 +489,8 @@ const Btx2BtxStakingCard = () => {
                 }}
                 className='pinkpara font-24'
               >
-                <span>{isStakeModal ? 'BALANCE' : 'MY STAKED'}:&nbsp;</span>
-                <span>
+                <span>{isStakeModal ? 'MY BALANCE' : 'MY STAKED'}:&nbsp;</span>
+                <span style={{ color: 'red', fontWeight: 600 }}>
                   {showModal && (isStakeModal ? balance : stakeAccount.staked_amount)}
                 </span>
                 <span>&nbsp;&nbsp;{BTX_TOKEN_NAME}</span>
@@ -522,7 +522,7 @@ const Btx2BtxStakingCard = () => {
                     onClick={stake}
                     disabled={modalButtonDisabled}
                   >
-                    STAKING
+                    Stake
                   </button>
                 ) : (
                   <button
@@ -538,7 +538,7 @@ const Btx2BtxStakingCard = () => {
           <AlertModal
             show={alertModalShow}
             onHide={() => setAlertModalShow(false)}
-            alertModalText={alertModalText}
+            alertmodaltext={alertModalText}
           />
         </div>
     );

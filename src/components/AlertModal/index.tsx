@@ -13,7 +13,7 @@ const AlertModal = (props) => {
                 Note
             </BsModal.Title> */}
             <BsModal.Body>
-                <p>{props.alertModalText}</p>
+                <p>{props.alertmodaltext}</p>
             </BsModal.Body>
             <BsModal.Footer>
                 <Button onClick={props.onHide}>Close</Button>

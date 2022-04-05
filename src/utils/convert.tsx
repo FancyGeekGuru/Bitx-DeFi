@@ -28,7 +28,7 @@ export const convertTimestampToDateTime = (ts: number) => {
     return date.toLocaleString();
 };
 
-export const convertWeiToEgld = (v: any, precision = 2) => {
+export const convertWeiToEgld = (v: any, precision = 4) => {
     const factor = Math.pow(10, precision);
     const number = parseFloat(Egld.raw(v).toDenominated());
     return Math.floor(number * factor) / factor;
