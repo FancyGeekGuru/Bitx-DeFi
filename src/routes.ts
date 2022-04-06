@@ -10,7 +10,7 @@ export const routeNames = {
   unlock: '/unlock',
   ledger: '/ledger',
   walletconnect: '/walletconnect',
-  staking: '/staking'
+  staking: '/'
 };
 
 const routes: Array<any> = [
