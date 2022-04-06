@@ -4,6 +4,7 @@ import { Route, Routes, BrowserRouter as Router, Navigate } from 'react-router-d
 import Layout from 'components/Layout';
 import PageNotFound from 'pages/PageNotFound';
 import UnlockPage from 'pages/UnlockPage';
+import Staking from './pages/Staking';
 import { routeNames } from 'routes';
 import routes from 'routes';
 import '@elrondnetwork/dapp-core/build/index.css';
@@ -40,7 +41,7 @@ const App = () => {
                 element={<route.component />}
               />
             ))}
-            <Route path="/" element={<Navigate replace to={routeNames.staking} />} />
+            <Route path="/" element={<Staking />} />
             <Route path='*' element={<PageNotFound />} />
           </Routes>
         </Layout>
