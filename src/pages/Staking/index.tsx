@@ -200,18 +200,18 @@ const Btx2BtxStakingCard = () => {
     React.useEffect(() => {
       if (account.address) {
         axios.get(`${network.apiAddress}/accounts/${account.address}/tokens?search=${BTX_TOKEN_NAME}`).then((res: any) => {
+          let _balance = 0;
           if (res.data?.length > 0) {
             const tokens = res.data.filter(
               (a: any) => a?.identifier === BTX_TOKEN_ID
             );
             
-            let _balance = 0;
             if (tokens.length > 0) {
               console.log('tokens[0]', tokens[0]);
               _balance = convertWeiToEgld(tokens[0].balance);
             }
-            setBalance(_balance);
           }
+          setBalance(_balance);
         });
       }
     }, [account, hasPendingTransactions]);
@@ -493,11 +493,11 @@ const Btx2BtxStakingCard = () => {
                 }}
                 className='pinkpara font-24'
               >
-                <span>{isStakeModal ? 'MY BALANCE' : 'MY STAKED'}:&nbsp;</span>
+                <span>{isStakeModal ? 'MY BALANCE' : 'MY STAKED'}:&nbsp;&nbsp;</span>
                 <span style={{ color: 'red', fontWeight: 600 }}>
                   {showModal && (isStakeModal ? balance : stakeAccount.staked_amount)}
                 </span>
-                <span>&nbsp;&nbsp;{BTX_TOKEN_NAME}</span>
+                <span>&nbsp;{BTX_TOKEN_NAME}</span>
               </div>
               <h6 className='modal-info-1'>
                 {isStakeModal ? 'Amount to Stake' : 'Amount to Unstake'}
