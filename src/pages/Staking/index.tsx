@@ -51,6 +51,7 @@ import {
   TIMEOUT,
   convertWeiToEgld,
   convertTimestampToDateTime,
+  convertSecondsToDays,
   IContractInteractor,
   IStakeSetting,
   IStakeAccount,
@@ -479,8 +480,11 @@ const Btx2BtxStakingCard = () => {
                 </h3>
               </div>
               <p className='modal-description'>
-                Your tokens will be locked for 30 days after deposit (even the
-                tokens that are already staked)
+              {
+                showModal && stakeSetting && (isStakeModal ?
+                  `Your tokens will be locked for ${convertSecondsToDays(stakeSetting.lock_period)} days after deposit (even the tokens that are already staked)` 
+                  : `Your tokens will be undelegated for ${convertSecondsToDays(stakeSetting.undelegation_period)} days after unstake (even the tokens that are already unstaked)`)
+              }    
               </p>
               <div className='modal-divider'></div>
               <div

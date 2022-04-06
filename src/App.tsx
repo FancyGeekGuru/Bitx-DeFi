@@ -41,7 +41,7 @@ const App = () => {
                 element={<route.component />}
               />
             ))}
-            <Route path="/" element={<Staking />} />
+            <Route path="/" element={<Navigate replace to={routeNames.staking} />} />
             <Route path='*' element={<PageNotFound />} />
           </Routes>
         </Layout>
