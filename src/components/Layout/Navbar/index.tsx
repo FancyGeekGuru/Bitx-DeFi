@@ -11,7 +11,7 @@ const Navbar = () => {
   const { address } = useGetAccountInfo();
 
   const handleLogout = () => {
-    logout(routeNames.staking);
+    logout(`${window.location.origin}/unlock`);
   };
 
   const isLoggedIn = Boolean(address);
