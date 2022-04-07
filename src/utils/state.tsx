@@ -1,3 +1,13 @@
+import {
+    SmartContract,
+    DefaultSmartContractController, 
+} from '@elrondnetwork/erdjs';
+
+export interface IContractInteractor {
+    contract: SmartContract;
+    controller: DefaultSmartContractController;
+}
+
 export interface IStakeSetting {
     stake_token: string;
     reward_token: string;

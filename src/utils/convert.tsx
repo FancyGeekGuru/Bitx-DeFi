@@ -1,9 +1,10 @@
 import {
-    ONE_DAY_IN_SECONDS
-} from './const';
-import {
     Egld,
 } from '@elrondnetwork/erdjs';
+import {
+    ONE_DAY_IN_SECONDS
+} from '.';
+
 
 function padTo2Digits(num: number) {
     return num.toString().padStart(2, '0');
@@ -27,7 +28,11 @@ export const convertTimestampToDateTime = (ts: number) => {
     return date.toLocaleString();
 };
 
-export const convertWeiToEgld = (v: any, precision = 2) => {
+export const convertSecondsToDays = (ts: number) => {
+    return (ts / 86400000);
+};
+
+export const convertWeiToEgld = (v: any, precision = 4) => {
     const factor = Math.pow(10, precision);
     const number = parseFloat(Egld.raw(v).toDenominated());
     return Math.floor(number * factor) / factor;

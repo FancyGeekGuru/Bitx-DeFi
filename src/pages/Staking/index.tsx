@@ -1,34 +1,5 @@
 import React, {useState} from 'react';
-import axios from 'axios';
-import bgVector from '../../assets/img/bgVector.png';
-import down from '../../assets/img/down.png';
-import up from '../../assets/img/up.png';
-import btxLogo from '../../assets/img/bitx-logo.jpg';
-import dollarPot from '../../assets/img/dollarPot.png';
-import stake_reward_bg from '../../assets/img/stake_reward_bg.png';
-import arrow from '../../assets/img/arrow.png';
-import Modal from 'react-modal';
-import './index.scss';
 
-import {
-  Address,
-  AddressValue,
-  AbiRegistry,
-  SmartContractAbi,
-  SmartContract,
-  Interaction,
-  QueryResponseBundle,
-  ProxyProvider,
-  TypedValue,
-  BytesValue,
-  Egld,
-  BigUIntValue,
-  ArgSerializer,
-  TransactionPayload,
-  Transaction,
-  GasLimit,
-  ContractFunction,
-} from '@elrondnetwork/erdjs';
 import {
   refreshAccount,
   sendTransactions,
@@ -36,6 +7,36 @@ import {
   useGetNetworkConfig,
   useGetPendingTransactions,
 } from '@elrondnetwork/dapp-core';
+import {
+  Address,
+  AddressValue,
+  AbiRegistry,
+  SmartContractAbi,
+  SmartContract,
+  ProxyProvider,
+  TypedValue,
+  BytesValue,
+  Egld,
+  BigUIntValue,
+  ArgSerializer,
+  TransactionPayload,
+  GasLimit,
+  DefaultSmartContractController,
+} from '@elrondnetwork/erdjs';
+
+import axios from 'axios';
+import Modal from 'react-modal';
+import { Modal as BsModal, Button } from 'react-bootstrap';
+
+import bgVector from '../../assets/img/bgVector.png';
+import down from '../../assets/img/down.png';
+import up from '../../assets/img/up.png';
+import btxLogo from '../../assets/img/bitx-logo.jpg';
+import dollarPot from '../../assets/img/dollarPot.png';
+import stake_reward_bg from '../../assets/img/stake_reward_bg.png';
+import arrow from '../../assets/img/arrow.png';
+import './index.scss';
+import AlertModal from '../../components/AlertModal';
 
 import {
   BTX2BTX_CONTRACT_ADDRESS,
@@ -46,50 +47,78 @@ import {
 } from '../../config';
 
 import {
+  SECOND_IN_MILLI,
+  TIMEOUT,
   convertWeiToEgld,
   convertTimestampToDateTime,
-} from '../../utils/convert';
-import {
+  convertSecondsToDays,
+  IContractInteractor,
   IStakeSetting,
   IStakeAccount,
-} from '../../utils/state';
-import {
-  SECOND_IN_MILLI
-} from '../../utils/const';
+} from '../../utils';
 
 const Btx2BtxStakingCard = () => {
     const { account } = useGetAccountInfo();
-    const { network, proxy } = useGetNetworkConfig();
+    const { network } = useGetNetworkConfig();
     const { hasPendingTransactions } = useGetPendingTransactions();
+    const provider = new ProxyProvider(network.apiAddress, { timeout: TIMEOUT });
 
     const [showModal, setShowModal] = useState(false);
     const [isStakeModal, setIsStakeModal] = useState(true);
     const [modalInputAmount, setModalInputAmount] = useState(0);
     
+    
+    const [stakeContractInteractor, setStakeContractInteractor] = React.useState<IContractInteractor | undefined>();
+    const [stakeSetting, setStakeSetting] = React.useState<IStakeSetting | undefined>();
+    const [stakeAccount, setStakeAccount] = React.useState<IStakeAccount | undefined>();
+
+    const [balance, setBalance] = React.useState<any>(undefined);
+
+    const [modalInfoMesssage, setModalInfoMesssage] = React.useState<string>('');
+    const [modalButtonDisabled, setModalButtonDisabled] = React.useState<boolean>(true);
+
+    const [alertModalShow, setAlertModalShow] = React.useState<boolean>(false);
+    const [alertModalText, setAlertModalText] = React.useState<string>('');
+
     // load smart contract abi and parse it to SmartContract object for tx
-    const [stakingContract, setStakingContract] = React.useState<any>(undefined);
     React.useEffect(() => {
         (async() => {
-            const abiRegistry = await AbiRegistry.load({
-                urls: [BTX2BTX_CONTRACT_ABI],
-            });
-            const contract = new SmartContract({
-                address: new Address(BTX2BTX_CONTRACT_ADDRESS),
-                abi: new SmartContractAbi(abiRegistry, [BTX2BTX_CONTRACT_NAME]),
-            });
-            setStakingContract(contract);
+            // const abiRegistry = await AbiRegistry.load({
+            //     urls: [BTX2BTX_CONTRACT_ABI],
+            // });
+            // const contract = new SmartContract({
+            //     address: new Address(BTX2BTX_CONTRACT_ADDRESS),
+            //     abi: new SmartContractAbi(abiRegistry, [BTX2BTX_CONTRACT_NAME]),
+            // });
+            // setStakingContract(contract);
 
-            console.log('Btx2Btx StakingContract', contract);
+            const registry = await AbiRegistry.load({ urls: [BTX2BTX_CONTRACT_ABI] });
+            const abi = new SmartContractAbi(registry, [BTX2BTX_CONTRACT_NAME]);
+            const contract = new SmartContract({ address: new Address(BTX2BTX_CONTRACT_ADDRESS), abi: abi });
+            const controller = new DefaultSmartContractController(abi, provider);
+
+            console.log('stakeContractInteractor', {
+                contract,
+                controller,
+            });
+
+            setStakeContractInteractor({
+                contract,
+                controller,
+            });
         })();
     }, []); // [] makes useEffect run once
 
-    const [stakeSetting, setStakeSetting] = React.useState<IStakeSetting | undefined>();
+    
     React.useEffect(() => {
         (async () => {
-            if (!stakingContract) return;
-            const interaction: Interaction = stakingContract.methods.getCurrentStakeSetting();
-            const queryResponse = await stakingContract.runQuery(proxy, interaction.buildQuery());
-            const res = interaction.interpretQueryResponse(queryResponse);
+            if (!stakeContractInteractor) return;
+            // const interaction: Interaction = stakingContract.methods.getCurrentStakeSetting();
+            // const queryResponse = await stakingContract.runQuery(proxy, interaction.buildQuery());
+            // const res = interaction.interpretQueryResponse(queryResponse);
+
+            const interaction = stakeContractInteractor.contract.methods.getCurrentStakeSetting();
+            const res = await stakeContractInteractor.controller.query(interaction);
 
             if (!res || !res.returnCode.isSuccess()) return;
             const value = res.firstValue.valueOf();
@@ -122,16 +151,20 @@ const Btx2BtxStakingCard = () => {
 
             setStakeSetting(result);
         })();
-    }, [stakingContract]);
+    }, [stakeContractInteractor]);
 
-    const [stakeAccount, setStakeAccount] = React.useState<IStakeAccount | undefined>();
+    
     React.useEffect(() => {
         (async () => {
-            if (!stakingContract || !account.address) return;
+            if (!stakeContractInteractor || !account.address) return;
+            // const args = [new AddressValue(new Address(account.address))];
+            // const interaction: Interaction = stakingContract.methods.getCurrentStakeAccount(args);
+            // const queryResponse = await stakingContract.runQuery(proxy, interaction.buildQuery());
+            // const res = interaction.interpretQueryResponse(queryResponse);
+
             const args = [new AddressValue(new Address(account.address))];
-            const interaction: Interaction = stakingContract.methods.getCurrentStakeAccount(args);
-            const queryResponse = await stakingContract.runQuery(proxy, interaction.buildQuery());
-            const res = interaction.interpretQueryResponse(queryResponse);
+            const interaction = stakeContractInteractor.contract.methods.getCurrentStakeAccount(args);
+            const res = await stakeContractInteractor.controller.query(interaction);
 
             if (!res || !res.returnCode.isSuccess()) return;
             const value = res.firstValue.valueOf();
@@ -161,12 +194,13 @@ const Btx2BtxStakingCard = () => {
             console.log('getCurrentStakeAccount', result);
             setStakeAccount(result);
         })();
-    }, [account, stakingContract, hasPendingTransactions]);
+    }, [account, stakeContractInteractor, hasPendingTransactions]);
 
-    const [balance, setBalance] = React.useState<any>(undefined);
+    
     React.useEffect(() => {
       if (account.address) {
         axios.get(`${network.apiAddress}/accounts/${account.address}/tokens?search=${BTX_TOKEN_NAME}`).then((res: any) => {
+          let _balance = 0;
           if (res.data?.length > 0) {
             const tokens = res.data.filter(
               (a: any) => a?.identifier === BTX_TOKEN_ID
@@ -174,66 +208,69 @@ const Btx2BtxStakingCard = () => {
             
             if (tokens.length > 0) {
               console.log('tokens[0]', tokens[0]);
-              const balance = convertWeiToEgld(tokens[0].balance);
-              setBalance(balance);
+              _balance = convertWeiToEgld(tokens[0].balance);
             }
           }
+          setBalance(_balance);
         });
       }
     }, [account, hasPendingTransactions]);
 
-    function onShowStakeModal(e: any) {
+    function onShowStakeModal() {
       if (!account.address) {
-        alert('You should connect your wallet first!');
+        onShowAlertModal('You should connect your wallet first!');
         return;
       }
 
       setModalInputAmount(0);
+      setModalInfoMesssage('');
+      setModalButtonDisabled(true);
       setIsStakeModal(true);
       setShowModal(true);
     }
 
-    function onShowUnstakeModal(e: any) {
+    function onShowUnstakeModal() {
       if (!account.address) {
-        alert('You should connect your wallet first!');
+        onShowAlertModal('You should connect your wallet first!');
         return;
       }
 
       setModalInputAmount(0);
+      setModalInfoMesssage('');
+      setModalButtonDisabled(true);
       setIsStakeModal(false);
       setShowModal(true);
     }
 
-    const [modalInfoMesssage, setModalInfoMesssage] = React.useState<string>('');
-    const [modalButtonDisabled, setModalButtonDisabled] = React.useState<boolean>(true);
-
     function onModalInputAmountChange(value: any) {
-      let modalInfoMesssage = '';
-      let modalButtonDisabled = true;
+      if (!account.address || !stakeAccount) return;
+      
+      let _modalInfoMesssage = '';
+      let _modalButtonDisabled = true;
       const currentTimestamp = (new Date()).getTime();
 
       if (isStakeModal) { // stake
         if (value > balance) {
-          modalInfoMesssage = 'Not enough tokens in your wallet.';
+          _modalInfoMesssage = 'Not enough tokens in your wallet.';
         } else if (value < stakeSetting.min_stake_limit) {
-          modalInfoMesssage = `Cannot stake less than ${stakeSetting.min_stake_limit} ${BTX_TOKEN_NAME}.`;
+          _modalInfoMesssage = `Cannot stake less than ${stakeSetting.min_stake_limit} ${BTX_TOKEN_NAME}.`;
         } else {
-          modalButtonDisabled = false;
+          _modalButtonDisabled = false;
         }
       } else {  // unstake
         if (value > stakeAccount.staked_amount) {
-          modalInfoMesssage = 'Cannot unstake more than staked amount.';
+          _modalInfoMesssage = 'Cannot unstake more than staked amount.';
         } else if (value <= 0) {
-          modalInfoMesssage = 'Invalid amount.';
+          _modalInfoMesssage = 'Invalid amount.';
         } else if (currentTimestamp < stakeAccount.lock_end_timestamp * SECOND_IN_MILLI) {
-          modalInfoMesssage = `Cannot unstake before ${convertTimestampToDateTime(stakeAccount.lock_end_timestamp * SECOND_IN_MILLI)}`;
+          _modalInfoMesssage = `Cannot unstake before ${convertTimestampToDateTime(stakeAccount.lock_end_timestamp * SECOND_IN_MILLI)}`;
         } else {
-          modalButtonDisabled = false;
+          _modalButtonDisabled = false;
         }
       }
 
-      setModalInfoMesssage(modalInfoMesssage);
-      setModalButtonDisabled(modalButtonDisabled);
+      setModalInfoMesssage(_modalInfoMesssage);
+      setModalButtonDisabled(_modalButtonDisabled);
       setModalInputAmount(value);
     }
 
@@ -242,11 +279,15 @@ const Btx2BtxStakingCard = () => {
       onModalInputAmountChange(value);
     }
 
+    function onShowAlertModal(text: string) {
+      setAlertModalText(text);
+      setAlertModalShow(true);
+    }
     async function stake(e : any) {
       e.preventDefault();
 
       if (balance == 0) {
-        alert(`You don\'t have ${BTX_TOKEN_NAME} in your wallet.`);
+        onShowAlertModal(`You don\'t have ${BTX_TOKEN_NAME} in your wallet.`);
         return;
       }
 
@@ -256,13 +297,13 @@ const Btx2BtxStakingCard = () => {
         BytesValue.fromUTF8('stake'),
       ];
       const { argumentsString } = new ArgSerializer().valuesToString(args);
-      const data = new TransactionPayload(`ESDTTransfer@${argumentsString}`);
+      const data = `ESDTTransfer@${argumentsString}`;
 
-      const tx = new Transaction({
-        receiver: new Address(BTX2BTX_CONTRACT_ADDRESS),
+      const tx = {
+        receiver: BTX2BTX_CONTRACT_ADDRESS,
         gasLimit: new GasLimit(10000000),
         data: data,
-      });
+      };
 
       await refreshAccount();
       sendTransactions({
@@ -276,15 +317,21 @@ const Btx2BtxStakingCard = () => {
       e.preventDefault();
 
       if (stakeAccount.staked_amount == 0) {
-        alert('You don\'t have staked tokens.');
+        onShowAlertModal('You don\'t have staked tokens.');
         return;
       }
 
-      const tx = stakingContract.call({
-        func: new ContractFunction('unstake'),
+      const args: TypedValue[] = [
+        new BigUIntValue(Egld(modalInputAmount).valueOf()),
+      ];
+      const { argumentsString } = new ArgSerializer().valuesToString(args);
+      const data = `unstake@${argumentsString}`;
+
+      const tx = {
+        receiver: BTX2BTX_CONTRACT_ADDRESS,
+        data: data,
         gasLimit: new GasLimit(6000000),
-        args: [new BigUIntValue(Egld(modalInputAmount).valueOf())],
-      });
+      };
       await refreshAccount();
       await sendTransactions({
         transactions: tx,
@@ -297,12 +344,12 @@ const Btx2BtxStakingCard = () => {
       e.preventDefault();
 
       if (!account.address) {
-        alert('You should connect your wallet first!');
+        onShowAlertModal('You should connect your wallet first!');
         return;
       }
 
-      if (stakeAccount.reward_amount == 0) {
-        alert('You don\'t have reward to be claimed.');
+      if (stakeAccount.reward_amount == 0 && stakeAccount.collectable_amount == 0) {
+        onShowAlertModal('You don\'t have rewards or collectables to be claimed.');
         return;
       }
 
@@ -310,42 +357,44 @@ const Btx2BtxStakingCard = () => {
       const claimLockEndTimestamp = (stakeAccount.last_claim_timestamp + stakeSetting.claim_lock_period) * SECOND_IN_MILLI;
       console.log(`currentTimestamp: ${currentTimestamp} ----- claimLockEndTimestamp: ${claimLockEndTimestamp}`);
       if (currentTimestamp < claimLockEndTimestamp) {
-        alert(`Cannot claim before ${convertTimestampToDateTime(claimLockEndTimestamp)}`);
+        onShowAlertModal(`Cannot claim before ${convertTimestampToDateTime(claimLockEndTimestamp)}`);
         return;
       }
 
-      const tx = stakingContract.call({
-        func: new ContractFunction('claim'),
+      const tx = {
+        receiver: BTX2BTX_CONTRACT_ADDRESS,
+        data: 'claim',
         gasLimit: new GasLimit(6000000),
-      });
+      };
       await refreshAccount();
       await sendTransactions({
         transactions: tx,
       });
     }
 
-    async function collect(e: any) {
-      e.preventDefault();
+    // async function collect(e: any) {
+    //   e.preventDefault();
 
-      if (!account.address) {
-        alert('You should connect your wallet first!');
-        return;
-      }
+    //   if (!account.address) {
+    //     onShowAlertModal('You should connect your wallet first!');
+    //     return;
+    //   }
 
-      if (stakeAccount.collectable_amount == 0) {
-        alert('You don\'t have undelegated tokens to be collected.');
-        return;
-      }
+    //   if (stakeAccount.collectable_amount == 0) {
+    //     onShowAlertModal('You don\'t have undelegated tokens to be collected.');
+    //     return;
+    //   }
 
-      const tx = stakingContract.call({
-        func: new ContractFunction('collect'),
-        gasLimit: new GasLimit(6000000),
-      });
-      await refreshAccount();
-      await sendTransactions({
-        transactions: tx,
-      });
-    }
+    //   const tx = {
+    //     receiver: BTX2BTX_CONTRACT_ADDRESS,
+    //     data: 'collect',
+    //     gasLimit: new GasLimit(6000000),
+    //   };
+    //   await refreshAccount();
+    //   await sendTransactions({
+    //     transactions: tx,
+    //   });
+    // }
 
     return (
         <div className='card'>
@@ -385,8 +434,8 @@ const Btx2BtxStakingCard = () => {
                     <p className='data'>{stakeAccount ? stakeAccount.staked_amount : '-'} BTX</p>
                 </div>
                 <div>
-                    <p className='heading'>My Reward</p>
-                    <p className='data'>{stakeAccount ? stakeAccount.reward_amount : '-'} BTX</p>
+                    <p className='heading'>My Unstaked</p>
+                    <p className='data'>{stakeAccount ? stakeAccount.unstaked_amount : '-'} BTX</p>
                 </div>
             </div>
             <div className='buttonDiv'>
@@ -394,29 +443,25 @@ const Btx2BtxStakingCard = () => {
                     <p>Stake</p>
                     <img src={down}/>
                 </button>
-                <button className='claimReward_button' onClick={claim}>
-                    <p>Claim</p>
-                    <img src={dollarPot}/>
+                <button className='unstake_button' onClick={onShowUnstakeModal}>
+                    <p>Unstake</p>
+                    <img src={up}/>
                 </button>
             </div>
             <div className='stake_reward'>
                 <img src={stake_reward_bg}/>
                 <div>
-                    <p className='heading'>My Unstaked</p>
-                    <p className='data'>{stakeAccount ? stakeAccount.unstaked_amount : '-'} BTX</p>
+                    <p className='heading'>My Reward</p>
+                    <p className='data'>{stakeAccount ? stakeAccount.reward_amount : '-'} BTX</p>
                 </div>
                 <div>
                     <p className='heading'>My Collectable</p>
                     <p className='data'>{stakeAccount ? stakeAccount.collectable_amount : '-'} BTX</p>
                 </div>
             </div>
-            <div className='buttonDiv'>
-                <button className='unstake_button' onClick={onShowUnstakeModal}>
-                    <p>Unstake</p>
-                    <img src={up}/>
-                </button>
-                <button className='claimReward_button' onClick={collect}>
-                    <p>Collect</p>
+            <div className=''>
+                <button className='claimReward_button' onClick={claim}>
+                    <p>Claim</p>
                     <img src={dollarPot}/>
                 </button>
             </div>
@@ -431,12 +476,15 @@ const Btx2BtxStakingCard = () => {
             >
               <div className='modaldiv'>
                 <h3 className='modal-header'>
-                  {isStakeModal ? 'STAKING' : 'Unstake'}
+                  {isStakeModal ? 'Stake' : 'Unstake'}
                 </h3>
               </div>
               <p className='modal-description'>
-                Your tokens will be locked for 30 days after deposit (even the
-                tokens that are already staked)
+              {
+                showModal && stakeSetting && (isStakeModal ?
+                  `Your tokens will be locked for ${convertSecondsToDays(stakeSetting.lock_period)} days after deposit (even the tokens that are already staked)` 
+                  : `Your tokens will be undelegated for ${convertSecondsToDays(stakeSetting.undelegation_period)} days after unstake (even the tokens that are already unstaked)`)
+              }    
               </p>
               <div className='modal-divider'></div>
               <div
@@ -445,11 +493,11 @@ const Btx2BtxStakingCard = () => {
                 }}
                 className='pinkpara font-24'
               >
-                <span>{isStakeModal ? 'BALANCE' : 'MY STAKED'}:&nbsp;</span>
-                <span>
+                <span>{isStakeModal ? 'MY BALANCE' : 'MY STAKED'}:&nbsp;&nbsp;</span>
+                <span style={{ color: 'red', fontWeight: 600 }}>
                   {showModal && (isStakeModal ? balance : stakeAccount.staked_amount)}
                 </span>
-                <span>&nbsp;&nbsp;{BTX_TOKEN_NAME}</span>
+                <span>&nbsp;{BTX_TOKEN_NAME}</span>
               </div>
               <h6 className='modal-info-1'>
                 {isStakeModal ? 'Amount to Stake' : 'Amount to Unstake'}
@@ -478,7 +526,7 @@ const Btx2BtxStakingCard = () => {
                     onClick={stake}
                     disabled={modalButtonDisabled}
                   >
-                    STAKING
+                    Stake
                   </button>
                 ) : (
                   <button
@@ -490,8 +538,12 @@ const Btx2BtxStakingCard = () => {
                   </button>
                 )
               }
-              
           </Modal>
+          <AlertModal
+            show={alertModalShow}
+            onHide={() => setAlertModalShow(false)}
+            alertmodaltext={alertModalText}
+          />
         </div>
     );
 };
