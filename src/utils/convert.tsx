@@ -29,7 +29,7 @@ export const convertTimestampToDateTime = (ts: number) => {
 };
 
 export const convertSecondsToDays = (ts: number) => {
-    return (ts / 86400000);
+    return (ts / 86400);
 };
 
 export const convertWeiToEgld = (v: any, precision = 4) => {

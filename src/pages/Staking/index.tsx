@@ -494,7 +494,7 @@ const Btx2BtxStakingCard = () => {
                 className='pinkpara font-24'
               >
                 <span>{isStakeModal ? 'MY BALANCE' : 'MY STAKED'}:&nbsp;&nbsp;</span>
-                <span style={{ color: 'red', fontWeight: 600 }}>
+                <span style={{ color: 'red', fontWeight: 600, fontSize: '1.1rem' }}>
                   {showModal && (isStakeModal ? balance : stakeAccount.staked_amount)}
                 </span>
                 <span>&nbsp;{BTX_TOKEN_NAME}</span>
