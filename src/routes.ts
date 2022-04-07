@@ -4,37 +4,13 @@ import Staking from './pages/Staking';
 import UnlockPage from './pages/UnlockPage';
 
 export const routeNames = {
-  // home: '/',
-  dashboard: '/dashboard',
-  transaction: '/transaction',
   unlock: '/unlock',
   ledger: '/ledger',
   walletconnect: '/walletconnect',
-  staking: '/staking'
+  staking: '/'
 };
 
 const routes: Array<any> = [
-  // {
-  //   path: routeNames.home,
-  //   title: 'Home',
-  //   component: Home
-  // },
-  // {
-  //   path: routeNames.dashboard,
-  //   title: 'Dashboard',
-  //   component: Dashboard,
-  //   authenticatedRoute: true
-  // },
-  // {
-  //   path: routeNames.transaction,
-  //   title: 'Transaction',
-  //   component: Transaction
-  // },
-  {
-    path: routeNames.unlock,
-    title: 'Unlock',
-    component: UnlockPage
-  },
   {
     path: routeNames.staking,
     title: 'Staking',

@@ -69,12 +69,6 @@
             "outputs": []
         },
         {
-            "name": "collect",
-            "mutability": "mutable",
-            "inputs": [],
-            "outputs": []
-        },
-        {
             "name": "claim",
             "mutability": "mutable",
             "inputs": [],
@@ -386,6 +380,10 @@
                 {
                     "name": "reward_amount",
                     "type": "BigUint"
+                },
+                {
+                    "name": "last_reward_updated_timestamp",
+                    "type": "u64"
                 },
                 {
                     "name": "last_claim_timestamp",

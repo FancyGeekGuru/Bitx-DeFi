@@ -4,9 +4,7 @@ import { Navbar as BsNavbar, NavItem, Nav } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { dAppName } from 'config';
 import { routeNames } from 'routes';
-import { ReactComponent as ElrondLogo } from './../../../assets/img/elrond.svg';
 import logo from '../../../assets/img/bitx-logo.jpg';
-import lightVector from '../../../assets/img/lightVector.png';
 import './index.scss';
 
 const Navbar = () => {
@@ -19,16 +17,6 @@ const Navbar = () => {
   const isLoggedIn = Boolean(address);
 
   return (
-    // <div className='navbar'>
-    //   <div className='logoDiv'>
-    //     <img src={logo} />
-    //     <p>BitX Finance</p>
-    //   </div>
-    //   <button className='connectButton'>
-    //     <img src={lightVector} />
-    //     <p>Connect</p>
-    //   </button>
-    // </div>
     <BsNavbar className='bg-white border-bottom px-4 py-3' expand='sm' collapseOnSelect>
       <div className='container-fluid'>
         <Link
@@ -50,11 +38,6 @@ const Navbar = () => {
               <Link to={ routeNames.unlock } className='auth-button'>
                 Connect
               </Link>
-              // <NavItem>
-              //   <button className='btn btn-link' onClick={handleLogout}>
-              //     Close
-              //   </button>
-              // </NavItem>
             )}
           </Nav>
         </BsNavbar.Collapse>
