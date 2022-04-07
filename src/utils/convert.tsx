@@ -28,6 +28,10 @@ export const convertTimestampToDateTime = (ts: number) => {
     return date.toLocaleString();
 };
 
+export const convertSecondsToDays = (ts: number) => {
+    return (ts / 86400000);
+};
+
 export const convertWeiToEgld = (v: any, precision = 4) => {
     const factor = Math.pow(10, precision);
     const number = parseFloat(Egld.raw(v).toDenominated());
