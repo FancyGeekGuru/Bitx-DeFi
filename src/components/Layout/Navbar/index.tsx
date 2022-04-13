@@ -4,7 +4,7 @@ import { Navbar as BsNavbar, NavItem, Nav } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { dAppName } from 'config';
 import { routeNames } from 'routes';
-import logo from '../../../assets/img/bitx-logo.jpg';
+import logo from '../../../assets/img/btx-logo.svg';
 import './index.scss';
 
 const Navbar = () => {

@@ -20,19 +20,16 @@ import {
   Egld,
   BigUIntValue,
   ArgSerializer,
-  TransactionPayload,
   GasLimit,
   DefaultSmartContractController,
 } from '@elrondnetwork/erdjs';
 
 import axios from 'axios';
 import Modal from 'react-modal';
-import { Modal as BsModal, Button } from 'react-bootstrap';
 
-import bgVector from '../../assets/img/bgVector.png';
 import down from '../../assets/img/down.png';
 import up from '../../assets/img/up.png';
-import btxLogo from '../../assets/img/bitx-logo.jpg';
+import btxLogo from '../../assets/img/btx-logo.svg';
 import dollarPot from '../../assets/img/dollarPot.png';
 import stake_reward_bg from '../../assets/img/stake_reward_bg.png';
 import arrow from '../../assets/img/arrow.png';
@@ -42,7 +39,7 @@ import {
   BTX2BTX_CONTRACT_ADDRESS,
   BTX2BTX_CONTRACT_ABI,
   BTX2BTX_CONTRACT_NAME,
-  BTX_TOKEN_NAME,
+  BTX_TOKEN_TICKER,
   BTX_TOKEN_ID,
 } from '../../config';
 
@@ -52,8 +49,9 @@ import {
   convertWeiToEgld,
   convertTimestampToDateTime,
   convertSecondsToDays,
+  convertAPR2APY,
   IContractInteractor,
-  IStakeSetting,
+  IBtx2BtxStakeSetting,
   IStakeAccount,
 } from '../../utils';
 
@@ -69,7 +67,7 @@ const Btx2BtxStakingCard = () => {
     
     
     const [stakeContractInteractor, setStakeContractInteractor] = React.useState<IContractInteractor | undefined>();
-    const [stakeSetting, setStakeSetting] = React.useState<IStakeSetting | undefined>();
+    const [stakeSetting, setStakeSetting] = React.useState<IBtx2BtxStakeSetting | undefined>();
     const [stakeAccount, setStakeAccount] = React.useState<IStakeAccount | undefined>();
 
     const [balance, setBalance] = React.useState<any>(undefined);
@@ -131,7 +129,7 @@ const Btx2BtxStakingCard = () => {
             const lock_period = value.lock_period.toNumber();
             const undelegation_period = value.undelegation_period.toNumber();
             const claim_lock_period = value.claim_lock_period.toNumber();
-            const apy = value.apy.toNumber();
+            const apr = value.apr.toNumber() / 100;
             const total_staked_amount = convertWeiToEgld(value.total_staked_amount);
             const number_of_stakers = value.number_of_stakers.toNumber();
 
@@ -142,7 +140,7 @@ const Btx2BtxStakingCard = () => {
               lock_period,
               undelegation_period,
               claim_lock_period,
-              apy,
+              apr,
               total_staked_amount,
               number_of_stakers,
             };
@@ -199,7 +197,7 @@ const Btx2BtxStakingCard = () => {
     
     React.useEffect(() => {
       if (account.address) {
-        axios.get(`${network.apiAddress}/accounts/${account.address}/tokens?search=${BTX_TOKEN_NAME}`).then((res: any) => {
+        axios.get(`${network.apiAddress}/accounts/${account.address}/tokens?search=${BTX_TOKEN_TICKER}`).then((res: any) => {
           let _balance = 0;
           if (res.data?.length > 0) {
             const tokens = res.data.filter(
@@ -253,7 +251,7 @@ const Btx2BtxStakingCard = () => {
         if (value > balance) {
           _modalInfoMesssage = 'Not enough tokens in your wallet.';
         } else if (value < stakeSetting.min_stake_limit) {
-          _modalInfoMesssage = `Cannot stake less than ${stakeSetting.min_stake_limit} ${BTX_TOKEN_NAME}.`;
+          _modalInfoMesssage = `Cannot stake less than ${stakeSetting.min_stake_limit} ${BTX_TOKEN_TICKER}.`;
         } else {
           _modalButtonDisabled = false;
         }
@@ -287,7 +285,7 @@ const Btx2BtxStakingCard = () => {
       e.preventDefault();
 
       if (balance == 0) {
-        onShowAlertModal(`You don\'t have ${BTX_TOKEN_NAME} in your wallet.`);
+        onShowAlertModal(`You don\'t have ${BTX_TOKEN_TICKER} in your wallet.`);
         return;
       }
 
@@ -399,12 +397,12 @@ const Btx2BtxStakingCard = () => {
     return (
         <div className='card'>
             <div className='stake_earn'>
-                <div>
+                <div className='stake-log-card'>
                     <img src={btxLogo}/>
                     <p>Stake $BTX</p>
                 </div>
                 <img src={arrow}/>
-                <div>
+                <div className='stake-log-card'>
                     <img src={btxLogo}/>
                     <p>Earn $BTX</p>
                 </div>
@@ -416,11 +414,15 @@ const Btx2BtxStakingCard = () => {
             <div className='info'>
               <div>
                 <p className='heading'>APR</p>
-                <p className='data'>{stakeSetting ? stakeSetting.apy / 100 : '-'} %</p>
+                <p className='data'>{stakeSetting ? stakeSetting.apr : '-'} %</p>
+              </div>
+              <div>
+                <p className='heading'>APY</p>
+                <p className='data'>{stakeSetting ? convertAPR2APY(stakeSetting.apr) : '-'} %</p>
               </div>
               <div>
                 <p className='heading'>Total Staked</p>
-                <p className='data'>{stakeSetting ? stakeSetting.total_staked_amount : '-'} {BTX_TOKEN_NAME}</p>
+                <p className='data'>{stakeSetting ? stakeSetting.total_staked_amount : '-'} {BTX_TOKEN_TICKER}</p>
               </div>
               <div>
                 <p className='heading'>Stakers</p>
@@ -497,7 +499,7 @@ const Btx2BtxStakingCard = () => {
                 <span style={{ color: 'red', fontWeight: 600, fontSize: '1.1rem' }}>
                   {showModal && (isStakeModal ? balance : stakeAccount.staked_amount)}
                 </span>
-                <span>&nbsp;{BTX_TOKEN_NAME}</span>
+                <span>&nbsp;{BTX_TOKEN_TICKER}</span>
               </div>
               <h6 className='modal-info-1'>
                 {isStakeModal ? 'Amount to Stake' : 'Amount to Unstake'}

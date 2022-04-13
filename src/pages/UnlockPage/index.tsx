@@ -35,7 +35,6 @@ export const UnlockRoute: (props: any) => JSX.Element = (props) => {
             <LedgerLoginButton
               loginButtonText={'Ledger'}
               callbackRoute={props.loginRoute}
-              className={'test-class_name'}
             />
             <WalletConnectLoginButton
               callbackRoute={props.loginRoute}

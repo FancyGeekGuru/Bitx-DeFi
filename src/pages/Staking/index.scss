@@ -94,12 +94,14 @@
   justify-content: space-between;
   align-items: center;
 
-  .stake-log-card-mex {
-    background-color: #ffcc33cc;
-    box-shadow: 
-                0px 2px 6px #a1873666,
-                0px 2px 9px #ffcc3366,
-                0px 2px 12px #ffcc3333;
+  .stake-log-card {
+    background-color: #d6d6d644;
+    box-shadow: 0px 2px 6px 3px rgba(0, 0, 0, 0.1),
+                0px 2px 9px rgba(0, 0, 0, 0.05);
+    // box-shadow: 
+    //             0px 2px 6px #a1873666,
+    //             0px 2px 9px #ffcc3366,
+    //             0px 2px 12px #ffcc3333;
   }
 
   div {
