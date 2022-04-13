@@ -46,6 +46,14 @@
             {
                 "name": "claim_lock_period",
                 "type": "u64"
+            },
+            {
+                "name": "stake_token_price",
+                "type": "BigUint"
+            },
+            {
+                "name": "reward_token_price",
+                "type": "BigUint"
             }
         ],
         "outputs": []
@@ -216,6 +224,22 @@
             "inputs": [
                 {
                     "name": "max_stake_limit",
+                    "type": "BigUint"
+                }
+            ],
+            "outputs": []
+        },
+        {
+            "name": "setStakeTokenToRewardTokenRate",
+            "onlyOwner": true,
+            "mutability": "mutable",
+            "inputs": [
+                {
+                    "name": "stake_token_price",
+                    "type": "BigUint"
+                },
+                {
+                    "name": "reward_token_price",
                     "type": "BigUint"
                 }
             ],
@@ -437,6 +461,14 @@
                 {
                     "name": "claim_lock_period",
                     "type": "u64"
+                },
+                {
+                    "name": "stake_token_price",
+                    "type": "BigUint"
+                },
+                {
+                    "name": "reward_token_price",
+                    "type": "BigUint"
                 },
                 {
                     "name": "apr",

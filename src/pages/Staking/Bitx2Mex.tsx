@@ -401,10 +401,6 @@ const Bitx2Mex = () => {
                 <p className='data'>{stakeSetting ? stakeSetting.apr : '-'} %</p>
               </div>
               <div>
-                <p className='heading'>APY</p>
-                <p className='data'>{stakeSetting ? convertAPR2APY(stakeSetting.apr) : '-'} %</p>
-              </div>
-              <div>
                 <p className='heading'>Total Staked</p>
                 <p className='data'>{stakeSetting ? stakeSetting.total_staked_amount : '-'} {BTX_TOKEN_TICKER}</p>
               </div>
