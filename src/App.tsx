@@ -9,6 +9,7 @@ import { routeNames } from 'routes';
 import routes from 'routes';
 import '@elrondnetwork/dapp-core/build/index.css';
 import { ENVIRONMENT } from './config';
+import { TIMEOUT } from 'utils';
 
 
 const {
@@ -22,7 +23,7 @@ const App = () => {
     <Router>
       <DappProvider
         environment={ENVIRONMENT}
-        customNetworkConfig={{ name: 'customConfig', apiTimeout: 6000 }}
+        customNetworkConfig={{ name: 'customConfig', apiTimeout: TIMEOUT }}
         completedTransactionsDelay={200}
       >
         <Layout>
