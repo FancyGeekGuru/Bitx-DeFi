@@ -172,7 +172,7 @@ const Dice2Dice = () => {
               last_claim_timestamp,
             };
 
-            console.log('getCurrentStakeAccount', result);
+            console.log('Dice2Dice getCurrentStakeAccount', result);
             setStakeAccount(result);
         })();
     }, [account, stakeContractInteractor, hasPendingTransactions]);

@@ -17,13 +17,13 @@ export const MEX_TOKEN_TICKER = 'MEX';
 export const MEX_TOKEN_ID = 'MEX-455c57';
 
 // DICE Pool
-export const DICE2DICE_CONTRACT_ADDRESS = 'erd1qqqqqqqqqqqqqpgqdydrqza459y8qppzj3mz22sd3ak9u5z43qmqek9z57';
+export const DICE2DICE_CONTRACT_ADDRESS = 'erd1qqqqqqqqqqqqqpgqutcvq6qjfsg95n27pyskkdl98072ct5l3qmqmycd6e';
 export const DICE2DICE_CONTRACT_ABI = 'abi/dice2dice.abi.json';
 export const DICE2DICE_CONTRACT_NAME = 'BitxStake';
 export const DICE_TOKEN_TICKER = 'DICE';
 export const DICE_TOKEN_ID = 'DICE-9749cc';
 export const DICE_TOKEN_DECIMALS = 6;
 
-export const BTX2DICE_CONTRACT_ADDRESS = 'erd1qqqqqqqqqqqqqpgqlfmj246rxrnl9sxx5fvxrxh2jpefa27r3qmqt76ey7';
+export const BTX2DICE_CONTRACT_ADDRESS = 'erd1qqqqqqqqqqqqqpgqzu589zvpeymkyjzs9l7cz7drk8tafzcl3qmqu5e0fe';
 export const BTX2DICE_CONTRACT_ABI = 'abi/btx2dice.abi.json';
 export const BTX2DICE_CONTRACT_NAME = 'BitxStake';
