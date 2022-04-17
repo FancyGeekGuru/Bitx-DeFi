@@ -1,6 +1,4 @@
-import {
-    Egld,
-} from '@elrondnetwork/erdjs';
+import BigNumber from 'bignumber.js/bignumber.js';
 import {
     ONE_DAY_IN_SECONDS
 } from '.';
@@ -30,12 +28,6 @@ export const convertTimestampToDateTime = (ts: number) => {
 
 export const convertSecondsToDays = (ts: number) => {
     return (ts / 86400);
-};
-
-export const convertWeiToEgld = (v: any, precision = 4) => {
-    const factor = Math.pow(10, precision);
-    const number = parseFloat(Egld.raw(v).toDenominated());
-    return Math.floor(number * factor) / factor;
 };
 
 export const convertUndefinedToZero = (v: any) => {
@@ -69,4 +61,13 @@ export const convertAPR2APY = (apr: number) => {
     const factor = 100;
     const apy = (Math.pow((1 + apr / 100 / numberOfPeriod), numberOfPeriod) - 1) * 100;
     return Math.round(apy * factor) / factor;
+};
+
+export const convertWeiToEsdt = (v: any, decimals = 18, precision = 2) => {
+    // conversion for BigNumber operation
+    if (typeof(v) != typeof(BigNumber)) v = new BigNumber(v);
+
+    const number = v.dividedBy(new BigNumber(Math.pow(10, decimals))).toNumber();
+    const factor = Math.pow(10, precision);
+    return Math.floor(number * factor) / factor;
 };

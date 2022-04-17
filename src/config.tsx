@@ -22,6 +22,7 @@ export const DICE2DICE_CONTRACT_ABI = 'abi/dice2dice.abi.json';
 export const DICE2DICE_CONTRACT_NAME = 'BitxStake';
 export const DICE_TOKEN_TICKER = 'DICE';
 export const DICE_TOKEN_ID = 'DICE-9749cc';
+export const DICE_TOKEN_DECIMALS = 6;
 
 export const BTX2DICE_CONTRACT_ADDRESS = 'erd1qqqqqqqqqqqqqpgqlfmj246rxrnl9sxx5fvxrxh2jpefa27r3qmqt76ey7';
 export const BTX2DICE_CONTRACT_ABI = 'abi/btx2dice.abi.json';

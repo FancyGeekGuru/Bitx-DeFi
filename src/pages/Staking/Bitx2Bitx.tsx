@@ -46,7 +46,7 @@ import {
 import {
   SECOND_IN_MILLI,
   TIMEOUT,
-  convertWeiToEgld,
+  convertWeiToEsdt,
   convertTimestampToDateTime,
   convertSecondsToDays,
   convertAPR2APY,
@@ -125,12 +125,12 @@ const Btx2BtxStakingCard = () => {
 
             const stake_token = value.stake_token.toString();
             const reward_token = value.reward_token.toString();
-            const min_stake_limit = convertWeiToEgld(value.min_stake_limit);            
+            const min_stake_limit = convertWeiToEsdt(value.min_stake_limit);            
             const lock_period = value.lock_period.toNumber();
             const undelegation_period = value.undelegation_period.toNumber();
             const claim_lock_period = value.claim_lock_period.toNumber();
             const apr = value.apr.toNumber() / 100;
-            const total_staked_amount = convertWeiToEgld(value.total_staked_amount);
+            const total_staked_amount = convertWeiToEsdt(value.total_staked_amount);
             const number_of_stakers = value.number_of_stakers.toNumber();
 
             const result = {
@@ -170,12 +170,12 @@ const Btx2BtxStakingCard = () => {
             // console.log('getCurrentStakeAccount', value);
 
             const address = value.address.toString();
-            const staked_amount = convertWeiToEgld(value.staked_amount);
+            const staked_amount = convertWeiToEsdt(value.staked_amount);
             const lock_end_timestamp = value.lock_end_timestamp.toNumber();
-            const unstaked_amount = convertWeiToEgld(value.unstaked_amount);
+            const unstaked_amount = convertWeiToEsdt(value.unstaked_amount);
             const undelegation_end_timestamp = value.undelegation_end_timestamp.toNumber();
-            const collectable_amount = convertWeiToEgld(value.collectable_amount);
-            const reward_amount = convertWeiToEgld(value.reward_amount);
+            const collectable_amount = convertWeiToEsdt(value.collectable_amount);
+            const reward_amount = convertWeiToEsdt(value.reward_amount);
             const last_claim_timestamp = value.last_claim_timestamp.toNumber();
             
             const result = {
@@ -206,7 +206,7 @@ const Btx2BtxStakingCard = () => {
             
             if (tokens.length > 0) {
               console.log('tokens[0]', tokens[0]);
-              _balance = convertWeiToEgld(tokens[0].balance);
+              _balance = convertWeiToEsdt(tokens[0].balance);
             }
           }
           setBalance(_balance);
