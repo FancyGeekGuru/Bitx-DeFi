@@ -17,7 +17,6 @@ import {
   ProxyProvider,
   TypedValue,
   BytesValue,
-  Egld,
   BigUIntValue,
   ArgSerializer,
   GasLimit,
@@ -51,6 +50,7 @@ import {
   convertTimestampToDateTime,
   convertSecondsToDays,
   convertAPR2APY,
+  convertEsdtToWei,
   IContractInteractor,
   IBtx2BtxStakeSetting,
   IStakeAccount,
@@ -274,7 +274,7 @@ const Dice2Dice = () => {
 
       const args: TypedValue[] = [
         BytesValue.fromUTF8(DICE_TOKEN_ID),
-        new BigUIntValue(Egld(modalInputAmount).valueOf()),
+        new BigUIntValue(convertEsdtToWei(modalInputAmount, DICE_TOKEN_DECIMALS)),
         BytesValue.fromUTF8('stake'),
       ];
       const { argumentsString } = new ArgSerializer().valuesToString(args);
@@ -303,7 +303,7 @@ const Dice2Dice = () => {
       }
 
       const args: TypedValue[] = [
-        new BigUIntValue(Egld(modalInputAmount).valueOf()),
+        new BigUIntValue(convertEsdtToWei(modalInputAmount, DICE_TOKEN_DECIMALS)),
       ];
       const { argumentsString } = new ArgSerializer().valuesToString(args);
       const data = `unstake@${argumentsString}`;
