@@ -142,7 +142,7 @@ const Dice2Dice = () => {
     
     React.useEffect(() => {
         (async () => {
-            if (!stakeContractInteractor || !account.address) return;
+            if (!stakeContractInteractor || !account.address || hasPendingTransactions) return;
             const args = [new AddressValue(new Address(account.address))];
             const interaction = stakeContractInteractor.contract.methods.getCurrentStakeAccount(args);
             const res = await stakeContractInteractor.controller.query(interaction);
@@ -179,7 +179,7 @@ const Dice2Dice = () => {
 
     
     React.useEffect(() => {
-      if (account.address) {
+      if (account.address && !hasPendingTransactions) {
         axios.get(`${network.apiAddress}/accounts/${account.address}/tokens?search=${DICE_TOKEN_TICKER}`).then((res: any) => {
           let _balance = 0;
           if (res.data?.length > 0) {
