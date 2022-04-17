@@ -23,16 +23,16 @@
 
   .container {
     display: flex;
-    gap: 50px;
+    gap: 40px;
   }
 
   .card {
     // max-width: 600px;
-    min-width: 500px !important;
+    min-width: 420px !important;
   }
 
   .stake_earn img {
-    width: 60px;
+    width: 40px;
   }
 }
 
@@ -52,12 +52,12 @@
 
   .card {
     // max-width: 480px;
-    min-width: 480px !important;
+    min-width: 420px !important;
     margin-bottom: 3rem;
   }
 
   .stake_earn img {
-    width: 40px;
+    width: 30px;
   }
 }
 
@@ -109,14 +109,14 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    padding: 20px 15px;
+    padding: 16px 12px;
     gap: 10px;
     box-shadow: 0px 4px 10px 2px rgba(0, 0, 0, 0.2);
     border-radius: 5px;
 
     p {
       margin: 0px;
-      font-size: 20px;
+      font-size: 16px;
       font-weight: 600;
     }
   }
@@ -140,7 +140,7 @@
 .info {
   display: flex;
   justify-content: space-between;
-  margin-top: 20px;
+  margin-top: 16px;
 }
 
 .info div {
@@ -150,12 +150,12 @@
 
   .heading {
     margin: 0px;
-    font-size: 20px;
+    font-size: 16px;
     font-weight: 600;
   }
   .data {
     margin: 0px;
-    font-size: 18px;
+    font-size: 14px;
     font-weight: 500;
   }
 }
@@ -163,7 +163,7 @@
 .stake_reward {
   display: flex;
   justify-content: space-between;
-  padding: 20px;
+  padding: 16px;
   position: relative;
 
   div {
@@ -173,14 +173,14 @@
 
     .heading {
       margin: 0px;
-      font-size: 14px;
+      font-size: 12px;
       font-weight: 400;
       text-align: left;
     }
 
     .data {
       margin: 0px;
-      font-size: 18px;
+      font-size: 14px;
       font-weight: 600;
     }
   }
@@ -207,9 +207,9 @@
   justify-content: space-between;
 
   button {
-    gap: 25px;
+    gap: 16px;
     display: flex;
-    padding: 1.6rem 0px;
+    padding: .8rem 0px;
     border-radius: 5px;
     width: 45%;
     align-items: center;
@@ -256,12 +256,12 @@
 
   p {
     margin: 0px;
-    font-size: 18px;
+    font-size: 14px;
     font-weight: 600;
   }
 
   img {
-    width: 25px;
+    width: 18px;
   }
 }
 
@@ -271,20 +271,20 @@
   align-items: center;
   gap: 20px;
   justify-content: center;
-  padding: 1.6rem 0px;
+  padding: .8rem 0px;
   background-color: #141414;
   border-radius: 5px;
   border: none !important;
 
   p {
     margin: 0px;
-    font-size: 18px;
+    font-size: 14px;
     font-weight: 600;
     color: white;
   }
 
   img {
-    width: 25px;
+    width: 18px;
   }
 
   transition: background-color .4s ease-in;

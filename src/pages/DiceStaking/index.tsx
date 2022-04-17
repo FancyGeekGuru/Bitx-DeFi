@@ -1,7 +1,5 @@
 import React, {useState} from 'react';
 
-import './index.scss';
-
 import bgVector from '../../assets/img/bgVector.png';
 import Dice2Dice from './Dice2Dice';
 import Bitx2Dice from './Bitx2Dice';
