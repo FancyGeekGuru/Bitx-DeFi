@@ -1,20 +1,27 @@
 import { dAppName } from 'config';
 import withPageTitle from './components/PageTitle';
 import Staking from './pages/Staking';
-import UnlockPage from './pages/UnlockPage';
+import DiceStaking from './pages/DiceStaking';
 
 export const routeNames = {
   unlock: '/unlock',
   ledger: '/ledger',
   walletconnect: '/walletconnect',
-  staking: '/'
+  staking: '/btx-pool',
+  dicestaking: '/dice-pool',
+  home: '/',
 };
 
 const routes: Array<any> = [
   {
     path: routeNames.staking,
-    title: 'Staking',
+    title: 'BTX Pool',
     component: Staking
+  },
+  {
+    path: routeNames.dicestaking,
+    title: 'Dice Pool',
+    component: DiceStaking
   },
 ];
 

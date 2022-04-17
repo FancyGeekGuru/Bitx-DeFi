@@ -30,12 +30,18 @@ const Navbar = () => {
         <BsNavbar.Toggle aria-controls='responsive-navbar-nav' />
         <BsNavbar.Collapse id='responsive-navbar-nav' className='nav-menu-wrap'>
           <Nav className='ml-auto'>
+            <Link to={ routeNames.staking } className='custom-navbar-button custom-navbar-normal-button'>
+              BTX Pool
+            </Link>
+            <Link to={ routeNames.dicestaking } className='custom-navbar-button custom-navbar-normal-button'>
+              DICE Pool
+            </Link>
             {isLoggedIn ? (
-              <NavItem className='auth-button' onClick={handleLogout}>
+              <NavItem className='custom-navbar-button auth-button' onClick={handleLogout}>
                 Disconnect
               </NavItem>
             ) : (
-              <Link to={ routeNames.unlock } className='auth-button'>
+              <Link to={ routeNames.unlock } className='custom-navbar-button auth-button'>
                 Connect
               </Link>
             )}
