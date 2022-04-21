@@ -1,27 +1,43 @@
 import { dAppName } from 'config';
 import withPageTitle from './components/PageTitle';
-import Staking from './pages/Staking';
-import DiceStaking from './pages/DiceStaking';
+import BitXStaking from './pages/Staking/BitXStaking';
+import DiceStaking from './pages/Staking/DiceStaking';
+import StakingHome from './pages/Staking';
+import PreSale from './pages/Presale';
 
 export const routeNames = {
   unlock: '/unlock',
   ledger: '/ledger',
   walletconnect: '/walletconnect',
-  staking: '/btx-pool',
+  staking: '/staking',
+  bitxstaking: '/btx-pool',
   dicestaking: '/dice-pool',
+  presale: '/presale',
   home: '/',
 };
 
 const routes: Array<any> = [
   {
-    path: routeNames.staking,
+    path: routeNames.bitxstaking,
     title: 'BTX Pool',
-    component: Staking
+    component: BitXStaking
   },
   {
     path: routeNames.dicestaking,
     title: 'Dice Pool',
     component: DiceStaking
+  },
+
+  {
+    path: routeNames.staking,
+    title: 'Staking',
+    component: StakingHome
+  },
+
+  {
+    path: routeNames.presale,
+    title: 'PreSale',
+    component: PreSale
   },
 ];
 

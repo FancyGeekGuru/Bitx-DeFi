@@ -4,14 +4,12 @@ import { Route, Routes, BrowserRouter as Router, Navigate } from 'react-router-d
 import Layout from 'components/Layout';
 import PageNotFound from 'pages/PageNotFound';
 import UnlockPage from 'pages/UnlockPage';
-import Staking from './pages/Staking';
+import Staking from './pages/Staking/BitXStaking';
 import { routeNames } from 'routes';
 import routes from 'routes';
 import '@elrondnetwork/dapp-core/build/index.css';
 import { ENVIRONMENT } from './config';
 import { TIMEOUT } from 'utils';
-
-
 const {
   TransactionsToastList,
   SignTransactionsModals,

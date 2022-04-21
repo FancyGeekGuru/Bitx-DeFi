@@ -27,3 +27,12 @@ export const DICE_TOKEN_DECIMALS = 6;
 export const BTX2DICE_CONTRACT_ADDRESS = 'erd1qqqqqqqqqqqqqpgqzu589zvpeymkyjzs9l7cz7drk8tafzcl3qmqu5e0fe';
 export const BTX2DICE_CONTRACT_ABI = 'abi/btx2dice.abi.json';
 export const BTX2DICE_CONTRACT_NAME = 'BitxStake';
+
+// Pre Sale
+export const CONTRACT_ADDRESS = 'erd1qqqqqqqqqqqqqpgqguy27dwjmghs90vwanm0y054s5yaf0u03qmqasfjjy';
+export const CONTRACT_ABI_URL = '/abi/bitxfinance-ico.abi.json';
+export const CONTRACT_NAME = 'BitxfinanceIco';
+
+export const EXCHANGE_RATE = 0.0005;
+export const MIN_BUY_LIMIT = 1;
+export const MAX_BUY_LIMIT = 3;

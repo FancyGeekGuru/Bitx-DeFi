@@ -11,7 +11,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   return (
     <div className='bg-light d-flex flex-column flex-fill wrapper main_container'>
       <Navbar />
-      <main className='d-flex flex-column flex-grow-1'>
+      <main className='d-flex flex-column flex-grow-1' style={{ background: "#18191A" }}>
         <AuthenticatedRoutesWrapper
           routes={routes}
           unlockRoute={`${routeNames.unlock}${search}`}

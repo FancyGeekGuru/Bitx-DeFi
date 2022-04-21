@@ -1,10 +1,10 @@
 import React from 'react';
 import { logout, useGetAccountInfo } from '@elrondnetwork/dapp-core';
-import { Navbar as BsNavbar, NavItem, Nav } from 'react-bootstrap';
+import { Navbar as BsNavbar, NavItem, Nav, NavDropdown } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { dAppName } from 'config';
 import { routeNames } from 'routes';
-import logo from '../../../assets/img/btx-logo.svg';
+import logo from '../../../assets/img/BTX logo.png';
 import './index.scss';
 
 const Navbar = () => {
@@ -17,32 +17,59 @@ const Navbar = () => {
   const isLoggedIn = Boolean(address);
 
   return (
-    <BsNavbar className='bg-white border-bottom px-4 py-3' expand='sm' collapseOnSelect>
+    <BsNavbar className='px-4 py-3' expand='sm' collapseOnSelect style={{ background: "#141414", borderBottom: "1px solid #707070" }}>
       <div className='container-fluid'>
         <Link
           className='d-flex align-items-center navbar-brand mr-0 c-logo-container'
           to={routeNames.staking}
         >
-          <img src={logo} />
-          <span className=''>{dAppName}</span>
+          {/* <img src={logo} /> */}
+          <span style={{ color: "white" }}>{"BitX Finance"}</span>
         </Link>
 
-        <BsNavbar.Toggle aria-controls='responsive-navbar-nav' />
+        <BsNavbar.Toggle aria-controls='responsive-navbar-nav' style={{ background: "#D8D3D3" }} />
         <BsNavbar.Collapse id='responsive-navbar-nav' className='nav-menu-wrap'>
           <Nav className='ml-auto'>
-            <Link to={ routeNames.staking } className='custom-navbar-button custom-navbar-normal-button'>
+            {/* <Link to={routeNames.staking} className='custom-navbar-button custom-navbar-normal-button '>
               BTX Pool
             </Link>
-            <Link to={ routeNames.dicestaking } className='custom-navbar-button custom-navbar-normal-button'>
+            <Link to={routeNames.dicestaking} className='custom-navbar-button custom-navbar-normal-button'>
               DICE Pool
+            </Link> */}
+
+            <NavDropdown
+              id="nav-dropdown-dark-example"
+              title="Staking"
+              className='custom-navbar-button custom-navbar-normal-button '
+            >
+              <NavDropdown.Item>
+                <Link to={routeNames.staking}>
+                  Home
+                </Link>
+              </NavDropdown.Item>
+              <NavDropdown.Item>
+                <Link to={routeNames.bitxstaking}>
+                  BTX Pool
+                </Link>
+              </NavDropdown.Item>
+              <NavDropdown.Item>
+                <Link to={routeNames.dicestaking}>
+                  Dice Pool
+                </Link>
+              </NavDropdown.Item>
+            </NavDropdown>
+
+            <Link to={routeNames.presale} className='custom-navbar-button custom-navbar-normal-button'>
+              Presale
             </Link>
+
             {isLoggedIn ? (
               <NavItem className='custom-navbar-button auth-button' onClick={handleLogout}>
                 Disconnect
               </NavItem>
             ) : (
-              <Link to={ routeNames.unlock } className='custom-navbar-button auth-button'>
-                Connect
+              <Link to={routeNames.unlock} className='custom-navbar-button auth-button'>
+                Connect Wallet
               </Link>
             )}
           </Nav>

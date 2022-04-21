@@ -3,6 +3,10 @@ import {
     ONE_DAY_IN_SECONDS
 } from '.';
 
+import {
+    Egld,
+} from '@elrondnetwork/erdjs';
+
 
 function padTo2Digits(num: number) {
     return num.toString().padStart(2, '0');
@@ -75,4 +79,15 @@ export const convertWeiToEsdt = (v: any, decimals = 18, precision = 2) => {
 export const convertEsdtToWei = (v: number, decimals = 18) => {
     const factor = Math.pow(10, decimals);
     return (new BigNumber(v)).multipliedBy(factor);
+};
+
+export const precisionRound = (number: number, precision = 4) => {
+    const factor = Math.pow(10, precision);
+    return Math.round(number * factor) / factor;
+};
+
+export const convertWeiToEgld = (v: any, precision = 4) => {
+    const factor = Math.pow(10, precision);
+    const number = parseFloat(Egld.raw(v).toDenominated());
+    return Math.round(number * factor) / factor;
 };
