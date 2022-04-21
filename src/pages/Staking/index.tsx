@@ -41,10 +41,6 @@ const StakingHome = () => {
                             "onclick": {
                                 "enable": true,
                                 "mode": "push"
-                            },
-                            "onhover": {
-                                "enable": true,
-                                "mode": "repulse"
                             }
                         },
                         "modes": {
