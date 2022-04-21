@@ -1,4 +1,4 @@
-.navbar{
+.navbar {
   width: 100% !important;
   display: flex;
   justify-content: space-between;
@@ -6,30 +6,30 @@
 }
 
 .c-logo-container {
-  img{
+  img {
     height: 3.2rem;
   }
 
   span {
     color: white !important;
     font-weight: 500;
-    font-size:25px;
+    font-size: 25px;
     margin-left: .6rem;
   }
 }
 
-.logoDiv{
+.logoDiv {
   display: flex;
   gap: 10px;
   align-items: center;
 
-  p{
+  p {
     margin: 0px;
     font-size: 18px;
     font-weight: 800;
   }
 
-  img{
+  img {
     width: 50px;
     height: 50px;
   }
@@ -44,14 +44,14 @@
 
   text-align: center;
   font-size: 16px;
-  font-weight: 600;  
+  font-weight: 600;
   text-decoration: none !important;
 
   transition: all .2s ease-in;
   color: white !important;
 }
 
-.auth-button{
+.auth-button {
   width: 150px;
   margin-left: 2rem;
   margin-right: 0rem;
@@ -96,19 +96,29 @@
 }
 
 .dropdown-menu {
-  animation: growDown  500ms ease-in-out forwards;
+  animation: growDown 500ms ease-in-out forwards;
   transform-origin: top center;
+
+  a {
+    color: #414141;
+
+    &:hover {
+      color: #414141;
+    }
+  }
 }
 
 @keyframes growDown {
   0% {
-      transform: scaleY(0)
+    transform: scaleY(0)
   }
+
   80% {
-      transform: scaleY(1.1)
+    transform: scaleY(1.1)
   }
+
   100% {
-      transform: scaleY(1)
+    transform: scaleY(1)
   }
 }
 

@@ -12,11 +12,11 @@ const StakingHome = () => {
     return (
         <div className="home-container">
             <Particles
-                style={{ zIndex: -1, height: "80%", position: "absolute", top: "100px" }}
+                style={{ zIndex: -1}}
                 params={{
                     "particles": {
                         "number": {
-                            "value": 100,
+                            "value": 80,
                         },
                         "color": {
                             "value": "#828282"
