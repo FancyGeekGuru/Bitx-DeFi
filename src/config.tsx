@@ -1,6 +1,6 @@
 export const ENVIRONMENT = 'devnet';
 
-export const dAppName = 'BitX Staking';
+export const dAppName = 'BitXFinance DApp';
 export const SOCIAL_WEBSITE_URL = 'https://bitxfinance.online/';
 
 // BTX Pool
@@ -41,3 +41,18 @@ export const MAX_BUY_LIMIT = 3;
 export const NFT_CONTRACT_ADDRESS = 'erd1qqqqqqqqqqqqqpgqmf59pk39hzelmsvg7gpz60qvt8p8vvkej9qsj6ax3y';
 export const NFT_CONTRACT_ABI_URL = '/abi/bitx-pass-nft-mint.abi.json';
 export const NFT_CONTRACT_NAME = 'BitxPassNftMint';
+
+export const NFT_CARDS = [
+    {
+        name: 'GOLD',
+        price: 2,
+    },
+    {
+        name: 'SILVER',
+        price: 1,
+    },
+    {
+        name: 'BRONZE',
+        price: 0.5,
+    },
+];
