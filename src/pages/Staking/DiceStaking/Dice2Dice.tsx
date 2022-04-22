@@ -419,7 +419,7 @@ const Dice2Dice = () => {
             <div style={{textAlign: "center", display:"flex", justifyContent: "center"}}>
                 <button className='claimReward_button' onClick={claim}>
                     <p>Claim</p>
-                    <img src={dollarPot}/>
+                    {/* <img src={dollarPot}/> */}
                 </button>
             </div>
 

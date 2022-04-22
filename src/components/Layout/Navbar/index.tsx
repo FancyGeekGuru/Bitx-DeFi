@@ -4,7 +4,7 @@ import { Navbar as BsNavbar, NavItem, Nav, NavDropdown } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { dAppName } from 'config';
 import { routeNames } from 'routes';
-import logo from '../../../assets/img/BTX logo.png';
+import logo from '../../../assets/img/BTX Finance Logo.svg';
 import './index.scss';
 
 const Navbar = () => {
@@ -23,8 +23,8 @@ const Navbar = () => {
           className='d-flex align-items-center navbar-brand mr-0 c-logo-container'
           to={routeNames.staking}
         >
-          {/* <img src={logo} /> */}
-          <span style={{ color: "white" }}>{"BitX Finance"}</span>
+          <img src={logo} />
+          <span>{"BitX Finance"}</span>
         </Link>
 
         <BsNavbar.Toggle aria-controls='responsive-navbar-nav' style={{ background: "#D8D3D3" }} />
@@ -61,6 +61,10 @@ const Navbar = () => {
 
             <Link to={routeNames.presale} className='custom-navbar-button custom-navbar-normal-button'>
               Presale
+            </Link>
+
+            <Link to={routeNames.nftmint} className='custom-navbar-button custom-navbar-normal-button'>
+              NFT Mint
             </Link>
 
             {isLoggedIn ? (

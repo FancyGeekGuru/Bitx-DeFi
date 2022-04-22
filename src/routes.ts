@@ -4,6 +4,7 @@ import BitXStaking from './pages/Staking/BitXStaking';
 import DiceStaking from './pages/Staking/DiceStaking';
 import StakingHome from './pages/Staking';
 import PreSale from './pages/Presale';
+import NFTMint from 'pages/NFTMint';
 
 export const routeNames = {
   unlock: '/unlock',
@@ -13,6 +14,7 @@ export const routeNames = {
   bitxstaking: '/btx-pool',
   dicestaking: '/dice-pool',
   presale: '/presale',
+  nftmint: '/nft-mint',
   home: '/',
 };
 
@@ -38,6 +40,12 @@ const routes: Array<any> = [
     path: routeNames.presale,
     title: 'PreSale',
     component: PreSale
+  },
+
+  {
+    path: routeNames.nftmint,
+    title: 'NFT Mint',
+    component: NFTMint
   },
 ];
 
