@@ -153,28 +153,22 @@
   margin: 0px auto !important;
 }
 
-.info {
-  // display: column;
-  // justify-content: space-between;
-  // margin-top: 16px;
-}
-
 .info div {
   display: flex;
-  // flex-direction: column;
   justify-content: space-between;
   gap: 10px;
   padding-bottom: 5px;
+  font-family: 'Segoe UI';
+  font-size: 14px;
+
 
   .heading {
     margin: 0px;
-    // font-size: 16px;
     font-weight: 400;
   }
 
   .data {
     margin: 0px;
-    // font-size: 16px;
     font-weight: 400;
   }
 }
@@ -563,34 +557,10 @@ input::-webkit-inner-spin-button {
   }
 }
 
-.period-info {
-  display: flex;
-  justify-content: space-between;
-  padding: 10px 15px;
-  border: 1px dashed rgba(112,112,112,0.3) !important;
+.staking-info {
+  padding: 10px 10px;
+  border: 1px dashed rgba(112, 112, 112, 0.3) !important;
   border-radius: 5px;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  font-size: 13px;
-}
-
-.period-info div {
-  display: flex;
-  flex-direction: column;
-  // justify-content: space-between;
-  gap: 10px;
-  padding-bottom: 5px;
-  text-align: left;
-  ;
-
-  .heading {
-    margin: 0px;
-    // font-size: 16px;
-    font-weight: 400;
-  }
-
-  .data {
-    margin: 0px;
-    // font-size: 16px;
-    font-weight: 400;
-  }
+  font-size: 14px;
 }

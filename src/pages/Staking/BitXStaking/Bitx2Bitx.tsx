@@ -406,21 +406,22 @@ const Btx2BtxStakingCard = () => {
           <p>Earn $BTX</p>
         </div>
       </div>
+
       {/* <p className='description'>
                 BitX Finance is a decentralized social economic platform that is making private aviation accessible to anyone
             </p> */}
       {/* <hr className='hr'/> */}
-      <div className='info'>
+      <div className='info' style={{ marginTop: "8px" }}>
         <div>
           <p className='heading'>APR</p>
           <p className='data'>{stakeSetting ? stakeSetting.apr : '-'} %</p>
         </div>
         <div>
-          <p className='heading'>Estimated APY</p>
+          <p className='heading'>APY</p>
           <p className='data'>{stakeSetting ? convertAPR2APY(stakeSetting.apr) : '-'} %</p>
         </div>
         <div>
-          <p className='heading'>Total Staked</p>
+          <p className='heading'>Staked</p>
           <p className='data'>{stakeSetting ? stakeSetting.total_staked_amount : '-'} {BTX_TOKEN_TICKER}</p>
         </div>
         <div>
@@ -429,33 +430,28 @@ const Btx2BtxStakingCard = () => {
         </div>
       </div>
 
+      <div className='staking-info'>
+        <div className='info'>
+          <div>
+            <p className='heading'>Lock</p>
+            <p className='data'>{"5 Days"}</p>
+          </div>
+          <div>
+            <p className='heading'>Undelegation</p>
+            <p className='data'>{"5 Days"}</p>
+          </div>
+        </div>
+      </div>
+
       <div className='buttonDiv'>
         <button className='stake_button' onClick={onShowStakeModal}>
           <p>Stake</p>
-          {/* <img src={down}/> */}
         </button>
-        {/* <div style={{color: "#3F4040", fontSize:"30px", fontWeight:"100"}}>{"|"}</div> */}
         <button className='unstake_button' onClick={onShowUnstakeModal}>
           <p>Unstake</p>
-          {/* <img src={up}/> */}
         </button>
       </div>
 
-      <div className='period-info'>
-        <div>
-          <p className='heading'>Lock</p>
-          <p className='data'>{"5 Days"}</p>
-        </div>
-        <div>
-          <p className='heading'>Undelegation</p>
-          <p className='data'>{"5 Days"}</p>
-        </div>
-        <div>
-          <p className='heading'>Claim Lock</p>
-          <p className='data'>{"5 Days"}</p>
-        </div>
-      </div>
-      
       <div className='info'>
         <div>
           <p className='heading'>My Staked</p>
@@ -475,34 +471,10 @@ const Btx2BtxStakingCard = () => {
         </div>
       </div>
 
-      {/* <div className='stake_reward'>
-                <img src={stake_reward_bg}/>
-                <div>
-                    <p className='heading'>My Staked</p>
-                    <p className='data'>{stakeAccount ? stakeAccount.staked_amount : '-'} BTX</p>
-                </div>
-                <div>
-                    <p className='heading'>My Unstaked</p>
-                    <p className='data'>{stakeAccount ? stakeAccount.unstaked_amount : '-'} BTX</p>
-                </div>
-            </div> */}
-
-      {/* <div className='stake_reward'>
-        <img src={stake_reward_bg} />
-        <div>
-          <p className='heading'>My Reward</p>
-          <p className='data'>{stakeAccount ? stakeAccount.reward_amount : '-'} BTX</p>
-        </div>
-        <div>
-          <p className='heading'>My Collectable</p>
-          <p className='data'>{stakeAccount ? stakeAccount.collectable_amount : '-'} BTX</p>
-        </div>
-      </div> */}
       <img className="elrond" src={elrondLogo} />
-      <div style={{textAlign: "center", display:"flex", justifyContent: "center"}}>
+      <div style={{ textAlign: "center", display: "flex", justifyContent: "center" }}>
         <button className='claimReward_button' onClick={claim}>
           <p>Claim</p>
-          {/* <img src={dollarPot} /> */}
         </button>
       </div>
 
@@ -514,7 +486,7 @@ const Btx2BtxStakingCard = () => {
         ariaHideApp={false}
         className='modalcard box-shadow'
       >
-        <img className={"coin"} src={coin}/>
+        <img className={"coin"} src={coin} />
         <div className='modaldiv'>
           <h3 className='modalHeader'>
             {isStakeModal ? 'Stake' : 'Unstake'}
@@ -557,7 +529,7 @@ const Btx2BtxStakingCard = () => {
             MAX
           </button>
         </div>
-        <div className='modal-divider' style={{paddingTop:"20px"}}></div>
+        <div className='modal-divider' style={{ paddingTop: "20px" }}></div>
         <div className='modal-info-message'>
           {modalInfoMesssage}
         </div>

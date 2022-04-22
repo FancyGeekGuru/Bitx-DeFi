@@ -1,6 +1,5 @@
 
 import React, { useState } from 'react';
-
 import {
   refreshAccount,
   sendTransactions,
@@ -384,22 +383,37 @@ const Bitx2Dice = () => {
                 BitX Finance is a decentralized social economic platform that is making private aviation accessible to anyone
             </p> */}
       {/* <hr className='hr'/> */}
-      <div className='info'>
+
+
+      <div className='info' style={{ marginTop: "8px" }}>
         <div>
           <p className='heading'>APR</p>
           <p className='data'>{stakeSetting ? stakeSetting.apr : '-'} %</p>
         </div>
         <div>
-          <p className='heading'>Estimated APY</p>
+          <p className='heading'>APY</p>
           <p className='data'>{"NULL"}</p>
         </div>
         <div>
-          <p className='heading'>Total Staked</p>
+          <p className='heading'>Staked</p>
           <p className='data'>{stakeSetting ? stakeSetting.total_staked_amount : '-'} {BTX_TOKEN_TICKER}</p>
         </div>
         <div>
           <p className='heading'>Stakers</p>
           <p className='data'>{stakeSetting ? stakeSetting.number_of_stakers : '-'}</p>
+        </div>
+      </div>
+
+      <div className='staking-info'>
+        <div className='info'>
+          <div>
+            <p className='heading'>Lock</p>
+            <p className='data'>{"5 Days"}</p>
+          </div>
+          <div>
+            <p className='heading'>Undelegation</p>
+            <p className='data'>{"5 Days"}</p>
+          </div>
         </div>
       </div>
 
@@ -410,21 +424,6 @@ const Bitx2Dice = () => {
         <button className='unstake_button' onClick={onShowUnstakeModal}>
           <p>Unstake</p>
         </button>
-      </div>
-      
-      <div className='period-info'>
-        <div>
-          <p className='heading'>Lock</p>
-          <p className='data'>{"5 Days"}</p>
-        </div>
-        <div>
-          <p className='heading'>Undelegation</p>
-          <p className='data'>{"5 Days"}</p>
-        </div>
-        <div>
-          <p className='heading'>Claim Lock</p>
-          <p className='data'>{"5 Days"}</p>
-        </div>
       </div>
 
       <div className='info'>
@@ -533,7 +532,7 @@ const Bitx2Dice = () => {
         onHide={() => setAlertModalShow(false)}
         alertmodaltext={alertModalText}
       />
-    </div>
+    </div >
   );
 };
 

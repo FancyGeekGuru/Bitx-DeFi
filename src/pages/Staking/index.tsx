@@ -61,7 +61,7 @@ const StakingHome = () => {
                 <Col md="12" lg="6" style={{ display: "flex", alignItems: "center" }}>
                     <div>
                         <p className="description-title">{"Stake BitX to Earn Rewards"}</p>
-                        <p className="description-body">{"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc urna felis, euismod in nibh vitae, eleifend tincidunt diam. Aliquam dignissim vel diam et pharetra. Donec eget odio a nunc euismod posuere ac non lacus. Praesent iaculis nisi at sapien scelerisque semper."}</p>
+                        <p className="description-body">{"Stake BTX to earn rewards passively through our staking pools, there are a variety of projects to choose from so that you can build your ESDT portfolio passively through BTX. The BitX team will continue to add more staking pools as we progress and partner with different projects on the Elrond Network giving you more options in the future."}</p>
                     </div>
                 </Col>
             </Row>

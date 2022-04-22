@@ -4,7 +4,7 @@ import { Navbar as BsNavbar, NavItem, Nav, NavDropdown } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { dAppName } from 'config';
 import { routeNames } from 'routes';
-import logo from '../../../assets/img/BTX Finance Logo.svg';
+import logo from '../../../assets/img/BTX.png';
 import './index.scss';
 
 const Navbar = () => {
