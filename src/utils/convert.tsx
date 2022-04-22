@@ -85,9 +85,3 @@ export const precisionRound = (number: number, precision = 4) => {
     const factor = Math.pow(10, precision);
     return Math.round(number * factor) / factor;
 };
-
-export const convertWeiToEgld = (v: any, precision = 4) => {
-    const factor = Math.pow(10, precision);
-    const number = parseFloat(Egld.raw(v).toDenominated());
-    return Math.round(number * factor) / factor;
-};

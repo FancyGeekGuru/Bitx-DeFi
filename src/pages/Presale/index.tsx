@@ -8,11 +8,23 @@ import {
 } from 'react-bootstrap';
 
 import {
+  Address,
+  AddressValue,
+  AbiRegistry,
+  SmartContractAbi,
+  SmartContract,
+  Interaction,
+  ProxyProvider,
+  Account,
+  DefaultSmartContractController,
+} from '@elrondnetwork/erdjs';
+import {
   refreshAccount,
   sendTransactions,
-  useGetAccountInfo
+  useGetAccountInfo,
+  useGetNetworkConfig,
+  useGetPendingTransactions,
 } from '@elrondnetwork/dapp-core';
-import { Balance } from '@elrondnetwork/erdjs/out';
 
 import { dAppName } from 'config';
 import { routeNames } from 'routes';
@@ -20,40 +32,102 @@ import './index.scss';
 import Time from './Time';
 
 import {
-  ContractContext,
-  SaleStatusContext,
-  AccountStateContext
-} from '../../ContextWrapper';
-import {
+  TIMEOUT,
   Status,
   ISaleStatusProvider,
-  IAccountStateProvider
-} from '../../utils/state';
-import {
-  calculatePercentage,
-  precisionRound
-} from '../../utils/convert';
-import {
+  IAccountStateProvider,
   ONE_DAY_IN_SECONDS,
-  SECOND_IN_MILLI
-} from '../../utils/const';
+  SECOND_IN_MILLI,
+  calculatePercentage,
+  precisionRound,
+  IContractInteractor,
+  convertToStatus,
+  convertWeiToEsdt,
+} from 'utils';
 import {
   EXCHANGE_RATE,
-  CONTRACT_ADDRESS,
   MIN_BUY_LIMIT,
-  MAX_BUY_LIMIT
-} from '../../config';
+  MAX_BUY_LIMIT,
+  PRESALE_CONTRACT_ADDRESS,
+  PRESALE_CONTRACT_ABI_URL,
+  PRESALE_CONTRACT_NAME,
+} from 'config';
 
 import BitXLogo from 'assets/img/BTX logo back.png';
 import ElrondLogo from 'assets/img/Elrond logo.png';
+import { convertEsdtToWei } from '../../utils/convert';
+
 
 const Presale = () => {
   const { account } = useGetAccountInfo();
+  const { network } = useGetNetworkConfig();
+  const { hasPendingTransactions } = useGetPendingTransactions();
+  const proxyProvider = new ProxyProvider(network.apiAddress, { timeout: TIMEOUT });
+
+  const [contractInteractor, setContractInteractor] = React.useState<IContractInteractor | undefined>();
+  React.useEffect(() => {
+    (async() => {
+      const registry = await AbiRegistry.load({ urls: [PRESALE_CONTRACT_ABI_URL] });
+      const abi = new SmartContractAbi(registry, [PRESALE_CONTRACT_NAME]);
+      const contract = new SmartContract({ address: new Address(PRESALE_CONTRACT_ADDRESS), abi: abi });
+      const controller = new DefaultSmartContractController(abi, proxyProvider);
+
+      console.log('contractInteractor', {
+          contract,
+          controller,
+      });
+
+      setContractInteractor({
+          contract,
+          controller,
+      });
+    })();
+  }, []); // [] makes useEffect run once
+
+  const [saleStatus, setSaleStatus] = React.useState<ISaleStatusProvider | undefined>();
+  const [accountState, setAccountState] = React.useState<IAccountStateProvider | undefined>();
+  React.useEffect(() => {
+    (async () => {
+      if (!contractInteractor) return;
+      const interaction = contractInteractor.contract.methods.getStatus();
+      const res = await contractInteractor.controller.query(interaction);
+
+      if (!res || !res.returnCode.isSuccess()) return;
+      const value = res.firstValue?.valueOf();
+
+      const status = convertToStatus(value.field0.valueOf().name);
+      const leftTimestamp = value.field1.toNumber() * SECOND_IN_MILLI;
+      const goal = convertWeiToEsdt(value.field2);
+      const totalBoughtAmountOfEsdt = convertWeiToEsdt(value.field3);
+
+      setSaleStatus({status, leftTimestamp, goal, totalBoughtAmountOfEsdt});
+
+      
+    })();
+  }, [contractInteractor, hasPendingTransactions]);
+
+  React.useEffect(() => {
+    (async () => {
+      // acount state
+      if (!contractInteractor || !account.address) return;
+
+      // const args = [new AddressValue(new Address(account.address))];
+      // const interaction: Interaction = contract.methods.getAccountState(args);
+      // const res: QueryResponseBundle | undefined = await sendQuery(contract, proxy, interaction);
+      
+      const args = [new AddressValue(new Address(account.address))];
+      const interaction = contractInteractor.contract.methods.getAccountState(args);
+      const res = await contractInteractor.controller.query(interaction);
+
+      if (!res || !res.returnCode.isSuccess()) return;
+
+      const accountState = res.firstValue?.valueOf().toNumber();
+      setAccountState({accountState});
+    })();
+  }, [contractInteractor, account.address]);
+  console.log('>>>accountState', accountState);
 
   const tokenSaleTargetRef = React.useRef(null);
-
-  const saleStatus = React.useContext<ISaleStatusProvider | undefined>(SaleStatusContext);
-  const accountState = React.useContext<IAccountStateProvider | undefined>(AccountStateContext);
 
   const [buyAmountInEgld, setBuyAmountInEgld] = React.useState<number>(0);
   const [buyAmountInEsdt, setBuyAmountInEsdt] = React.useState<number>(0);
@@ -97,9 +171,9 @@ const Presale = () => {
   async function buyToken(e: any) {
     e.preventDefault();
     const tx = {
-      value: Balance.egld(buyAmountInEgld),
+      value: convertEsdtToWei(buyAmountInEgld),
       data: 'buy',
-      receiver: CONTRACT_ADDRESS,
+      receiver: PRESALE_CONTRACT_ADDRESS,
       gasLimit: 10000000,
     };
     await refreshAccount();
@@ -121,7 +195,7 @@ const Presale = () => {
               }
 
               <div className='custom-presale-body'>
-                <Time />
+                <Time saleStatus={saleStatus} />
 
                 <div className='custom-progress-container'>
                   <ProgressBar now={saleStatus && (saleStatus.totalBoughtAmountOfEsdt / saleStatus.goal * 100)} ref={tokenSaleTargetRef} />

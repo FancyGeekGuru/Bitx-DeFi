@@ -8,14 +8,11 @@ import {
   ProgressBar
 } from 'react-bootstrap';
 
-import {
-  SaleStatusContext,
-} from '../../ContextWrapper';
 import { ISaleStatusProvider } from '../../utils/state';
 import { paddingTwoDigits } from '../../utils/convert';
 
-const Time = () => {
-  const saleStatus = React.useContext<ISaleStatusProvider | undefined>(SaleStatusContext);
+const Time = (props) => {
+  const saleStatus = props.saleStatus;
 
   interface Props {
     days: number;
