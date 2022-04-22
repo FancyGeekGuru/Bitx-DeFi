@@ -38,6 +38,6 @@ export const MIN_BUY_LIMIT = 1;
 export const MAX_BUY_LIMIT = 3;
 
 // NFT Mint
-export const NFT_CONTRACT_ADDRESS = 'erd1qqqqqqqqqqqqqpgqtg2t4v96ckv7ckketpcgpwdrn4z3f2ugj9qs3xnjp2';
+export const NFT_CONTRACT_ADDRESS = 'erd1qqqqqqqqqqqqqpgqmf59pk39hzelmsvg7gpz60qvt8p8vvkej9qsj6ax3y';
 export const NFT_CONTRACT_ABI_URL = '/abi/bitx-pass-nft-mint.abi.json';
 export const NFT_CONTRACT_NAME = 'BitxPassNftMint';

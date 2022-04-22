@@ -12,7 +12,10 @@ import { ISaleStatusProvider } from '../../utils/state';
 import { paddingTwoDigits } from '../../utils/convert';
 
 const Time = (props) => {
-  const saleStatus = props.saleStatus;
+  const [targetTimestamp, setTargetTimestamp] = React.useState<number>((new Date()).getTime());
+  React.useEffect(() => {
+    setTargetTimestamp(props.saleStatus? props.saleStatus.leftTimestamp : 0);
+  }, [props.saleStatus]);
 
   interface Props {
     days: number;
@@ -54,8 +57,7 @@ const Time = (props) => {
   };
   
   return (
-    <Countdown date={saleStatus?.leftTimestamp} renderer={renderer} />
-    // <Countdown date={9655} renderer={renderer} />
+    targetTimestamp == 0 ? <></> : <Countdown date={targetTimestamp} renderer={renderer} />
   );
 };
 

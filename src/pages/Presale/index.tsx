@@ -100,21 +100,16 @@ const Presale = () => {
       const goal = convertWeiToEsdt(value.field2);
       const totalBoughtAmountOfEsdt = convertWeiToEsdt(value.field3);
 
-      setSaleStatus({status, leftTimestamp, goal, totalBoughtAmountOfEsdt});
-
-      
+      const result = {status, leftTimestamp, goal, totalBoughtAmountOfEsdt};
+      console.log('getStatus', result);
+      setSaleStatus(result);
     })();
   }, [contractInteractor, hasPendingTransactions]);
 
   React.useEffect(() => {
     (async () => {
       // acount state
-      if (!contractInteractor || !account.address) return;
-
-      // const args = [new AddressValue(new Address(account.address))];
-      // const interaction: Interaction = contract.methods.getAccountState(args);
-      // const res: QueryResponseBundle | undefined = await sendQuery(contract, proxy, interaction);
-      
+      if (!contractInteractor || !account.address) return;     
       const args = [new AddressValue(new Address(account.address))];
       const interaction = contractInteractor.contract.methods.getAccountState(args);
       const res = await contractInteractor.controller.query(interaction);
@@ -122,10 +117,10 @@ const Presale = () => {
       if (!res || !res.returnCode.isSuccess()) return;
 
       const accountState = res.firstValue?.valueOf().toNumber();
+      console.log('accountState', accountState);
       setAccountState({accountState});
     })();
   }, [contractInteractor, account.address]);
-  console.log('>>>accountState', accountState);
 
   const tokenSaleTargetRef = React.useRef(null);
 
