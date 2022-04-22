@@ -10,6 +10,7 @@ import NFTHexagon from 'assets/img/nft mint/nft hexagon.svg';
 const NFTMint = () => {
     const [mintCardType, setMintCardType] = useState(0); // select golden card by default
     const cardList = ["gold", "silver", "bronze"]; // card list for current selection status text
+    const cardCostList = [8, 4, 2];
 
     function handleCardType(e) {
         setMintCardType(e.target.value);
@@ -30,7 +31,7 @@ const NFTMint = () => {
                     <button className="mint-button" style={{ marginTop: "30px" }}>Mint</button>
 
                     <p style={{ marginTop: "30px", color: "#FEE277" }}>
-                        {"You selected " + cardList[mintCardType] + " vip card."}
+                        {"You selected " + cardList[mintCardType] + " vip card and need to pay "+ cardCostList[mintCardType] + " EGLD."}
                     </p>
                 </Col>
 
@@ -41,7 +42,8 @@ const NFTMint = () => {
                             <div className="mint-vip-card">
                                 <img src={GoldVIPCard} />
                                 <div className="balance">
-                                    <span>{"Balance: 0250"}</span>
+                                    <span>{"Balance: 200"}</span>
+                                    <span>{"Cost: " + cardCostList[0] + " EGLD"}</span>
                                 </div>
                             </div>
                         </label>
@@ -51,7 +53,8 @@ const NFTMint = () => {
                             <div className="mint-vip-card">
                                 <img src={SilverVIPCard} />
                                 <div className="balance">
-                                    <span>{"Balance: 0500"}</span>
+                                    <span>{"Balance: 400"}</span>
+                                    <span>{"Cost: " + cardCostList[1] + " EGLD"}</span>
                                 </div>
                             </div>
                         </label>
@@ -61,7 +64,8 @@ const NFTMint = () => {
                             <div className="mint-vip-card">
                                 <img src={BronzeVIPCard} />
                                 <div className="balance">
-                                    <span>{"Balance: 1000"}</span>
+                                    <span>{"Balance: 800"}</span>
+                                    <span>{"Cost: " + cardCostList[2] + " EGLD"}</span>
                                 </div>
                             </div>
                         </label>

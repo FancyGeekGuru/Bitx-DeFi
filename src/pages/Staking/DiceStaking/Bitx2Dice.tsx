@@ -411,6 +411,21 @@ const Bitx2Dice = () => {
           <p>Unstake</p>
         </button>
       </div>
+      
+      <div className='period-info'>
+        <div>
+          <p className='heading'>Lock</p>
+          <p className='data'>{"5 Days"}</p>
+        </div>
+        <div>
+          <p className='heading'>Undelegation</p>
+          <p className='data'>{"5 Days"}</p>
+        </div>
+        <div>
+          <p className='heading'>Claim Lock</p>
+          <p className='data'>{"5 Days"}</p>
+        </div>
+      </div>
 
       <div className='info'>
         <div>
@@ -446,7 +461,7 @@ const Bitx2Dice = () => {
         ariaHideApp={false}
         className='modalcard box-shadow'
       >
-        <img className={"coin"} src={coin}/>
+        <img className={"coin"} src={coin} />
         <div className='modaldiv'>
           <h3 className='modalHeader'>
             {isStakeModal ? 'Stake' : 'Unstake'}
@@ -489,7 +504,7 @@ const Bitx2Dice = () => {
             MAX
           </button>
         </div>
-        <div className='modal-divider' style={{paddingTop:"20px"}}></div>
+        <div className='modal-divider' style={{ paddingTop: "20px" }}></div>
         <div className='modal-info-message'>
           {modalInfoMesssage}
         </div>
