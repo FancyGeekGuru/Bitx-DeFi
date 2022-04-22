@@ -441,6 +441,21 @@ const Btx2BtxStakingCard = () => {
         </button>
       </div>
 
+      <div className='period-info'>
+        <div>
+          <p className='heading'>Lock</p>
+          <p className='data'>{"5 Days"}</p>
+        </div>
+        <div>
+          <p className='heading'>Undelegation</p>
+          <p className='data'>{"5 Days"}</p>
+        </div>
+        <div>
+          <p className='heading'>Claim Lock</p>
+          <p className='data'>{"5 Days"}</p>
+        </div>
+      </div>
+      
       <div className='info'>
         <div>
           <p className='heading'>My Staked</p>
