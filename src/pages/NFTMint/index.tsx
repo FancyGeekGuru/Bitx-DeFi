@@ -217,7 +217,7 @@ const NFTMint = () => {
                     
                     <p className="description-title" style={{ marginTop: "-10px" }}>{"Mint BTX VIP Pass Cards"}</p>
                     <p className="description-body text-left">
-                        {"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed eu nibh bibendum, dictum nibh eu, ultricies lectus. Nullam metus eros, lacinia quis condimentum at, sagittis eu sapien. Suspendisse suscipit orci nec eros elementum"}
+                        {"Holders of a BTX NFT VIP PASS will have access to monthly reward lotteries which will be drawn for the varies different tiers with access to special staking pools and the ability to mint future NFT collections that will be released on our NFT minting platform."}
                     </p>
 
                     <button
