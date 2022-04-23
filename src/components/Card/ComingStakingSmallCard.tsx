@@ -15,7 +15,7 @@ const StakingSmallCard = (props: IStakingProps) => {
     return (
         <>
             {/* <Link to={props.url}> */}
-                <div className="staking-small-card">
+                <div className="staking-small-card" style={{cursor: "not-allowed"}}>
                     <div className="header-png-group">
                         <img src={logo[props.stake]} style={{ width: "20%" }} />
                         <img src={LinkErrorPng} style={{ height: "100%", marginLeft: "30px" }} />
@@ -48,7 +48,7 @@ const StakingSmallCard = (props: IStakingProps) => {
                         </div>
                     </div>
 
-                    <div className="text-center" style={{ color: "gray" }}>
+                    <div className="text-center pt-3" style={{ color: "cyan", fontSize:"16px" }}>
                         coming soon
                     </div>
                 </div>

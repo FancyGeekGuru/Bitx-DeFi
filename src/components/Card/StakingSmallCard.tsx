@@ -103,7 +103,7 @@ const StakingSmallCard = (props: IStakingProps) => {
                         </div>
                     </div>
 
-                    <div className="text-center" style={{ color: "gray" }}>
+                    <div className="text-center pt-3" style={{ color: "lightgray", fontSize:"16px" }}>
                         click to go
                     </div>
                 </div>
