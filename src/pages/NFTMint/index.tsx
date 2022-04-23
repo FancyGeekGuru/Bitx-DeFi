@@ -197,7 +197,7 @@ const NFTMint = () => {
     
         const tx = {
           receiver: NFT_CONTRACT_ADDRESS,
-          gasLimit: new GasLimit(10000000),
+          gasLimit: new GasLimit(30000000),
           data: data,
           value: mintPrice,
         };
