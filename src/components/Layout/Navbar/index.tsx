@@ -21,7 +21,7 @@ const Navbar = () => {
       <div className='container-fluid'>
         <Link
           className='d-flex align-items-center navbar-brand mr-0 c-logo-container'
-          to={routeNames.staking}
+          to={routeNames.home}
         >
           <img src={logo} />
           <span>{"BitX Finance"}</span>

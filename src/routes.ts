@@ -4,7 +4,8 @@ import BitXStaking from './pages/Staking/BitXStaking';
 import DiceStaking from './pages/Staking/DiceStaking';
 import StakingHome from './pages/Staking';
 import PreSale from './pages/Presale';
-import NFTMint from 'pages/NFTMint';
+import NFTMint from './pages/NFTMint';
+import BTXFinanceHome from './pages';
 
 export const routeNames = {
   unlock: '/unlock',
@@ -47,6 +48,12 @@ const routes: Array<any> = [
     title: 'NFT Mint',
     component: NFTMint
   },
+
+  {
+    path: routeNames.home,
+    title: 'BTX Finance',
+    component: BTXFinanceHome
+  }
 ];
 
 const mappedRoutes = routes.map((route) => {
