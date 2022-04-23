@@ -1,13 +1,11 @@
-import React, {useState} from 'react';
-
-// import bgVector from '../../assets/img/bgVector.png';
-import Dice2Dice from './Dice2Dice';
+import React from 'react';
 import Bitx2Dice from './Bitx2Dice';
+import Dice2Dice from './Dice2Dice';
+
 
 const DiceStaking = () => {
     return (
         <div className='bitxwrapper'>
-            {/* <img src={bgVector} className='bgVector'/> */}
             <div className='container'>
                 <Dice2Dice />
                 <Bitx2Dice />

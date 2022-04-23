@@ -7,8 +7,9 @@ import UnlockPage from 'pages/UnlockPage';
 import { routeNames } from 'routes';
 import routes from 'routes';
 import '@elrondnetwork/dapp-core/build/index.css';
-import { ENVIRONMENT } from './config';
 import { TIMEOUT } from 'utils';
+import { ENVIRONMENT } from './config';
+
 
 const {
   TransactionsToastList,

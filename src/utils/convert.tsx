@@ -3,10 +3,6 @@ import {
     ONE_DAY_IN_SECONDS
 } from '.';
 
-import {
-    Egld,
-} from '@elrondnetwork/erdjs';
-
 
 function padTo2Digits(num: number) {
     return num.toString().padStart(2, '0');

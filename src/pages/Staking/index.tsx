@@ -1,12 +1,13 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Row, Col } from 'react-bootstrap';
+import Particles from 'react-tsparticles';
 import staking_bg from 'assets/img/staking.svg';
-import StakingSmallCard from '../../components/Card/StakingSmallCard';
 import ComingStakingSmallCard from '../../components/Card/ComingStakingSmallCard';
+import StakingSmallCard from '../../components/Card/StakingSmallCard';
 import { PoolList } from './data';
 import './index.scss';
 
-import Particles from 'react-tsparticles';
+
 
 const StakingHome = () => {
 
@@ -76,12 +77,6 @@ const StakingHome = () => {
                         );
                     })
                 }
-                <Col sm="12" md="6" lg="4" xl="3">
-                    <ComingStakingSmallCard stake={"MARE"} earn={"MARE"} url={"/"} />
-                </Col>
-                <Col sm="12" md="6" lg="4" xl="3">
-                    <ComingStakingSmallCard stake={"BTX"} earn={"MARE"} url={"/"} />
-                </Col>
                 <Col sm="12" md="6" lg="4" xl="3">
                     <ComingStakingSmallCard stake={"HETO"} earn={"HETO"} url={"/"} />
                 </Col>

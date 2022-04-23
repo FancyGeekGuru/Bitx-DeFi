@@ -56,3 +56,15 @@ export const NFT_CARDS = [
         price: 0.5,
     },
 ];
+
+// Mare Pool
+export const MARE2MARE_CONTRACT_ADDRESS = 'erd1qqqqqqqqqqqqqpgqltgyu0kcwkfth9vyquv9s4dgmrx550rjj9qs258v5r';
+export const MARE2MARE_CONTRACT_ABI = 'abi/dice2dice.abi.json';
+export const MARE2MARE_CONTRACT_NAME = 'BitxStake';
+export const MARE_TOKEN_TICKER = 'MARE';
+export const MARE_TOKEN_ID = 'MARE-63e515';
+export const MARE_TOKEN_DECIMALS = 6;
+
+export const BTX2MARE_CONTRACT_ADDRESS = 'erd1qqqqqqqqqqqqqpgq7r9n9u389xr23vqyye8maaetcg2r886vj9qsj7sl4k';
+export const BTX2MARE_CONTRACT_ABI = 'abi/btx2dice.abi.json';
+export const BTX2MARE_CONTRACT_NAME = 'BitxStake';

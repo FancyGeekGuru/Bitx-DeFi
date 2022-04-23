@@ -1,13 +1,13 @@
 import React from 'react';
 import { DappUI, useGetLoginInfo } from '@elrondnetwork/dapp-core';
+import { useLocation, useNavigate } from "react-router-dom";
 import './index.scss';
-
 import chromeWallet from '../../assets/img/maiar chrome wallet.png';
 import ledgerWallet from '../../assets/img/maiar ledger wallet.png';
-import webWallet from '../../assets/img/maiar web wallet.png';
-import mobileWallet from '../../assets/img/maiar mobile wallet.png';
-
 import maiarLogo from '../../assets/img/maiar logo.png';
+import mobileWallet from '../../assets/img/maiar mobile wallet.png';
+import webWallet from '../../assets/img/maiar web wallet.png';
+
 
 export const UnlockRoute: (props: any) => JSX.Element = (props) => {
   const {
@@ -18,9 +18,16 @@ export const UnlockRoute: (props: any) => JSX.Element = (props) => {
   } = DappUI;
   const { isLoggedIn } = useGetLoginInfo();
 
+  const location = useLocation();
+  const navigate = useNavigate();
+
   React.useEffect(() => {
     if (isLoggedIn) {
-      window.location.href = props.loginRoute;
+      if (location.state) {
+        navigate(location.state['pastURL']);
+      } else {
+        navigate(props.loginRoute);
+      }
     }
   }, [isLoggedIn]);
 

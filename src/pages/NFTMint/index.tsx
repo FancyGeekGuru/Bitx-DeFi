@@ -1,15 +1,13 @@
 import React, { useState } from 'react';
-import { Row, Col } from 'react-bootstrap';
 import './index.scss';
-
 import {
     refreshAccount,
     sendTransactions,
     useGetAccountInfo,
     useGetNetworkConfig,
     useGetPendingTransactions,
-  } from '@elrondnetwork/dapp-core';
-  import {
+} from '@elrondnetwork/dapp-core';
+import {
     Address,
     AddressValue,
     AbiRegistry,
@@ -17,19 +15,17 @@ import {
     SmartContract,
     ProxyProvider,
     TypedValue,
-    BytesValue,
-    Egld,
-    BigUIntValue,
     ArgSerializer,
     GasLimit,
     DefaultSmartContractController,
     U32Value,
-  } from '@elrondnetwork/erdjs';
-
-import GoldVIPCard from 'assets/img/nft mint/GOLD PIC.png';
-import SilverVIPCard from 'assets/img/nft mint/SILVER PIC.png';
+} from '@elrondnetwork/erdjs';
+import { Row, Col } from 'react-bootstrap';
 import BronzeVIPCard from 'assets/img/nft mint/BRONZE PIC.png';
+import GoldVIPCard from 'assets/img/nft mint/GOLD PIC.png';
 import NFTHexagon from 'assets/img/nft mint/nft hexagon.svg';
+import SilverVIPCard from 'assets/img/nft mint/SILVER PIC.png';
+import AlertModal from 'components/AlertModal';
 import {
     NFT_CARDS,
     NFT_CONTRACT_ADDRESS,
@@ -42,11 +38,10 @@ import {
     convertWeiToEsdt,
     convertEsdtToWei,
 } from 'utils';
-import { AnyMxRecord } from 'dns';
-import AlertModal from 'components/AlertModal';
+
 
 const NFTMint = () => {
-    const { account, address } = useGetAccountInfo();
+    const { address } = useGetAccountInfo();
     const { network } = useGetNetworkConfig();
     const { hasPendingTransactions } = useGetPendingTransactions();
     const provider = new ProxyProvider(network.apiAddress, { timeout: TIMEOUT });
@@ -83,7 +78,7 @@ const NFTMint = () => {
             const values = res.firstValue.valueOf();
             if (!values) return;
 
-            const collections: any = [];
+            // const collections: any = [];
             for (const value of values) {
                 const collection_id = value.collection_id.toNumber();
                 const collection_name = value.collection_name.toString();
@@ -116,7 +111,7 @@ const NFTMint = () => {
                 };
                 collections.push(collection);
             }
-            
+
             // console.log('collections', collections);
             setCollections(collections);
         })();
@@ -151,7 +146,7 @@ const NFTMint = () => {
                 };
                 items.push(item);
             }
-            
+
             // console.log('viewUserAccount', items);
             setUserAccount(items);
         })();
@@ -172,11 +167,11 @@ const NFTMint = () => {
     async function mintNft() {
         if (!address) {
             onShowAlertModal('You should connect your wallet to mint NFTs.');
-            return;  
+            return;
         }
         if (!collections.length || !userAccount) {
             onShowAlertModal('Data is not loaded yet.');
-            return;  
+            return;
         }
         if (collections[mintCardType].collection_left_nft_count == 0) {
             onShowAlertModal('No NFTs are left to be minted.');
@@ -188,23 +183,23 @@ const NFTMint = () => {
             onShowAlertModal(`Each wallet cannot mint more than ${userAccount.collection_max_limit_per_address}`);
             return;
         }
-    
+
         const args: TypedValue[] = [
             new U32Value(mintCardType + 1),
         ];
         const { argumentsString } = new ArgSerializer().valuesToString(args);
         const data = `publicMint@${argumentsString}`;
-    
+
         const tx = {
-          receiver: NFT_CONTRACT_ADDRESS,
-          gasLimit: new GasLimit(30000000),
-          data: data,
-          value: mintPrice,
+            receiver: NFT_CONTRACT_ADDRESS,
+            gasLimit: new GasLimit(30000000),
+            data: data,
+            value: mintPrice,
         };
-    
+
         await refreshAccount();
         sendTransactions({
-          transactions: tx,
+            transactions: tx,
         });
     }
 
@@ -214,7 +209,7 @@ const NFTMint = () => {
 
                 <Col md="12" lg="6" className="text-center" style={{ paddingLeft: "30px", paddingRight: "30px" }}>
                     <img src={NFTHexagon} style={{ width: "60%", marginTop: "-20px" }} />
-                    
+
                     <p className="description-title" style={{ marginTop: "-10px" }}>{"Mint BTX VIP Pass Cards"}</p>
                     <p className="description-body text-left">
                         {"Holders of a BTX NFT VIP PASS will have access to monthly reward lotteries which will be drawn for the varies different tiers with access to special staking pools and the ability to mint future NFT collections that will be released on our NFT minting platform."}
@@ -224,48 +219,48 @@ const NFTMint = () => {
                         className="mint-button"
                         style={{ marginTop: "30px" }}
                         onClick={mintNft}
-                        >
-                            Mint
+                    >
+                        Mint
                     </button>
 
                     <p style={{ marginTop: "30px", color: "#FEE277" }}>
-                        {"You selected " + NFT_CARDS[mintCardType].name + " vip card and need to pay "+ (collections.length ? collections[mintCardType].collection_price : '-') + " EGLD."}
+                        {"You selected " + NFT_CARDS[mintCardType].name + " vip card and need to pay " + (collections.length ? collections[mintCardType].collection_price : '-') + " EGLD."}
                     </p>
                 </Col>
 
                 <Col md="12" lg="6">
-                        <input id="gold-radio" type="radio" name="VIPCardRadioGroup" value={0} onChange={()=>handleCardType(0)} defaultChecked/>
-                        <label htmlFor='gold-radio'>
-                            <div className="mint-vip-card">
-                                <img src={GoldVIPCard} />
-                                <div className="balance">
-                                    <span>{"Balance: "}{collections.length ? collections[0].collection_left_nft_count : '-'}</span>
-                                    <span>{"Cost: " + (collections.length ? collections[0].collection_price : '-') + " EGLD"}</span>
-                                </div>
+                    <input id="gold-radio" type="radio" name="VIPCardRadioGroup" value={0} onChange={() => handleCardType(0)} defaultChecked />
+                    <label htmlFor='gold-radio'>
+                        <div className="mint-vip-card">
+                            <img src={GoldVIPCard} />
+                            <div className="balance">
+                                <span>{"Balance: "}{collections.length ? collections[0].collection_left_nft_count : '-'}</span>
+                                <span>{"Cost: " + (collections.length ? collections[0].collection_price : '-') + " EGLD"}</span>
                             </div>
-                        </label>
+                        </div>
+                    </label>
 
-                        <input id="silver-radio" type="radio" name="VIPCardRadioGroup" value={1} onChange={()=>handleCardType(1)}/>
-                        <label htmlFor='silver-radio'>
-                            <div className="mint-vip-card">
-                                <img src={SilverVIPCard} />
-                                <div className="balance">
-                                    <span>{"Balance: "}{collections.length ? collections[1].collection_left_nft_count : '-'}</span>
-                                    <span>{"Cost: " + (collections.length ? collections[1].collection_price : '-') + " EGLD"}</span>
-                                </div>
+                    <input id="silver-radio" type="radio" name="VIPCardRadioGroup" value={1} onChange={() => handleCardType(1)} />
+                    <label htmlFor='silver-radio'>
+                        <div className="mint-vip-card">
+                            <img src={SilverVIPCard} />
+                            <div className="balance">
+                                <span>{"Balance: "}{collections.length ? collections[1].collection_left_nft_count : '-'}</span>
+                                <span>{"Cost: " + (collections.length ? collections[1].collection_price : '-') + " EGLD"}</span>
                             </div>
-                        </label>
+                        </div>
+                    </label>
 
-                        <input id="bronze-radio" type="radio" name="VIPCardRadioGroup" value={2} onChange={()=>handleCardType(2)}/>
-                        <label htmlFor='bronze-radio'>
-                            <div className="mint-vip-card">
-                                <img src={BronzeVIPCard} />
-                                <div className="balance">
-                                    <span>{"Balance: "}{collections.length ? collections[2].collection_left_nft_count : '-'}</span>
-                                    <span>{"Cost: " + (collections.length ? collections[2].collection_price : '-') + " EGLD"}</span>
-                                </div>
+                    <input id="bronze-radio" type="radio" name="VIPCardRadioGroup" value={2} onChange={() => handleCardType(2)} />
+                    <label htmlFor='bronze-radio'>
+                        <div className="mint-vip-card">
+                            <img src={BronzeVIPCard} />
+                            <div className="balance">
+                                <span>{"Balance: "}{collections.length ? collections[2].collection_left_nft_count : '-'}</span>
+                                <span>{"Cost: " + (collections.length ? collections[2].collection_price : '-') + " EGLD"}</span>
                             </div>
-                        </label>
+                        </div>
+                    </label>
                 </Col>
             </Row>
             <AlertModal

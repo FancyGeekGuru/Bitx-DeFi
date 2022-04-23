@@ -1,8 +1,6 @@
 import React from 'react';
 import './index.scss';
 
-import { Link } from 'react-router-dom';
-
 import LinkErrorPng from 'assets/img/link error.png';
 import { logo } from './data';
 

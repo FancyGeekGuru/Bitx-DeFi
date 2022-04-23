@@ -218,12 +218,12 @@
     margin-bottom: 1rem;
 
     .progress {
-        height: 32px !important;
-        border-radius: 20px !important;
+        height: 10px !important;
+        border-radius: 5px !important;
         // box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
         .progress-bar {
             background-color: gray !important;
-            border-radius: 20px !important;
+            border-radius: 5px !important;
             box-shadow: 0 0 15px gray;
         }
     }

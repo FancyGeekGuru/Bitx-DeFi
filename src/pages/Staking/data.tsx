@@ -18,5 +18,15 @@ export const PoolList = [
         stake: "BTX",
         earn: "DICE",
         url: "/dice-pool"
-    }
+    },
+    {
+        stake: "MARE",
+        earn: "MARE",
+        url: "/mare-pool"
+    },
+    {
+        stake: "BTX",
+        earn: "MARE",
+        url: "/mare-pool"
+    },
 ];

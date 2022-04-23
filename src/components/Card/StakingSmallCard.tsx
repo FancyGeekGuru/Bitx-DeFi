@@ -1,8 +1,6 @@
 import React from 'react';
 import './index.scss';
 import { useGetNetworkConfig } from '@elrondnetwork/dapp-core';
-import { Link } from 'react-router-dom';
-
 import {
     Address,
     AbiRegistry,
@@ -11,7 +9,8 @@ import {
     ProxyProvider,
     DefaultSmartContractController,
 } from '@elrondnetwork/erdjs';
-
+import { Link } from 'react-router-dom';
+import LinkSuccessPng from 'assets/img/link success.png';
 import {
     TIMEOUT,
     convertWeiToEsdt,
@@ -19,8 +18,6 @@ import {
     IContractInteractor,
     IBtx2BtxStakeSetting,
 } from '../../utils';
-
-import LinkSuccessPng from 'assets/img/link success.png';
 import { logo, contractABI, contractAddress, contractName, tokenDecimal } from './data';
 
 type IStakingProps = {

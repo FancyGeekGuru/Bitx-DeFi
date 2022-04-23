@@ -1,14 +1,12 @@
 import React from 'react';
 import { Row, Col } from 'react-bootstrap';
 import './index.scss';
-
 import { Link } from 'react-router-dom';
-import { routeNames } from 'routes';
-
 import BTXFinanceHomeLogo from 'assets/img/BTXFinance Logo.png';
-import StakingImg from 'assets/img/staking.png';
 import NFTImg from 'assets/img/NFT.png';
 import PresaleImg from 'assets/img/presale.png';
+import StakingImg from 'assets/img/staking.png';
+import { routeNames } from 'routes';
 
 const BTXFinanceHome = () => {
     return (

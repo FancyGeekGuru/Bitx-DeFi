@@ -1,23 +1,4 @@
 import * as React from 'react';
-import { Link } from 'react-router-dom';
-import {
-  Container,
-  Row,
-  Col,
-  ProgressBar
-} from 'react-bootstrap';
-
-import {
-  Address,
-  AddressValue,
-  AbiRegistry,
-  SmartContractAbi,
-  SmartContract,
-  Interaction,
-  ProxyProvider,
-  Account,
-  DefaultSmartContractController,
-} from '@elrondnetwork/erdjs';
 import {
   refreshAccount,
   sendTransactions,
@@ -25,25 +6,22 @@ import {
   useGetNetworkConfig,
   useGetPendingTransactions,
 } from '@elrondnetwork/dapp-core';
-
-import { dAppName } from 'config';
-import { routeNames } from 'routes';
-import './index.scss';
-import Time from './Time';
-
 import {
-  TIMEOUT,
-  Status,
-  ISaleStatusProvider,
-  IAccountStateProvider,
-  ONE_DAY_IN_SECONDS,
-  SECOND_IN_MILLI,
-  calculatePercentage,
-  precisionRound,
-  IContractInteractor,
-  convertToStatus,
-  convertWeiToEsdt,
-} from 'utils';
+  Address,
+  AddressValue,
+  AbiRegistry,
+  SmartContractAbi,
+  SmartContract,
+  ProxyProvider,
+  DefaultSmartContractController,
+} from '@elrondnetwork/erdjs';
+import {
+  Col,
+  ProgressBar
+} from 'react-bootstrap';
+import './index.scss';
+import BitXLogo from 'assets/img/BTX logo back.png';
+import ElrondLogo from 'assets/img/Elrond logo.png';
 import {
   EXCHANGE_RATE,
   MIN_BUY_LIMIT,
@@ -52,10 +30,21 @@ import {
   PRESALE_CONTRACT_ABI_URL,
   PRESALE_CONTRACT_NAME,
 } from 'config';
-
-import BitXLogo from 'assets/img/BTX logo back.png';
-import ElrondLogo from 'assets/img/Elrond logo.png';
+import {
+  TIMEOUT,
+  Status,
+  ISaleStatusProvider,
+  IAccountStateProvider,
+  SECOND_IN_MILLI,
+  precisionRound,
+  IContractInteractor,
+  convertToStatus,
+  convertWeiToEsdt,
+} from 'utils';
 import { convertEsdtToWei } from '../../utils/convert';
+import Time from './Time';
+
+
 
 
 const Presale = () => {
@@ -72,10 +61,10 @@ const Presale = () => {
       const contract = new SmartContract({ address: new Address(PRESALE_CONTRACT_ADDRESS), abi: abi });
       const controller = new DefaultSmartContractController(abi, proxyProvider);
 
-      console.log('contractInteractor', {
-          contract,
-          controller,
-      });
+      // console.log('contractInteractor', {
+      //     contract,
+      //     controller,
+      // });
 
       setContractInteractor({
           contract,
@@ -101,7 +90,7 @@ const Presale = () => {
       const totalBoughtAmountOfEsdt = convertWeiToEsdt(value.field3);
 
       const result = {status, leftTimestamp, goal, totalBoughtAmountOfEsdt};
-      console.log('getStatus', result);
+      // console.log('getStatus', result);
       setSaleStatus(result);
     })();
   }, [contractInteractor, hasPendingTransactions]);
@@ -116,9 +105,9 @@ const Presale = () => {
 
       if (!res || !res.returnCode.isSuccess()) return;
 
-      const accountState = res.firstValue?.valueOf().toNumber();
-      console.log('accountState', accountState);
-      setAccountState({accountState});
+      // const accountState = res.firstValue?.valueOf().toNumber();
+      // console.log('accountState', accountState);
+      setAccountState({accountState: res.firstValue?.valueOf().toNumber()});
     })();
   }, [contractInteractor, account.address]);
 

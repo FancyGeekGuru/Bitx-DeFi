@@ -30,8 +30,10 @@ import arrow from 'assets/img/arrow.png';
 import btxLogo from 'assets/img/BTX logo.png';
 import coin from 'assets/img/coin.png';
 import elrondLogo from 'assets/img/Elrond logo.png';
-import MexLogo from 'assets/img/mex-logo.svg';
+import MareLogo from 'assets/img/token logos/MARE.png';
 import AlertModal from '../../../components/AlertModal';
+
+
 import {
   BTX2MEX_CONTRACT_ADDRESS,
   BTX2MEX_CONTRACT_ABI,
@@ -51,7 +53,7 @@ import {
   IStakeAccount,
 } from '../../../utils';
 
-const Bitx2Mex = () => {
+const Bitx2Mare = () => {
   const { account } = useGetAccountInfo();
   const { network } = useGetNetworkConfig();
   const { hasPendingTransactions } = useGetPendingTransactions();
@@ -380,8 +382,8 @@ const Bitx2Mex = () => {
         </div>
         <img src={arrow} />
         <div className='stake-log-card stake-log-card-mex'>
-          <img src={MexLogo} />
-          <p>Earn $MEX</p>
+          <img src={MareLogo} />
+          <p>Earn $MARE</p>
         </div>
       </div>
       {/* <p className='description'>
@@ -446,7 +448,7 @@ const Bitx2Mex = () => {
         </div>
         <div>
           <p className='heading'>My Reward</p>
-          <p className='data'>{stakeAccount ? stakeAccount.reward_amount : '-'} MEX</p>
+          <p className='data'>{stakeAccount ? stakeAccount.reward_amount : '-'} MARE</p>
         </div>
         <div>
           <p className='heading'>My Collectable</p>
@@ -550,4 +552,4 @@ const Bitx2Mex = () => {
   );
 };
 
-export default Bitx2Mex;
+export default Bitx2Mare;

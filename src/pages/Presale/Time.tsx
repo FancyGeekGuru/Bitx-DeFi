@@ -1,20 +1,13 @@
 import * as React from 'react';
+import { Row, Col } from 'react-bootstrap';
 import Countdown from 'react-countdown';
-import './Time.scss';
-import {
-  Container,
-  Row,
-  Col,
-  ProgressBar
-} from 'react-bootstrap';
-
-import { ISaleStatusProvider } from '../../utils/state';
 import { paddingTwoDigits } from '../../utils/convert';
+import './Time.scss';
 
 const Time = (props) => {
-  const [targetTimestamp, setTargetTimestamp] = React.useState<number>((new Date()).getTime());
+  const [leftTime, setTargetTimestamp] = React.useState<number>(60000);
   React.useEffect(() => {
-    setTargetTimestamp(props.saleStatus? props.saleStatus.leftTimestamp : new Date());
+    setTargetTimestamp(props.saleStatus ? props.saleStatus.leftTimestamp - Date.now() : 60000);
   }, [props.saleStatus]);
 
   interface Props {
@@ -25,15 +18,7 @@ const Time = (props) => {
     completed: boolean;
   }
 
-  const renderer: React.FC<Props> = ({
-    days,
-    hours,
-    minutes,
-    seconds,
-    completed
-  }) => {
-    // console.log('>>> in timer: ',days, hours, minutes, seconds, completed);
-
+  const renderer: React.FC<Props> = ({ days, hours, minutes, seconds }) => {
     return (
       <Row className='custom-timer color-white'>
         <Col xs={6} sm={3} className='customer-timer-block'>
@@ -55,9 +40,9 @@ const Time = (props) => {
       </Row>
     );
   };
-  
+
   return (
-    <Countdown date={targetTimestamp} renderer={renderer} />
+    <Countdown date={Date.now() + leftTime} renderer={renderer} />
   );
 };
 

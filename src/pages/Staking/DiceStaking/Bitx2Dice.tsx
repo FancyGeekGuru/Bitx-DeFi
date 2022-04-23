@@ -25,14 +25,12 @@ import {
 
 import axios from 'axios';
 import Modal from 'react-modal';
-
-import btxLogo from 'assets/img/BTX logo.png';
-import DiceLogo from 'assets/img/dice-logo.png';
-import dollarPot from 'assets/img/dollarPot.png';
-import coin from 'assets/img/coin.png';
 import arrow from 'assets/img/arrow.png';
-import AlertModal from '../../../components/AlertModal';
+import btxLogo from 'assets/img/BTX logo.png';
+import coin from 'assets/img/coin.png';
+import DiceLogo from 'assets/img/dice-logo.png';
 import elrondLogo from 'assets/img/Elrond logo.png';
+import AlertModal from '../../../components/AlertModal';
 
 import {
   BTX2DICE_CONTRACT_ADDRESS,
@@ -49,7 +47,6 @@ import {
   convertWeiToEsdt,
   convertTimestampToDateTime,
   convertSecondsToDays,
-  convertAPR2APY,
   IContractInteractor,
   IBtx2MexStakeSetting,
   IStakeAccount,
@@ -86,10 +83,10 @@ const Bitx2Dice = () => {
       const contract = new SmartContract({ address: new Address(BTX2DICE_CONTRACT_ADDRESS), abi: abi });
       const controller = new DefaultSmartContractController(abi, provider);
 
-      console.log('stakeContractInteractor', {
-        contract,
-        controller,
-      });
+      // console.log('stakeContractInteractor', {
+      //   contract,
+      //   controller,
+      // });
 
       setStakeContractInteractor({
         contract,
@@ -138,7 +135,7 @@ const Bitx2Dice = () => {
         number_of_stakers,
       };
 
-      console.log('BTX2DICE getCurrentStakeSetting', result);
+      // console.log('BTX2DICE getCurrentStakeSetting', result);
 
       setStakeSetting(result);
     })();
@@ -182,7 +179,7 @@ const Bitx2Dice = () => {
         last_claim_timestamp,
       };
 
-      console.log('BTX2DICE getCurrentStakeAccount', result);
+      // console.log('BTX2DICE getCurrentStakeAccount', result);
       setStakeAccount(result);
     })();
   }, [account, stakeContractInteractor, hasPendingTransactions]);
@@ -198,7 +195,7 @@ const Bitx2Dice = () => {
           );
 
           if (tokens.length > 0) {
-            console.log('tokens[0]', tokens[0]);
+            // console.log('tokens[0]', tokens[0]);
             _balance = convertWeiToEsdt(tokens[0].balance);
           }
         }
@@ -246,7 +243,7 @@ const Bitx2Dice = () => {
       } else if (value + stakeAccount.staked_amount < stakeSetting.min_stake_limit) {
         _modalInfoMesssage = `Cannot stake less than ${stakeSetting.min_stake_limit} ${BTX_TOKEN_TICKER} in total.`;
       } else if (value + stakeAccount.staked_amount > stakeSetting.max_stake_limit) {
-        console.log('value + stakeAccount.staked_amount > stakeSetting.max_stake_limit', value, stakeAccount.staked_amount, stakeSetting.max_stake_limit);
+        // console.log('value + stakeAccount.staked_amount > stakeSetting.max_stake_limit', value, stakeAccount.staked_amount, stakeSetting.max_stake_limit);
         _modalInfoMesssage = `Cannot stake more than ${stakeSetting.max_stake_limit} ${BTX_TOKEN_TICKER} in total.`;
       } else {
         _modalButtonDisabled = false;
@@ -349,7 +346,7 @@ const Bitx2Dice = () => {
 
     const currentTimestamp = (new Date()).getTime();
     const claimLockEndTimestamp = (stakeAccount.last_claim_timestamp + stakeSetting.claim_lock_period) * SECOND_IN_MILLI;
-    console.log(`currentTimestamp: ${currentTimestamp} ----- claimLockEndTimestamp: ${claimLockEndTimestamp}`);
+    // console.log(`currentTimestamp: ${currentTimestamp} ----- claimLockEndTimestamp: ${claimLockEndTimestamp}`);
     if (currentTimestamp < claimLockEndTimestamp) {
       onShowAlertModal(`Cannot claim before ${convertTimestampToDateTime(claimLockEndTimestamp)}`);
       return;

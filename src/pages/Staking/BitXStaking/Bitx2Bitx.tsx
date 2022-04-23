@@ -1,6 +1,5 @@
 
 import React, { useState } from 'react';
-
 import {
   refreshAccount,
   sendTransactions,
@@ -23,17 +22,13 @@ import {
   GasLimit,
   DefaultSmartContractController,
 } from '@elrondnetwork/erdjs';
-
 import axios from 'axios';
 import Modal from 'react-modal';
-
-import btxLogo from 'assets/img/BTX logo.png';
-import dollarPot from 'assets/img/dollarPot.png';
-import coin from 'assets/img/coin.png';
 import arrow from 'assets/img/arrow.png';
-import AlertModal from '../../../components/AlertModal';
+import btxLogo from 'assets/img/BTX logo.png';
+import coin from 'assets/img/coin.png';
 import elrondLogo from 'assets/img/Elrond logo.png';
-
+import AlertModal from '../../../components/AlertModal';
 import {
   BTX2BTX_CONTRACT_ADDRESS,
   BTX2BTX_CONTRACT_ABI,
@@ -41,7 +36,6 @@ import {
   BTX_TOKEN_TICKER,
   BTX_TOKEN_ID,
 } from '../../../config';
-
 import {
   SECOND_IN_MILLI,
   TIMEOUT,
@@ -94,10 +88,10 @@ const Btx2BtxStakingCard = () => {
       const contract = new SmartContract({ address: new Address(BTX2BTX_CONTRACT_ADDRESS), abi: abi });
       const controller = new DefaultSmartContractController(abi, provider);
 
-      console.log('stakeContractInteractor', {
-        contract,
-        controller,
-      });
+      // console.log('stakeContractInteractor', {
+      //   contract,
+      //   controller,
+      // });
 
       setStakeContractInteractor({
         contract,
@@ -144,7 +138,7 @@ const Btx2BtxStakingCard = () => {
         number_of_stakers,
       };
 
-      console.log('getCurrentStakeSetting', result);
+      // console.log('getCurrentStakeSetting', result);
 
       setStakeSetting(result);
     })();
@@ -188,7 +182,7 @@ const Btx2BtxStakingCard = () => {
         last_claim_timestamp,
       };
 
-      console.log('getCurrentStakeAccount', result);
+      // console.log('getCurrentStakeAccount', result);
       setStakeAccount(result);
     })();
   }, [account, stakeContractInteractor, hasPendingTransactions]);
@@ -204,7 +198,7 @@ const Btx2BtxStakingCard = () => {
           );
 
           if (tokens.length > 0) {
-            console.log('tokens[0]', tokens[0]);
+            // console.log('tokens[0]', tokens[0]);
             _balance = convertWeiToEsdt(tokens[0].balance);
           }
         }
@@ -352,7 +346,7 @@ const Btx2BtxStakingCard = () => {
 
     const currentTimestamp = (new Date()).getTime();
     const claimLockEndTimestamp = (stakeAccount.last_claim_timestamp + stakeSetting.claim_lock_period) * SECOND_IN_MILLI;
-    console.log(`currentTimestamp: ${currentTimestamp} ----- claimLockEndTimestamp: ${claimLockEndTimestamp}`);
+    // console.log(`currentTimestamp: ${currentTimestamp} ----- claimLockEndTimestamp: ${claimLockEndTimestamp}`);
     if (currentTimestamp < claimLockEndTimestamp) {
       onShowAlertModal(`Cannot claim before ${convertTimestampToDateTime(claimLockEndTimestamp)}`);
       return;

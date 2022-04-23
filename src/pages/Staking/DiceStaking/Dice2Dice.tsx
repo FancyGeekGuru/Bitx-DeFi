@@ -24,13 +24,11 @@ import {
 
 import axios from 'axios';
 import Modal from 'react-modal';
-
-import diceLogo from 'assets/img/dice-logo.png';
-import dollarPot from 'assets/img/dollarPot.png';
-import coin from 'assets/img/coin.png';
 import arrow from 'assets/img/arrow.png';
-import AlertModal from '../../../components/AlertModal';
+import coin from 'assets/img/coin.png';
+import diceLogo from 'assets/img/dice-logo.png';
 import elrondLogo from 'assets/img/Elrond logo.png';
+import AlertModal from '../../../components/AlertModal';
 
 import {
   DICE2DICE_CONTRACT_ADDRESS,
@@ -85,10 +83,10 @@ const Dice2Dice = () => {
       const contract = new SmartContract({ address: new Address(DICE2DICE_CONTRACT_ADDRESS), abi: abi });
       const controller = new DefaultSmartContractController(abi, provider);
 
-      console.log('stakeContractInteractor', {
-        contract,
-        controller,
-      });
+      // console.log('stakeContractInteractor', {
+      //   contract,
+      //   controller,
+      // });
 
       setStakeContractInteractor({
         contract,
@@ -131,7 +129,7 @@ const Dice2Dice = () => {
         number_of_stakers,
       };
 
-      console.log('getCurrentStakeSetting', result);
+      // console.log('getCurrentStakeSetting', result);
 
       setStakeSetting(result);
     })();
@@ -170,7 +168,7 @@ const Dice2Dice = () => {
         last_claim_timestamp,
       };
 
-      console.log('Dice2Dice getCurrentStakeAccount', result);
+      // console.log('Dice2Dice getCurrentStakeAccount', result);
       setStakeAccount(result);
     })();
   }, [account, stakeContractInteractor, hasPendingTransactions]);
@@ -186,7 +184,7 @@ const Dice2Dice = () => {
           );
 
           if (tokens.length > 0) {
-            console.log('tokens[0]', tokens[0]);
+            // console.log('tokens[0]', tokens[0]);
             _balance = convertWeiToEsdt(tokens[0].balance, DICE_TOKEN_DECIMALS);
           }
         }
@@ -334,7 +332,7 @@ const Dice2Dice = () => {
 
     const currentTimestamp = (new Date()).getTime();
     const claimLockEndTimestamp = (stakeAccount.last_claim_timestamp + stakeSetting.claim_lock_period) * SECOND_IN_MILLI;
-    console.log(`currentTimestamp: ${currentTimestamp} ----- claimLockEndTimestamp: ${claimLockEndTimestamp}`);
+    // console.log(`currentTimestamp: ${currentTimestamp} ----- claimLockEndTimestamp: ${claimLockEndTimestamp}`);
     if (currentTimestamp < claimLockEndTimestamp) {
       onShowAlertModal(`Cannot claim before ${convertTimestampToDateTime(claimLockEndTimestamp)}`);
       return;
