@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Row, Col } from 'react-bootstrap';
 import staking_bg from 'assets/img/staking.svg';
 import StakingSmallCard from '../../components/Card/StakingSmallCard';
+import ComingStakingSmallCard from '../../components/Card/ComingStakingSmallCard';
 import { PoolList } from './data';
 import './index.scss';
 
@@ -12,7 +13,7 @@ const StakingHome = () => {
     return (
         <div className="home-container">
             <Particles
-                style={{ zIndex: -1}}
+                style={{ zIndex: -1 }}
                 params={{
                     "particles": {
                         "number": {
@@ -75,6 +76,18 @@ const StakingHome = () => {
                         );
                     })
                 }
+                <Col sm="12" md="6" lg="4" xl="3">
+                    <ComingStakingSmallCard stake={"MARE"} earn={"MARE"} url={"/"} />
+                </Col>
+                <Col sm="12" md="6" lg="4" xl="3">
+                    <ComingStakingSmallCard stake={"BTX"} earn={"MARE"} url={"/"} />
+                </Col>
+                <Col sm="12" md="6" lg="4" xl="3">
+                    <ComingStakingSmallCard stake={"HETO"} earn={"HETO"} url={"/"} />
+                </Col>
+                <Col sm="12" md="6" lg="4" xl="3">
+                    <ComingStakingSmallCard stake={"BTX"} earn={"HETO"} url={"/"} />
+                </Col>
             </Row>
         </div>
     );

@@ -1,6 +1,8 @@
 import BTX from 'assets/img/token logos/BTX.png';
 import DICE from 'assets/img/token logos/DICE.png';
 import MEX from 'assets/img/token logos/MEX.png';
+import MARE from 'assets/img/token logos/MARE.png';
+import HETO from 'assets/img/token logos/HETO.png';
 
 import * as config from '../../config';
 
@@ -8,6 +10,8 @@ export const logo = {
     "BTX": BTX,
     "DICE": DICE,
     "MEX": MEX,
+    "MARE": MARE,
+    "HETO": HETO,
 };
 
 export const contractABI = {

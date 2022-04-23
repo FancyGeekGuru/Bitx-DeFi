@@ -36,11 +36,10 @@ const Navbar = () => {
             <Link to={routeNames.dicestaking} className='custom-navbar-button custom-navbar-normal-button'>
               DICE Pool
             </Link> */}
-
             <NavDropdown
               id="nav-dropdown-dark-example"
               title="Staking"
-              className='custom-navbar-button custom-navbar-normal-button '
+              className='custom-navbar-button custom-navbar-normal-button'
             >
               <NavDropdown.Item>
                 <Link to={routeNames.staking}>
@@ -58,7 +57,6 @@ const Navbar = () => {
                 </Link>
               </NavDropdown.Item>
             </NavDropdown>
-
             <Link to={routeNames.presale} className='custom-navbar-button custom-navbar-normal-button'>
               Presale
             </Link>
