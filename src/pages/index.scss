@@ -21,7 +21,7 @@
 @keyframes leaves {
     0% {
         transform: scale(1.0);
-        opacity: 0.7;
+        opacity: 0.75;
     }
 
     100% {
@@ -67,7 +67,7 @@
         transform: translatey(-8px);
     }
 
-    transition: .5s ease-in-out;
+    transition: .35s ease-in-out;
 }
 
 .button-group-container {

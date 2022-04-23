@@ -60,10 +60,10 @@ const NFTMint = () => {
             const contract = new SmartContract({ address: new Address(NFT_CONTRACT_ADDRESS), abi: abi });
             const controller = new DefaultSmartContractController(abi, provider);
 
-            console.log('contractInteractor', {
-                contract,
-                controller,
-            });
+            // console.log('contractInteractor', {
+            //     contract,
+            //     controller,
+            // });
 
             setContractInteractor({
                 contract,
@@ -117,7 +117,7 @@ const NFTMint = () => {
                 collections.push(collection);
             }
             
-            console.log('collections', collections);
+            // console.log('collections', collections);
             setCollections(collections);
         })();
     }, [contractInteractor]);
@@ -152,14 +152,14 @@ const NFTMint = () => {
                 items.push(item);
             }
             
-            console.log('viewUserAccount', items);
+            // console.log('viewUserAccount', items);
             setUserAccount(items);
         })();
     }, [contractInteractor, address, hasPendingTransactions]);
 
     const [mintCardType, setMintCardType] = useState(0); // select golden card by default
-    function handleCardType(e) {
-        setMintCardType(e.target.value);
+    function handleCardType(value) {
+        setMintCardType(value);
     }
 
     const [alertModalShow, setAlertModalShow] = React.useState<boolean>(false);
@@ -234,8 +234,7 @@ const NFTMint = () => {
                 </Col>
 
                 <Col md="12" lg="6">
-                    <fieldset onChange={(e) => handleCardType(e)}>
-                        <input id="gold-radio" type="radio" name="VIPCardRadioGroup" value={0} checked={mintCardType == 0} />
+                        <input id="gold-radio" type="radio" name="VIPCardRadioGroup" value={0} onChange={()=>handleCardType(0)} defaultChecked/>
                         <label htmlFor='gold-radio'>
                             <div className="mint-vip-card">
                                 <img src={GoldVIPCard} />
@@ -246,7 +245,7 @@ const NFTMint = () => {
                             </div>
                         </label>
 
-                        <input id="silver-radio" type="radio" name="VIPCardRadioGroup" value={1} />
+                        <input id="silver-radio" type="radio" name="VIPCardRadioGroup" value={1} onChange={()=>handleCardType(1)}/>
                         <label htmlFor='silver-radio'>
                             <div className="mint-vip-card">
                                 <img src={SilverVIPCard} />
@@ -257,7 +256,7 @@ const NFTMint = () => {
                             </div>
                         </label>
 
-                        <input id="bronze-radio" type="radio" name="VIPCardRadioGroup" value={2} />
+                        <input id="bronze-radio" type="radio" name="VIPCardRadioGroup" value={2} onChange={()=>handleCardType(2)}/>
                         <label htmlFor='bronze-radio'>
                             <div className="mint-vip-card">
                                 <img src={BronzeVIPCard} />
@@ -267,7 +266,6 @@ const NFTMint = () => {
                                 </div>
                             </div>
                         </label>
-                    </fieldset>
                 </Col>
             </Row>
             <AlertModal
