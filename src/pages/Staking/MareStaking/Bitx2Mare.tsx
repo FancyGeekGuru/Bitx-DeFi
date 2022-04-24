@@ -35,9 +35,9 @@ import AlertModal from '../../../components/AlertModal';
 
 
 import {
-  BTX2MEX_CONTRACT_ADDRESS,
-  BTX2MEX_CONTRACT_ABI,
-  BTX2MEX_CONTRACT_NAME,
+  BTX2MARE_CONTRACT_ADDRESS,
+  BTX2MARE_CONTRACT_ABI,
+  BTX2MARE_CONTRACT_NAME,
   BTX_TOKEN_TICKER,
   BTX_TOKEN_ID,
 } from '../../../config';
@@ -80,17 +80,17 @@ const Bitx2Mare = () => {
   React.useEffect(() => {
     (async () => {
       // const abiRegistry = await AbiRegistry.load({
-      //     urls: [BTX2MEX_CONTRACT_ABI],
+      //     urls: [BTX2MARE_CONTRACT_ABI],
       // });
       // const contract = new SmartContract({
-      //     address: new Address(BTX2MEX_CONTRACT_ADDRESS),
-      //     abi: new SmartContractAbi(abiRegistry, [BTX2MEX_CONTRACT_NAME]),
+      //     address: new Address(BTX2MARE_CONTRACT_ADDRESS),
+      //     abi: new SmartContractAbi(abiRegistry, [BTX2MARE_CONTRACT_NAME]),
       // });
       // setStakingContract(contract);
 
-      const registry = await AbiRegistry.load({ urls: [BTX2MEX_CONTRACT_ABI] });
-      const abi = new SmartContractAbi(registry, [BTX2MEX_CONTRACT_NAME]);
-      const contract = new SmartContract({ address: new Address(BTX2MEX_CONTRACT_ADDRESS), abi: abi });
+      const registry = await AbiRegistry.load({ urls: [BTX2MARE_CONTRACT_ABI] });
+      const abi = new SmartContractAbi(registry, [BTX2MARE_CONTRACT_NAME]);
+      const contract = new SmartContract({ address: new Address(BTX2MARE_CONTRACT_ADDRESS), abi: abi });
       const controller = new DefaultSmartContractController(abi, provider);
 
       // console.log('stakeContractInteractor', {
@@ -301,7 +301,7 @@ const Bitx2Mare = () => {
     const data = `ESDTTransfer@${argumentsString}`;
 
     const tx = {
-      receiver: BTX2MEX_CONTRACT_ADDRESS,
+      receiver: BTX2MARE_CONTRACT_ADDRESS,
       gasLimit: new GasLimit(10000000),
       data: data,
     };
@@ -329,7 +329,7 @@ const Bitx2Mare = () => {
     const data = `unstake@${argumentsString}`;
 
     const tx = {
-      receiver: BTX2MEX_CONTRACT_ADDRESS,
+      receiver: BTX2MARE_CONTRACT_ADDRESS,
       data: data,
       gasLimit: new GasLimit(6000000),
     };
@@ -363,7 +363,7 @@ const Bitx2Mare = () => {
     }
 
     const tx = {
-      receiver: BTX2MEX_CONTRACT_ADDRESS,
+      receiver: BTX2MARE_CONTRACT_ADDRESS,
       data: 'claim',
       gasLimit: new GasLimit(6000000),
     };

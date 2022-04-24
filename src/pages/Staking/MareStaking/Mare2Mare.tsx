@@ -33,9 +33,9 @@ import MareLogo from 'assets/img/token logos/MARE.png';
 import AlertModal from '../../../components/AlertModal';
 
 import {
-  BTX2BTX_CONTRACT_ADDRESS,
-  BTX2BTX_CONTRACT_ABI,
-  BTX2BTX_CONTRACT_NAME,
+  MARE2MARE_CONTRACT_ADDRESS,
+  MARE2MARE_CONTRACT_ABI,
+  MARE2MARE_CONTRACT_NAME,
   MARE_TOKEN_TICKER,
   MARE_TOKEN_ID,
 } from '../../../config';
@@ -79,17 +79,17 @@ const Mare2Mare = () => {
   React.useEffect(() => {
     (async () => {
       // const abiRegistry = await AbiRegistry.load({
-      //     urls: [BTX2BTX_CONTRACT_ABI],
+      //     urls: [MARE2MARE_CONTRACT_ABI],
       // });
       // const contract = new SmartContract({
-      //     address: new Address(BTX2BTX_CONTRACT_ADDRESS),
-      //     abi: new SmartContractAbi(abiRegistry, [BTX2BTX_CONTRACT_NAME]),
+      //     address: new Address(MARE2MARE_CONTRACT_ADDRESS),
+      //     abi: new SmartContractAbi(abiRegistry, [MARE2MARE_CONTRACT_NAME]),
       // });
       // setStakingContract(contract);
 
-      const registry = await AbiRegistry.load({ urls: [BTX2BTX_CONTRACT_ABI] });
-      const abi = new SmartContractAbi(registry, [BTX2BTX_CONTRACT_NAME]);
-      const contract = new SmartContract({ address: new Address(BTX2BTX_CONTRACT_ADDRESS), abi: abi });
+      const registry = await AbiRegistry.load({ urls: [MARE2MARE_CONTRACT_ABI] });
+      const abi = new SmartContractAbi(registry, [MARE2MARE_CONTRACT_NAME]);
+      const contract = new SmartContract({ address: new Address(MARE2MARE_CONTRACT_ADDRESS), abi: abi });
       const controller = new DefaultSmartContractController(abi, provider);
 
       // console.log('stakeContractInteractor', {
@@ -295,7 +295,7 @@ const Mare2Mare = () => {
     const data = `ESDTTransfer@${argumentsString}`;
 
     const tx = {
-      receiver: BTX2BTX_CONTRACT_ADDRESS,
+      receiver: MARE2MARE_CONTRACT_ADDRESS,
       gasLimit: new GasLimit(10000000),
       data: data,
     };
@@ -323,7 +323,7 @@ const Mare2Mare = () => {
     const data = `unstake@${argumentsString}`;
 
     const tx = {
-      receiver: BTX2BTX_CONTRACT_ADDRESS,
+      receiver: MARE2MARE_CONTRACT_ADDRESS,
       data: data,
       gasLimit: new GasLimit(6000000),
     };
@@ -357,7 +357,7 @@ const Mare2Mare = () => {
     }
 
     const tx = {
-      receiver: BTX2BTX_CONTRACT_ADDRESS,
+      receiver: MARE2MARE_CONTRACT_ADDRESS,
       data: 'claim',
       gasLimit: new GasLimit(6000000),
     };
@@ -381,7 +381,7 @@ const Mare2Mare = () => {
   //   }
 
   //   const tx = {
-  //     receiver: BTX2BTX_CONTRACT_ADDRESS,
+  //     receiver: MARE2MARE_CONTRACT_ADDRESS,
   //     data: 'collect',
   //     gasLimit: new GasLimit(6000000),
   //   };
