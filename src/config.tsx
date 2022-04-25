@@ -29,13 +29,13 @@ export const BTX2DICE_CONTRACT_ABI = 'abi/btx2dice.abi.json';
 export const BTX2DICE_CONTRACT_NAME = 'BitxStake';
 
 // Pre Sale
-export const PRESALE_CONTRACT_ADDRESS = 'erd1qqqqqqqqqqqqqpgq32gr5nx4460zwf2evyy6apm4szectdylj9qswkvlp5';
+export const PRESALE_CONTRACT_ADDRESS = 'erd1qqqqqqqqqqqqqpgqguy27dwjmghs90vwanm0y054s5yaf0u03qmqasfjjy';
 export const PRESALE_CONTRACT_ABI_URL = '/abi/bitxfinance-ico.abi.json';
 export const PRESALE_CONTRACT_NAME = 'BitxfinanceIco';
 
-export const EXCHANGE_RATE = 0.0005;
+export const EXCHANGE_RATE = 0.0008;
 export const MIN_BUY_LIMIT = 1;
-export const MAX_BUY_LIMIT = 3;
+export const MAX_BUY_LIMIT = 10;
 
 // NFT Mint
 export const NFT_CONTRACT_ADDRESS = 'erd1qqqqqqqqqqqqqpgqhe5x0g5amqs92m0phe3ds2xdt596q9r63qmqsdha9s';
