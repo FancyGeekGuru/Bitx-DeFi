@@ -252,7 +252,7 @@ const Bitx2Mare = () => {
         _modalInfoMesssage = 'Not enough tokens in your wallet.';
       } else if (value + stakeAccount.staked_amount < stakeSetting.min_stake_limit) {
         _modalInfoMesssage = `Cannot stake less than ${stakeSetting.min_stake_limit} ${BTX_TOKEN_TICKER} in total.`;
-      } else if (value + stakeAccount.staked_amount > stakeSetting.max_stake_limit) {
+      } else if (stakeSetting.max_stake_limit > 0 && value + stakeAccount.staked_amount > stakeSetting.max_stake_limit) {
         // console.log('value + stakeAccount.staked_amount > stakeSetting.max_stake_limit', value, stakeAccount.staked_amount, stakeSetting.max_stake_limit);
         _modalInfoMesssage = `Cannot stake more than ${stakeSetting.max_stake_limit} ${BTX_TOKEN_TICKER} in total.`;
       } else {
