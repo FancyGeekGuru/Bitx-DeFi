@@ -9,6 +9,7 @@ export const BTX2BTX_CONTRACT_ABI = 'abi/btx2btx.abi.json';
 export const BTX2BTX_CONTRACT_NAME = 'BitxStake';
 export const BTX_TOKEN_TICKER = 'BTX';
 export const BTX_TOKEN_ID = 'BTX-48d004';
+export const BTX_TOKEN_DECIMALS = 18;
 
 export const BTX2MEX_CONTRACT_ADDRESS = 'erd1qqqqqqqqqqqqqpgqlfmj246rxrnl9sxx5fvxrxh2jpefa27r3qmqt76ey7';
 export const BTX2MEX_CONTRACT_ABI = 'abi/btx2mex.abi.json';

@@ -31,6 +31,8 @@ import coin from 'assets/img/coin.png';
 import elrondLogo from 'assets/img/Elrond logo.png';
 import MareLogo from 'assets/img/token logos/MARE.png';
 import AlertModal from '../../../components/AlertModal';
+import { MARE_TOKEN_DECIMALS } from '../../../config';
+import { convertEsdtToWei } from '../../../utils/convert';
 
 import {
   MARE2MARE_CONTRACT_ADDRESS,
@@ -122,12 +124,12 @@ const Mare2Mare = () => {
 
       const stake_token = value.stake_token.toString();
       const reward_token = value.reward_token.toString();
-      const min_stake_limit = convertWeiToEsdt(value.min_stake_limit);
+      const min_stake_limit = convertWeiToEsdt(value.min_stake_limit, MARE_TOKEN_DECIMALS);
       const lock_period = value.lock_period.toNumber();
       const undelegation_period = value.undelegation_period.toNumber();
       const claim_lock_period = value.claim_lock_period.toNumber();
       const apr = value.apr.toNumber() / 100;
-      const total_staked_amount = convertWeiToEsdt(value.total_staked_amount);
+      const total_staked_amount = convertWeiToEsdt(value.total_staked_amount, MARE_TOKEN_DECIMALS);
       const number_of_stakers = value.number_of_stakers.toNumber();
 
       const result = {
@@ -167,12 +169,12 @@ const Mare2Mare = () => {
       // console.log('getCurrentStakeAccount', value);
 
       const address = value.address.toString();
-      const staked_amount = convertWeiToEsdt(value.staked_amount);
+      const staked_amount = convertWeiToEsdt(value.staked_amount, MARE_TOKEN_DECIMALS);
       const lock_end_timestamp = value.lock_end_timestamp.toNumber();
-      const unstaked_amount = convertWeiToEsdt(value.unstaked_amount);
+      const unstaked_amount = convertWeiToEsdt(value.unstaked_amount, MARE_TOKEN_DECIMALS);
       const undelegation_end_timestamp = value.undelegation_end_timestamp.toNumber();
-      const collectable_amount = convertWeiToEsdt(value.collectable_amount);
-      const reward_amount = convertWeiToEsdt(value.reward_amount);
+      const collectable_amount = convertWeiToEsdt(value.collectable_amount, MARE_TOKEN_DECIMALS);
+      const reward_amount = convertWeiToEsdt(value.reward_amount, MARE_TOKEN_DECIMALS);
       const last_claim_timestamp = value.last_claim_timestamp.toNumber();
 
       const result = {
@@ -203,9 +205,10 @@ const Mare2Mare = () => {
 
           if (tokens.length > 0) {
             // console.log('tokens[0]', tokens[0]);
-            _balance = convertWeiToEsdt(tokens[0].balance);
+            _balance = convertWeiToEsdt(tokens[0].balance, MARE_TOKEN_DECIMALS);
           }
         }
+        // console.log('_balance', _balance);
         setBalance(_balance);
       });
     }
@@ -288,7 +291,7 @@ const Mare2Mare = () => {
 
     const args: TypedValue[] = [
       BytesValue.fromUTF8(MARE_TOKEN_ID),
-      new BigUIntValue(Egld(modalInputAmount).valueOf()),
+      new BigUIntValue(convertEsdtToWei(modalInputAmount, MARE_TOKEN_DECIMALS)),
       BytesValue.fromUTF8('stake'),
     ];
     const { argumentsString } = new ArgSerializer().valuesToString(args);
@@ -317,7 +320,7 @@ const Mare2Mare = () => {
     }
 
     const args: TypedValue[] = [
-      new BigUIntValue(Egld(modalInputAmount).valueOf()),
+      new BigUIntValue(convertEsdtToWei(modalInputAmount, MARE_TOKEN_DECIMALS)),
     ];
     const { argumentsString } = new ArgSerializer().valuesToString(args);
     const data = `unstake@${argumentsString}`;
@@ -366,30 +369,6 @@ const Mare2Mare = () => {
       transactions: tx,
     });
   }
-
-  // async function collect(e: any) {
-  //   e.preventDefault();
-
-  //   if (!account.address) {
-  //     onShowAlertModal('You should connect your wallet first!');
-  //     return;
-  //   }
-
-  //   if (stakeAccount.collectable_amount == 0) {
-  //     onShowAlertModal('You don\'t have undelegated tokens to be collected.');
-  //     return;
-  //   }
-
-  //   const tx = {
-  //     receiver: MARE2MARE_CONTRACT_ADDRESS,
-  //     data: 'collect',
-  //     gasLimit: new GasLimit(6000000),
-  //   };
-  //   await refreshAccount();
-  //   await sendTransactions({
-  //     transactions: tx,
-  //   });
-  // }
 
   return (
     <div className='card'>
