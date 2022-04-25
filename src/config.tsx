@@ -1,6 +1,6 @@
 export const ENVIRONMENT = 'mainnet';
 
-export const dAppName = 'BitXFinance DApp';
+export const dAppName = 'BitX Platform';
 export const SOCIAL_WEBSITE_URL = 'https://bitxfinance.online/';
 
 // BTX Pool
