@@ -377,11 +377,11 @@ const Dice2Dice = () => {
           <p className='data'>{stakeSetting ? convertAPR2APY(stakeSetting.apr) : '-'} %</p>
         </div>
         <div>
-          <p className='heading'>Staked</p>
+          <p className='heading'>Total Staked</p>
           <p className='data'>{stakeSetting ? stakeSetting.total_staked_amount : '-'} {DICE_TOKEN_TICKER}</p>
         </div>
         <div>
-          <p className='heading'>Stakers</p>
+          <p className='heading'>Total Stakers</p>
           <p className='data'>{stakeSetting ? stakeSetting.number_of_stakers : '-'}</p>
         </div>
       </div>
