@@ -17,7 +17,7 @@ import {
   ProxyProvider,
   TypedValue,
   BytesValue,
-  Egld,
+  // Egld,
   BigUIntValue,
   ArgSerializer,
   GasLimit,
@@ -32,7 +32,7 @@ import elrondLogo from 'assets/img/Elrond logo.png';
 import MareLogo from 'assets/img/token logos/MARE.png';
 import AlertModal from '../../../components/AlertModal';
 import { MARE_TOKEN_DECIMALS } from '../../../config';
-import { convertEsdtToWei } from '../../../utils/convert';
+
 
 import {
   MARE2MARE_CONTRACT_ADDRESS,
@@ -53,6 +53,7 @@ import {
   IBtx2BtxStakeSetting,
   IStakeAccount,
 } from '../../../utils';
+import { convertEsdtToWei } from '../../../utils/convert';
 
 const Mare2Mare = () => {
   const { account } = useGetAccountInfo();

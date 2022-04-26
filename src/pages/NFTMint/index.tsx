@@ -78,7 +78,7 @@ const NFTMint = () => {
             const values = res.firstValue.valueOf();
             if (!values) return;
 
-            const collections: any = [];
+            const new_collections: any = [];
             for (const value of values) {
                 const collection_id = value.collection_id.toNumber();
                 const collection_name = value.collection_name.toString();
@@ -109,11 +109,11 @@ const NFTMint = () => {
 
                     collection_left_nft_count,
                 };
-                collections.push(collection);
+                new_collections.push(collection);
             }
 
             // console.log('collections', collections);
-            setCollections(collections);
+            setCollections(new_collections);
         })();
     }, [contractInteractor]);
 
