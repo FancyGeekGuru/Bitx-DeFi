@@ -20,7 +20,9 @@ export const contractABI = {
     "DICE2DICE": config.DICE2DICE_CONTRACT_ABI,
     "BTX2DICE": config.BTX2DICE_CONTRACT_ABI,
     "MARE2MARE": config.MARE2MARE_CONTRACT_ABI,
-    "BTX2MARE": config.BTX2MARE_CONTRACT_ABI
+    "BTX2MARE": config.BTX2MARE_CONTRACT_ABI,
+    "HETO2HETO": config.HETO2HETO_CONTRACT_ABI,
+    "BTX2HETO": config.BTX2HETO_CONTRACT_ABI,
 };
 
 export const contractAddress = {
@@ -29,7 +31,9 @@ export const contractAddress = {
     "DICE2DICE": config.DICE2DICE_CONTRACT_ADDRESS,
     "BTX2DICE": config.BTX2DICE_CONTRACT_ADDRESS,
     "MARE2MARE": config.MARE2MARE_CONTRACT_ADDRESS,
-    "BTX2MARE": config.BTX2MARE_CONTRACT_ADDRESS
+    "BTX2MARE": config.BTX2MARE_CONTRACT_ADDRESS,
+    "HETO2HETO": config.HETO2HETO_CONTRACT_ADDRESS,
+    "BTX2HETO": config.BTX2HETO_CONTRACT_ADDRESS,
 };
 
 export const contractName = {
@@ -39,6 +43,8 @@ export const contractName = {
     "BTX2DICE": config.BTX2DICE_CONTRACT_NAME,
     "MARE2MARE": config.MARE2MARE_CONTRACT_NAME,
     "BTX2MARE": config.BTX2MARE_CONTRACT_NAME,
+    "HETO2HETO": config.HETO2HETO_CONTRACT_NAME,
+    "BTX2HETO": config.BTX2HETO_CONTRACT_NAME,
 };
 
 export const tokenDecimal = {
@@ -46,4 +52,5 @@ export const tokenDecimal = {
     "DICE": 6,
     "MEX": 18,
     "MARE": 6,
+    "HETO": 0,
 };

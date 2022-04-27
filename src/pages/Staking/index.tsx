@@ -77,12 +77,6 @@ const StakingHome = () => {
                         );
                     })
                 }
-                <Col sm="12" md="6" lg="4" xl="3">
-                    <ComingStakingSmallCard stake={"HETO"} earn={"HETO"} url={"/"} />
-                </Col>
-                <Col sm="12" md="6" lg="4" xl="3">
-                    <ComingStakingSmallCard stake={"BTX"} earn={"HETO"} url={"/"} />
-                </Col>
             </Row>
         </div>
     );

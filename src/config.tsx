@@ -138,3 +138,15 @@ export const MARE_TOKEN_DECIMALS = 6;
 export const BTX2MARE_CONTRACT_ADDRESS = 'erd1qqqqqqqqqqqqqpgq7r9n9u389xr23vqyye8maaetcg2r886vj9qsj7sl4k';
 export const BTX2MARE_CONTRACT_ABI = 'abi/btx2dice.abi.json';
 export const BTX2MARE_CONTRACT_NAME = 'BitxStake';
+
+// Heto Pool
+export const HETO2HETO_CONTRACT_ADDRESS = 'erd1qqqqqqqqqqqqqpgqltgyu0kcwkfth9vyquv9s4dgmrx550rjj9qs258v5r';
+export const HETO2HETO_CONTRACT_ABI = 'abi/dice2dice.abi.json';
+export const HETO2HETO_CONTRACT_NAME = 'BitxStake';
+export const HETO_TOKEN_TICKER = 'HETO';
+export const HETO_TOKEN_ID = 'HETO-663cf8';
+export const HETO_TOKEN_DECIMALS = 0;
+
+export const BTX2HETO_CONTRACT_ADDRESS = 'erd1qqqqqqqqqqqqqpgq7r9n9u389xr23vqyye8maaetcg2r886vj9qsj7sl4k';
+export const BTX2HETO_CONTRACT_ABI = 'abi/btx2dice.abi.json';
+export const BTX2HETO_CONTRACT_NAME = 'BitxStake';

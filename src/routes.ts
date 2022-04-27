@@ -6,6 +6,7 @@ import PreSale from './pages/Presale';
 import StakingHome from './pages/Staking';
 import BitXStaking from './pages/Staking/BitXStaking';
 import DiceStaking from './pages/Staking/DiceStaking';
+import HetoStaking from './pages/Staking/HetoStaking';
 import MareStaking from './pages/Staking/MareStaking';
 
 export const routeNames = {
@@ -20,6 +21,7 @@ export const routeNames = {
   bitxstaking: '/btx-pool',
   dicestaking: '/dice-pool',
   marestaking: '/mare-pool',
+  hetostaking: '/heto-pool'
 };
 
 const routes: Array<any> = [
@@ -63,6 +65,12 @@ const routes: Array<any> = [
     path: routeNames.marestaking,
     title: 'Mare Pool',
     component: MareStaking
+  },
+
+  {
+    path: routeNames.hetostaking,
+    title: 'Heto Pool',
+    component: HetoStaking
   },
 ];
 
