@@ -38,6 +38,8 @@ export const EXCHANGE_RATE = 0.0008;
 export const MIN_BUY_LIMIT = 1;
 export const MAX_BUY_LIMIT = 10;
 
+export const PRESALE_WHITELIST_URL = 'https://t.co/9Ek1o08pzx';
+
 // NFT Mint
 export const NFT_CONTRACT_ADDRESS = 'erd1qqqqqqqqqqqqqpgqhe5x0g5amqs92m0phe3ds2xdt596q9r63qmqsdha9s';
 export const NFT_CONTRACT_ABI_URL = '/abi/bitx-pass-nft-mint.abi.json';
