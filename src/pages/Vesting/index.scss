@@ -1,0 +1,49 @@
+.lock-process {
+    color: white;
+    font-size: 20px;
+}
+
+.Step-Box {
+    margin-top: 50px;
+    padding: 30px 30px 0px 30px;
+    background-color: rgba(0, 0, 0, 0.15);
+    border: 1px solid rgba(112, 112, 112, 0.15);
+    border-radius: 5px;
+    color: #D3D3D3;
+
+    @media (max-width: 576px) {
+        padding: 20px;
+    }
+}
+
+.bitx-input {
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.3);
+    border-radius: 5px 0 0 5px;
+    border: none;
+    padding: 8px 20px;
+    color: #D3D3D3;
+
+    &:hover,
+    &:focus {
+        outline: none;
+    }
+}
+
+.step-title {
+    font-size: 16px;
+}
+
+.token-info {
+    padding: 15px;
+    color: #5D5D5D;
+    background-color: rgba(0, 0, 0, 0.15);
+    border: 1px solid #05AB76;
+    border-radius: 5px;
+}
+
+.step-but {
+    padding: 10px 30px;
+    border-radius: 5px;
+    border: 1px solid #05AB76;
+}

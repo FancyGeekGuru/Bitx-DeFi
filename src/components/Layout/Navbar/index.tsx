@@ -32,7 +32,7 @@ const Navbar = () => {
         <BsNavbar.Toggle aria-controls='responsive-navbar-nav' style={{ background: "#D8D3D3" }} />
         <BsNavbar.Collapse id='responsive-navbar-nav' className='nav-menu-wrap'>
           <Nav className='ml-auto'>
-            
+
             <NavDropdown
               id="nav-dropdown-dark-example"
               title="Staking"
@@ -60,6 +60,9 @@ const Navbar = () => {
             </Link>
             <Link to={routeNames.nftmint} className='custom-navbar-button custom-navbar-normal-button'>
               NFT Mint
+            </Link>
+            <Link to={routeNames.vesting} className='custom-navbar-button custom-navbar-normal-button'>
+              Vesting
             </Link>
 
             {isLoggedIn ? (
