@@ -15,6 +15,7 @@ import {
   ProxyProvider,
   DefaultSmartContractController,
 } from '@elrondnetwork/erdjs';
+
 import {
   Col,
   ProgressBar
@@ -22,6 +23,7 @@ import {
 import './index.scss';
 import BitXLogo from 'assets/img/BTX logo back.png';
 import ElrondLogo from 'assets/img/Elrond logo.png';
+import whiteListLogo from 'assets/img/whitelist.svg';
 import {
   EXCHANGE_RATE,
   MIN_BUY_LIMIT,
@@ -55,7 +57,7 @@ const Presale = () => {
 
   const [contractInteractor, setContractInteractor] = React.useState<IContractInteractor | undefined>();
   React.useEffect(() => {
-    (async() => {
+    (async () => {
       const registry = await AbiRegistry.load({ urls: [PRESALE_CONTRACT_ABI_URL] });
       const abi = new SmartContractAbi(registry, [PRESALE_CONTRACT_NAME]);
       const contract = new SmartContract({ address: new Address(PRESALE_CONTRACT_ADDRESS), abi: abi });
@@ -67,8 +69,8 @@ const Presale = () => {
       // });
 
       setContractInteractor({
-          contract,
-          controller,
+        contract,
+        controller,
       });
     })();
   }, []); // [] makes useEffect run once
@@ -89,7 +91,7 @@ const Presale = () => {
       const goal = convertWeiToEsdt(value.field2);
       const totalBoughtAmountOfEsdt = convertWeiToEsdt(value.field3);
 
-      const result = {status, leftTimestamp, goal, totalBoughtAmountOfEsdt};
+      const result = { status, leftTimestamp, goal, totalBoughtAmountOfEsdt };
       // console.log('getStatus', result);
       setSaleStatus(result);
     })();
@@ -98,7 +100,7 @@ const Presale = () => {
   React.useEffect(() => {
     (async () => {
       // acount state
-      if (!contractInteractor || !account.address) return;     
+      if (!contractInteractor || !account.address) return;
       const args = [new AddressValue(new Address(account.address))];
       const interaction = contractInteractor.contract.methods.getAccountState(args);
       const res = await contractInteractor.controller.query(interaction);
@@ -107,7 +109,7 @@ const Presale = () => {
 
       // const accountState = res.firstValue?.valueOf().toNumber();
       // console.log('accountState', accountState);
-      setAccountState({accountState: res.firstValue?.valueOf().toNumber()});
+      setAccountState({ accountState: res.firstValue?.valueOf().toNumber() });
     })();
   }, [contractInteractor, account.address]);
 
@@ -188,6 +190,16 @@ const Presale = () => {
 
                 <div className='custom-presale-price'>1 EGLD = {1 / EXCHANGE_RATE} BitX</div>
                 {/* <div className='custom-presale-goal'>GOAL: { saleStatus?.goal } BitX</div> */}
+
+                <div className="text-center" style={{ display: 'flex', justifyContent: 'center' }}>
+                  <div
+                    className="whitelist-but"
+                    style={{ marginTop: "30px", alignItems: "center", justifyContent: "center", display: "flex" }}
+                  >
+                    <img src={whiteListLogo} alt="whitelist" style={{ width: "20%" }}></img>
+                    <span style={{ paddingLeft: "12px" }}>WhiteList</span>
+                  </div>
+                </div>
               </div>
 
             </div>
@@ -225,7 +237,7 @@ const Presale = () => {
             </div>
           </Col>
         </div>
-      </div>
+      </div >
     </>
   );
 };

@@ -221,6 +221,7 @@
     .progress {
         height: 10px !important;
         border-radius: 5px !important;
+
         // box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
         .progress-bar {
             background-color: gray !important;
@@ -275,4 +276,23 @@
 .background-1 {
     background-image: url('../../assets/img/pngegg.png');
     background-size: cover;
+}
+
+.whitelist-but {
+    padding: 10px 50px;
+    background: rgba(0, 0, 0, 0.3);
+    color: white;
+    border: 1px solid gray;
+    border-radius: 5px;
+    transition: 0.3s ease-in-out;
+
+    &:hover {
+        cursor:pointer;
+        transform: scale(1.1);
+    }
+
+    &:active {
+        transition: 0.1s ease-out;
+        transform: scale(1);
+    }
 }
