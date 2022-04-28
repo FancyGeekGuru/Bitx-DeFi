@@ -210,7 +210,7 @@ const Bitx2Heto = () => {
 
           if (tokens.length > 0) {
             // console.log('tokens[0]', tokens[0]);
-            _balance = convertWeiToEsdt(tokens[0].balance);
+            _balance = convertWeiToEsdt(tokens[0].balance, BTX_TOKEN_DECIMALS);
           }
         }
         setBalance(_balance);

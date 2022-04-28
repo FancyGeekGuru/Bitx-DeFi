@@ -31,8 +31,6 @@ import coin from 'assets/img/coin.png';
 import elrondLogo from 'assets/img/Elrond logo.png';
 import HetoLogo from 'assets/img/token logos/HETO.png';
 import AlertModal from '../../../components/AlertModal';
-import { HETO_TOKEN_DECIMALS } from '../../../config';
-
 
 import {
   HETO2HETO_CONTRACT_ADDRESS,
@@ -40,7 +38,8 @@ import {
   HETO2HETO_CONTRACT_NAME,
   HETO_TOKEN_TICKER,
   HETO_TOKEN_ID,
-} from '../../../config';
+  HETO_TOKEN_DECIMALS,
+} from 'config';
 
 import {
   SECOND_IN_MILLI,
@@ -52,8 +51,8 @@ import {
   IContractInteractor,
   IBtx2BtxStakeSetting,
   IStakeAccount,
-} from '../../../utils';
-import { convertEsdtToWei } from '../../../utils/convert';
+  convertEsdtToWei,
+} from 'utils';
 
 const Heto2Heto = () => {
   const { account } = useGetAccountInfo();
