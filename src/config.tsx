@@ -74,6 +74,7 @@ export const HETO2HETO_CONTRACT_NAME = 'BitxStake';
 export const HETO_TOKEN_TICKER = 'HETO';
 export const HETO_TOKEN_ID = 'HETO-663cf8';
 export const HETO_TOKEN_DECIMALS = 0;
+export const HETO_CLAIM_PERIOD_IN_DAYS = 7;
 
 export const BTX2HETO_CONTRACT_ADDRESS = 'erd1qqqqqqqqqqqqqpgqryddrff3qxgneyqpe9n4ny675zzu9qnz3qmqryx9tp';
 export const BTX2HETO_CONTRACT_ABI = 'abi/btx2dice.abi.json';

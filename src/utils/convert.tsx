@@ -56,8 +56,8 @@ export const getDaysFromNow = (targetTimestamp: number) => {
 };
 
 // daily compound
-export const convertAPR2APY = (apr: number) => {
-    const numberOfPeriod = 365;
+export const convertAPR2APY = (apr: number, periodInDays = 1) => {
+    const numberOfPeriod = 365 / periodInDays;
     const factor = 100;
     const apy = (Math.pow((1 + apr / 100 / numberOfPeriod), numberOfPeriod) - 1) * 100;
     return Math.round(apy * factor) / factor;

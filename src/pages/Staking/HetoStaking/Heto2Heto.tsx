@@ -39,6 +39,7 @@ import {
   HETO_TOKEN_TICKER,
   HETO_TOKEN_ID,
   HETO_TOKEN_DECIMALS,
+  HETO_CLAIM_PERIOD_IN_DAYS,
 } from 'config';
 
 import {
@@ -395,7 +396,7 @@ const Heto2Heto = () => {
         </div>
         <div>
           <p className='heading'>APY</p>
-          <p className='data'>{stakeSetting ? convertAPR2APY(stakeSetting.apr) : '-'} %</p>
+          <p className='data'>{stakeSetting ? convertAPR2APY(stakeSetting.apr, HETO_CLAIM_PERIOD_IN_DAYS) : '-'} %</p>
         </div>
         <div>
           <p className='heading'>Total Staked</p>
