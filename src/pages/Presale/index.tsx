@@ -31,6 +31,7 @@ import {
   PRESALE_CONTRACT_ADDRESS,
   PRESALE_CONTRACT_ABI_URL,
   PRESALE_CONTRACT_NAME,
+  PRESALE_WHITELIST_URL,
 } from 'config';
 import {
   TIMEOUT,
@@ -192,13 +193,15 @@ const Presale = () => {
                 {/* <div className='custom-presale-goal'>GOAL: { saleStatus?.goal } BitX</div> */}
 
                 <div className="text-center" style={{ display: 'flex', justifyContent: 'center' }}>
-                  <div
+                  <a
                     className="whitelist-but"
                     style={{ marginTop: "30px", alignItems: "center", justifyContent: "center", display: "flex" }}
+                    href={PRESALE_WHITELIST_URL}
+                    target="_blank" rel="noreferrer"
                   >
                     <img src={whiteListLogo} alt="whitelist" style={{ width: "20%" }}></img>
                     <span style={{ paddingLeft: "12px" }}>WhiteList</span>
-                  </div>
+                  </a>
                 </div>
               </div>
 
