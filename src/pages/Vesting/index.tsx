@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './index.scss';
 
 import Box from '@mui/material/Box';
@@ -7,7 +7,9 @@ import StepConnector, { stepConnectorClasses } from '@mui/material/StepConnector
 import { StepIconProps } from '@mui/material/StepIcon';
 import StepLabel from '@mui/material/StepLabel';
 import Stepper from '@mui/material/Stepper';
-import { styled } from '@mui/material/styles';
+import { alpha, styled } from '@mui/material/styles';
+import Switch from '@mui/material/Switch';
+
 import { Row, Col } from 'react-bootstrap';
 
 import vestinglogo from 'assets/img/vesting/vesting logo.svg';
@@ -82,8 +84,55 @@ const ColorlibConnector = styled(StepConnector)(({ theme }) => ({
     },
 }));
 
+const GreenSwitch = styled(Switch)(({ theme }) => ({
+    '& .MuiSwitch-switchBase': {
+        color: '#05AB76',
+        '&:hover': {
+            backgroundColor: alpha('#05AB76', theme.palette.action.hoverOpacity),
+        },
+
+        '& .Mui-checked': {
+            backgroundColor: '#05AB76',
+
+        }
+    },
+    '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
+        backgroundColor: '#5D5D5D',
+    },
+
+    '& .MuiSwitch-track': {
+        backgroundColor: '#5D5D5D',
+    },
+    '& .MuiSwitch-thumb': {
+        backgroundColor: '#05AB76',
+    }
+}));
+
 const Vesting = () => {
     const steps = ['Confirm Your Token', 'Locking Token For', 'Finalize Your Lock', 'Track Your Lock'];
+    const lockingTokensFor = ['Marketing', 'Ecosystem', 'Team', 'Advisor', 'Foundation', 'Development', 'Partnership', 'investor'];
+
+    const [activeStep, setActiveStep] = useState<number | undefined>(1);
+    const handleChangeStep = (stepNum) => {
+        if (stepNum >=0 && stepNum <= 3) {
+            setActiveStep(stepNum);
+        }
+    };
+
+    /** step 2 Locking Tokens for */
+
+    // switch state
+    const [switchLockingTokensForchecked, setLockingTokensForChecked] = React.useState(true);
+    const handleSwtichLockingTokensForChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setLockingTokensForChecked(event.target.checked);
+    };
+
+    // select why u lock tokens
+    const [selectedLockingTokensForID, setLockingTokensForID] = React.useState<number | undefined>();
+    const handleSelectTokensFor = (index) => {
+        setLockingTokensForID(index);
+    };
+
 
     return (
         <>
@@ -91,7 +140,7 @@ const Vesting = () => {
                 <p className='lock-process text-center'>Lock Process</p>
 
                 <Box sx={{ width: '100%', marginTop: "40px" }}>
-                    <Stepper alternativeLabel activeStep={1} connector={<ColorlibConnector />}>
+                    <Stepper alternativeLabel activeStep={activeStep} connector={<ColorlibConnector />}>
                         {steps.map((label) => (
                             <Step key={label}>
                                 <StepLabel StepIconComponent={ColorlibStepIcon}><span style={{ color: "#D3D3D3", fontSize: "13px" }}>{label}</span></StepLabel>
@@ -101,46 +150,85 @@ const Vesting = () => {
 
                     {/** step 1 */}
                     <div className="Step-Box">
-                        <p className="step-title">Confirm Your Token</p>
-                        <input className='bitx-input' />
-                        <p className="step-title mt-3">Token Found</p>
-                        <Row>
-                            <Col xs="12" sm="6">
-                                <div className="token-info">
-                                    <span> {"Token Name : "}</span>
-                                    <span> {"BitX"} </span>
-                                </div>
-                            </Col>
-                            <Col xs="12" sm="6">
-                                <div className="token-info">
-                                    <span> {"Token Ticker : "}</span>
-                                    <span> {"BitX"} </span>
-                                </div>
-                            </Col>
-                            <Col xs="12" sm="6">
-                                <div className="token-info">
-                                    <span> {"Total Supply : "}</span>
-                                    <span> {"1038400000"} </span>
-                                </div>
-                            </Col>
-                            <Col xs="12" sm="6">
-                                <div className="token-info">
-                                    <span> {"Your Balance : "}</span>
-                                    <span> {"0"} </span>
-                                </div>
-                            </Col>
-                        </Row>
+                        {
+                            activeStep == 0 && (
+                                <>
+                                    <p className="step-title">Confirm Your Token</p>
+                                    <input className='bitx-input' />
+                                    <p className="step-title mt-3">Token Found</p>
+                                    <Row>
+                                        <Col xs="12" sm="6">
+                                            <div className="token-info">
+                                                <span> {"Token Name : "}</span>
+                                                <span> {"BitX"} </span>
+                                            </div>
+                                        </Col>
+                                        <Col xs="12" sm="6">
+                                            <div className="token-info">
+                                                <span> {"Token Ticker : "}</span>
+                                                <span> {"BitX"} </span>
+                                            </div>
+                                        </Col>
+                                        <Col xs="12" sm="6">
+                                            <div className="token-info">
+                                                <span> {"Total Supply : "}</span>
+                                                <span> {"1038400000"} </span>
+                                            </div>
+                                        </Col>
+                                        <Col xs="12" sm="6">
+                                            <div className="token-info">
+                                                <span> {"Your Balance : "}</span>
+                                                <span> {"0"} </span>
+                                            </div>
+                                        </Col>
+                                    </Row>
+                                </>
+                            )
+                        }
+
+                        {
+                            activeStep == 1 && (
+                                <>
+                                    <div className="d-flex" style={{ alignItems: "center" }}>
+                                        <p className="step-title" style={{ alignItems: "center" }}>I am Locking Tokens for</p>
+                                        <div className="ml-5">
+                                            <span className={!switchLockingTokensForchecked ? "text-primary-color" : "text-dark-color"}> Myself </span>
+                                            <GreenSwitch
+                                                checked={switchLockingTokensForchecked}
+                                                onChange={handleSwtichLockingTokensForChange}
+                                                inputProps={{ 'aria-label': 'controlled' }}
+                                            />
+                                            <span className={switchLockingTokensForchecked ? "text-primary-color" : "text-dark-color"}> Someone Else </span>
+                                        </div>
+                                    </div>
+                                    <input className='bitx-input' />
+                                    <p className="step-title mt-3">Please select</p>
+                                    <Row>
+                                        {
+                                            lockingTokensFor.map((row, index) => {
+                                                return (
+                                                    <div className={selectedLockingTokensForID == index ? "token-lock-chip-active" : "token-lock-chip"} key={index} onClick={() => handleSelectTokensFor(index)}>
+                                                        <span> {row} </span>
+                                                    </div>
+                                                );
+                                            })
+                                        }
+                                    </Row>
+                                </>
+                            )
+                        }
+
 
                         <div className='mt-2 d-flex text-center justify-content-center'>
                             <div className="d-flex align-items-center justify-content-center" >
-                                <div className="step-but">Back</div>
+                                <div className="step-but" onClick={() => handleChangeStep(activeStep - 1)}>Back</div>
                                 <img src={vestinglogo} alt="elrond vesting" />
-                                <div className="step-but">Next</div>
+                                <div className="step-but" onClick={() => handleChangeStep(activeStep + 1)}>Next</div>
                             </div>
                         </div>
                     </div>
                 </Box>
-            </div>
+            </div >
         </>
     );
 };

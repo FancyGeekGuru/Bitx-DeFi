@@ -36,14 +36,57 @@
 
 .token-info {
     padding: 15px;
-    color: #5D5D5D;
+    color: #8f8f8f;
     background-color: rgba(0, 0, 0, 0.15);
     border: 1px solid #05AB76;
     border-radius: 5px;
 }
 
 .step-but {
-    padding: 10px 30px;
+    padding: 8px 25px;
     border-radius: 5px;
     border: 1px solid #05AB76;
+    transition: .3s ease-in-out;
+
+    &:hover {
+        background: #05AB76;
+        color: black;
+        cursor: pointer;
+    }
+}
+
+.text-primary-color {
+    color: #05AB76;
+}
+
+.text-dark-color {
+    color: #a1a1a1;
+}
+
+.token-lock-chip {
+    margin-left: 15px;
+    border: 1px solid #05AB76;
+    border-radius: 3px;
+    background: #1E2027;
+    padding: 10px 15px;
+    font-size: 15px;
+    color: #05AB76;
+    cursor: pointer;
+    transition: .2s ease-in-out;
+
+    &:hover {
+        background: #05ab76c4;
+        color: black;
+    }
+}
+
+.token-lock-chip-active {
+    margin-left: 15px;
+    border: 1px solid #05AB76;
+    border-radius: 3px;
+    background: #05ab76;
+    padding: 10px 15px;
+    font-size: 15px;
+    color: black;
+    cursor: pointer;
 }
