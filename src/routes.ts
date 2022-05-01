@@ -8,23 +8,28 @@ import BitXStaking from './pages/Staking/BitXStaking';
 import DiceStaking from './pages/Staking/DiceStaking';
 import HetoStaking from './pages/Staking/HetoStaking';
 import MareStaking from './pages/Staking/MareStaking';
-import Vesting from './pages/Vesting';
+
+import BitLock from './pages/Vesting';
+import CreateVesting from './pages/Vesting/createVesting';
 
 export const routeNames = {
+  home: '/',
+
   unlock: '/unlock',
   ledger: '/ledger',
   walletconnect: '/walletconnect',
-  staking: '/staking',
-  presale: '/presale',
-  nftmint: '/nft-mint',
-  home: '/',
 
+  staking: '/staking',
   bitxstaking: '/btx-pool',
   dicestaking: '/dice-pool',
   marestaking: '/mare-pool',
   hetostaking: '/heto-pool',
 
-  vesting: '/vesting'
+  presale: '/presale',
+  nftmint: '/nft-mint',
+
+  bitlock: '/bitlock',
+  createvesting: '/bitlock/create-vesting',
 };
 
 const routes: Array<any> = [
@@ -77,9 +82,15 @@ const routes: Array<any> = [
   },
 
   {
-    path: routeNames.vesting,
-    title: 'vesting',
-    component: Vesting
+    path: routeNames.bitlock,
+    title: 'Bit Lock',
+    component: BitLock
+  },
+
+  {
+    path: routeNames.createvesting,
+    title: 'Create Vesting',
+    component: CreateVesting
   },
 ];
 

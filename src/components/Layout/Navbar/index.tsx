@@ -61,8 +61,8 @@ const Navbar = () => {
             <Link to={routeNames.nftmint} className='custom-navbar-button custom-navbar-normal-button'>
               NFT Mint
             </Link>
-            <Link to={routeNames.vesting} className='custom-navbar-button custom-navbar-normal-button'>
-              Vesting
+            <Link to={routeNames.bitlock} className='custom-navbar-button custom-navbar-normal-button'>
+              Bitlock
             </Link>
 
             {isLoggedIn ? (
