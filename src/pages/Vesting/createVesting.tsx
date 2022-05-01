@@ -114,7 +114,7 @@ const CreateVesting = () => {
     const steps = ['Confirm Your Token', 'Locking Token For', 'Finalize Your Lock', 'Track Your Lock'];
     const lockingTokensFor = ['Marketing', 'Ecosystem', 'Team', 'Advisor', 'Foundation', 'Development', 'Partnership', 'investor'];
 
-    const [activeStep, setActiveStep] = useState<number | undefined>(2);
+    const [activeStep, setActiveStep] = useState<number | undefined>(0);
     const handleChangeStep = (stepNum) => {
         if (stepNum >= 0 && stepNum <= 3) {
             setActiveStep(stepNum);

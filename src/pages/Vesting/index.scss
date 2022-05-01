@@ -152,3 +152,129 @@
 .mt-custom {
     margin-top: 20px;
 }
+
+.bitlock-vesting-list-box {
+    padding: 30px;
+    background: rgba(0, 0, 0, 0.3);
+    // background: rgba(255, 255, 255, 1);
+    border-radius: 5px;
+
+    color: "#ACACAC" !important;
+}
+
+/* responsive table*/
+
+.responsiveTable {
+    width: 100%;
+    font-size: 16px;
+}
+
+.responsiveTable td .tdBefore {
+    display: none;
+}
+
+.responsiveTable tr {
+    border-bottom: 1px solid rgba(112, 112, 112, 0.7);
+
+    &:hover {
+        background: #28292A;
+    }
+}
+
+.responsiveTable th {
+    padding: 15px;
+}
+
+.responsiveTable td {
+    padding: 10px;
+}
+
+@media screen and (max-width: 52em) {
+    /*
+      Force table elements to not behave like tables anymore
+      Hide table headers (but not display: none;, for accessibility)
+    */
+
+    .responsiveTable {
+        font-size: 14px;
+    }
+
+    .responsiveTable table,
+    .responsiveTable thead,
+    .responsiveTable tbody,
+    .responsiveTable th,
+    .responsiveTable td,
+    .responsiveTable tr {
+        display: block;
+        padding: 0px;
+    }
+
+    .responsiveTable thead tr {
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+        border-bottom: 2px solid #333;
+    }
+
+    .responsiveTable tbody tr {
+        border: 1px solid #B5B5B5;
+        border-radius: 5px;
+        padding: .25em;
+        margin-bottom: 15px;
+    }
+
+    .responsiveTable td.pivoted {
+        /* Behave like a "row" */
+        border: none !important;
+        position: relative;
+        padding-left: calc(50% + 10px) !important;
+        text-align: left !important;
+        white-space: pre-wrap;
+        overflow-wrap: break-word;
+    }
+
+    .responsiveTable td .tdBefore {
+        /* Now like a table header */
+        position: absolute;
+        display: block;
+
+        /* Top/left values mimic padding */
+        left: 1rem;
+        width: calc(50% - 20px);
+        white-space: pre-wrap;
+        overflow-wrap: break-word;
+        text-align: left !important;
+        font-weight: 600;
+    }
+}
+
+.view-but {
+    background: #1E2027;
+    padding: 6px;
+    border-radius: 5px;
+    // width: 70px;
+    border: 1px solid #05AB76;
+    color: #05AB76;
+    text-align: center;
+
+    &:hover {
+        cursor: pointer;
+        background: #05AB76;
+        color: black;
+    }
+}
+
+.create-vesting-but {
+    background: #05AB76;
+    padding: 6px 10px;
+    border-radius: 5px;
+    border: 1px solid #05AB76;
+    color: white;
+    text-align: center;
+    font-size: 16px;
+
+    &:hover {
+        cursor: pointer;
+        background: #1E2027;
+    }
+}

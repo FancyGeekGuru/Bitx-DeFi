@@ -1,12 +1,49 @@
 import React, { useState } from 'react';
 import { Row, Col } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
+import { Table, Thead, Tbody, Tr, Th, Td } from 'react-super-responsive-table';
 
 import BitlockImg from 'assets/img/vesting/Bitlock Img.svg';
 import Symbol1 from 'assets/img/vesting/Symbol for Locked Token Value.png';
 import Symbol2 from 'assets/img/vesting/Symbol for Locked Tokens.png';
 import Symbol3 from 'assets/img/vesting/Symbol for Lockers.png';
+import { alpha, styled } from '@mui/material/styles';
+import Switch from '@mui/material/Switch';
+import { routeNames } from 'routes';
+
+import * as data from './data';
+
+const GreenSwitch = styled(Switch)(({ theme }) => ({
+    '& .MuiSwitch-switchBase': {
+        color: '#05AB76',
+        '&:hover': {
+            backgroundColor: alpha('#05AB76', theme.palette.action.hoverOpacity),
+        },
+
+        '& .Mui-checked': {
+            backgroundColor: '#05AB76',
+
+        }
+    },
+    '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
+        backgroundColor: '#5D5D5D',
+    },
+
+    '& .MuiSwitch-track': {
+        backgroundColor: '#5D5D5D',
+    },
+    '& .MuiSwitch-thumb': {
+        backgroundColor: '#05AB76',
+    }
+}));
 
 const BitLock = () => {
+
+    const [switchViewType, setSwitchViewType] = React.useState(true);
+    const handleSwitchViewType = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setSwitchViewType(event.target.checked);
+    };
+
     return (
         <div className="home-container">
             <Row>
@@ -47,6 +84,59 @@ const BitLock = () => {
                     </div>
                 </Col>
             </Row>
+
+            <div className="bitlock-vesting-list-box mt-5 mb-5">
+                <p className="text-center" style={{ fontSize: "20px", fontWeight: "500", color: "#D3D3D3" }}>Search A Smart Lock Address</p>
+
+                <Row className="text-center justify-content-center">
+                    <input className='bitx-input w-75' style={{ background: "#191A1E", borderRadius: "5px" }} placeholder="Search a smart lock by name/contract address" />
+                    <Link to={routeNames.createvesting}>
+                        <div className="create-vesting-but ml-3">Create Vesting</div>
+                    </Link>
+                </Row>
+
+                <div className="text-center mt-3">
+                    <span className={!switchViewType ? "text-primary-color" : "text-dark-color"}> Track All Locks </span>
+                    <GreenSwitch
+                        checked={switchViewType}
+                        onChange={handleSwitchViewType}
+                        inputProps={{ 'aria-label': 'controlled' }}
+                    />
+                    <span className={switchViewType ? "text-primary-color" : "text-dark-color"}> Track My Locks </span>
+                </div>
+
+                <Table className="text-center mt-3" style={{ color: "#ACACAC" }}>
+                    <Thead>
+                        <Tr>
+                            {
+                                data.vestingListHeader.map((row, index) => {
+                                    return (
+                                        <Th key={index}>{row}</Th>
+                                    );
+                                })
+                            }
+                        </Tr>
+                    </Thead>
+                    <Tbody>
+
+                        {
+                            data.vestingList.map((row, index) => {
+                                return (
+                                    <Tr key={index}>
+                                        <Td>{row.Name}</Td>
+                                        <Td>{row.Token_Identifier}</Td>
+                                        <Td>{row.Token_Amount}</Td>
+                                        <Td>{row.Token_Value}</Td>
+                                        <Td>{row.Total_Value}</Td>
+                                        <Td>{row.Next_Relase}</Td>
+                                        <Td><div className="view-but">view</div></Td>
+                                    </Tr>
+                                );
+                            })
+                        }
+                    </Tbody>
+                </Table>
+            </div>
         </div>
     );
 };
