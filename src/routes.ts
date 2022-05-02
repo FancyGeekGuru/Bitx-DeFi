@@ -11,6 +11,7 @@ import MareStaking from './pages/Staking/MareStaking';
 
 import BitLock from './pages/Vesting';
 import CreateVesting from './pages/Vesting/createVesting';
+import VaultVesting from 'pages/Vesting/vaultVesting';
 
 export const routeNames = {
   home: '/',
@@ -30,6 +31,7 @@ export const routeNames = {
 
   bitlock: '/bitlock',
   createvesting: '/bitlock/create-vesting',
+  vaultvesting: '/bitlock/vault-vesting/*'
 };
 
 const routes: Array<any> = [
@@ -91,6 +93,12 @@ const routes: Array<any> = [
     path: routeNames.createvesting,
     title: 'Create Vesting',
     component: CreateVesting
+  },
+
+  {
+    path: routeNames.vaultvesting,
+    title: 'Vault Explorer',
+    component: VaultVesting
   },
 ];
 

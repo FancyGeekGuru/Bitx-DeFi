@@ -145,3 +145,86 @@ export const vestingList = [
         Next_Relase: "2022.04.30 15:30"
     }
 ];
+
+export const LockedEvents = [
+    {
+        Locked: 12345,
+        Purpose: "Ecosystem",
+        from: "3/28/2022",
+        to: "5/28/2022",
+        progress: 90,
+        Remain: "5 days"
+    },
+    {
+        Locked: 12345,
+        Purpose: "Ecosystem",
+        from: "3/28/2022",
+        to: "5/28/2022",
+        progress: 80,
+        Remain: "5 days"
+    },
+    {
+        Locked: 12345,
+        Purpose: "Ecosystem",
+        from: "3/28/2022",
+        to: "4/30/2022",
+        progress: 100,
+        Remain: "0 days"
+    },
+    {
+        Locked: 12345,
+        Purpose: "Ecosystem",
+        from: "3/28/2022",
+        to: "5/28/2022",
+        progress: 70,
+        Remain: "5 days"
+    },
+    {
+        Locked: 12345,
+        Purpose: "Ecosystem",
+        from: "3/28/2022",
+        to: "5/28/2022",
+        progress: 25,
+        Remain: "5 days"
+    },
+    {
+        Locked: 12345,
+        Purpose: "Ecosystem",
+        from: "3/28/2022",
+        to: "5/28/2022",
+        progress: 60,
+        Remain: "5 days"
+    },
+    {
+        Locked: 12345,
+        Purpose: "Ecosystem",
+        from: "3/28/2022",
+        to: "5/1/2022",
+        progress: 100,
+        Remain: "0 days"
+    },
+    {
+        Locked: 12345,
+        Purpose: "Ecosystem",
+        from: "3/28/2022",
+        to: "5/28/2022",
+        progress: 90,
+        Remain: "5 days"
+    },
+    {
+        Locked: 12345,
+        Purpose: "Ecosystem",
+        from: "3/28/2022",
+        to: "5/28/2022",
+        progress: 60,
+        Remain: "5 days"
+    },
+    {
+        Locked: 12345,
+        Purpose: "Ecosystem",
+        from: "3/28/2022",
+        to: "5/28/2022",
+        progress: 30,
+        Remain: "5 days"
+    },
+];

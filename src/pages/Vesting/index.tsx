@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
+import { alpha, styled } from '@mui/material/styles';
+import Switch from '@mui/material/Switch';
 import { Row, Col } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
-import { Table, Thead, Tbody, Tr, Th, Td } from 'react-super-responsive-table';
 
+import { Link, useNavigate } from 'react-router-dom';
+import { Table, Thead, Tbody, Tr, Th, Td } from 'react-super-responsive-table';
 import BitlockImg from 'assets/img/vesting/Bitlock Img.svg';
 import Symbol1 from 'assets/img/vesting/Symbol for Locked Token Value.png';
 import Symbol2 from 'assets/img/vesting/Symbol for Locked Tokens.png';
 import Symbol3 from 'assets/img/vesting/Symbol for Lockers.png';
-import { alpha, styled } from '@mui/material/styles';
-import Switch from '@mui/material/Switch';
+
 import { routeNames } from 'routes';
 
 import * as data from './data';
@@ -42,6 +43,12 @@ const BitLock = () => {
     const [switchViewType, setSwitchViewType] = React.useState(true);
     const handleSwitchViewType = (event: React.ChangeEvent<HTMLInputElement>) => {
         setSwitchViewType(event.target.checked);
+    };
+
+    const navigate = useNavigate();
+
+    const handleClickView = (locker_addr) => {
+        navigate(`/bitlock/vault-vesting/${locker_addr}`);
     };
 
     return (
@@ -129,7 +136,7 @@ const BitLock = () => {
                                         <Td>{row.Token_Value}</Td>
                                         <Td>{row.Total_Value}</Td>
                                         <Td>{row.Next_Relase}</Td>
-                                        <Td><div className="view-but">view</div></Td>
+                                        <Td><div className="view-but" onClick={() => handleClickView(row.Locker_Address)}>view</div></Td>
                                     </Tr>
                                 );
                             })
