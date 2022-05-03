@@ -2,17 +2,49 @@ import React, { useState, useEffect } from 'react';
 import { alpha, styled } from '@mui/material/styles';
 import Switch from '@mui/material/Switch';
 import { Row, Col } from 'react-bootstrap';
-
 import { Link, useNavigate } from 'react-router-dom';
 import { Table, Thead, Tbody, Tr, Th, Td } from 'react-super-responsive-table';
+
+import {
+    refreshAccount,
+    sendTransactions,
+    useGetAccountInfo,
+    useGetNetworkConfig,
+    useGetPendingTransactions,
+} from '@elrondnetwork/dapp-core';
+import {
+    Address,
+    AddressValue,
+    AbiRegistry,
+    SmartContractAbi,
+    SmartContract,
+    ProxyProvider,
+    TypedValue,
+    ArgSerializer,
+    GasLimit,
+    DefaultSmartContractController,
+    U32Value,
+} from '@elrondnetwork/erdjs';
+
 import BitlockImg from 'assets/img/vesting/Bitlock Img.svg';
 import Symbol1 from 'assets/img/vesting/Symbol for Locked Token Value.png';
 import Symbol2 from 'assets/img/vesting/Symbol for Locked Tokens.png';
 import Symbol3 from 'assets/img/vesting/Symbol for Lockers.png';
-
 import { routeNames } from 'routes';
-
 import * as data from './data';
+import {TOKENS} from 'data';
+
+import {
+    VESTING_CONTRACT_ADDRESS,
+    VESTING_CONTRACT_ABI_URL,
+    VESTING_CONTRACT_NAME,
+} from 'config';
+import {
+    IContractInteractor,
+    TIMEOUT,
+    convertWeiToEsdt,
+    convertEsdtToWei,
+} from 'utils';
 
 const GreenSwitch = styled(Switch)(({ theme }) => ({
     '& .MuiSwitch-switchBase': {
@@ -39,6 +71,75 @@ const GreenSwitch = styled(Switch)(({ theme }) => ({
 }));
 
 const BitLock = () => {
+    const { address } = useGetAccountInfo();
+    const { network } = useGetNetworkConfig();
+    const { hasPendingTransactions } = useGetPendingTransactions();
+    const provider = new ProxyProvider(network.apiAddress, { timeout: TIMEOUT });
+
+    const [contractInteractor, setContractInteractor] = React.useState<IContractInteractor | undefined>();
+    // load smart contract abi and parse it to SmartContract object for tx
+    React.useEffect(() => {
+        (async () => {
+            const registry = await AbiRegistry.load({ urls: [VESTING_CONTRACT_ABI_URL] });
+            const abi = new SmartContractAbi(registry, [VESTING_CONTRACT_NAME]);
+            const contract = new SmartContract({ address: new Address(VESTING_CONTRACT_ADDRESS), abi: abi });
+            const controller = new DefaultSmartContractController(abi, provider);
+
+            // console.log('contractInteractor', {
+            //     contract,
+            //     controller,
+            // });
+
+            setContractInteractor({
+                contract,
+                controller,
+            });
+        })();
+    }, []); // [] makes useEffect run once
+
+    const [lockSetting, setLockSetting] = React.useState<any>([]);
+    React.useEffect(() => {
+        (async () => {
+            if (!contractInteractor) return;
+            const interaction = contractInteractor.contract.methods.viewLockSetting();
+            const res = await contractInteractor.controller.query(interaction);
+
+            if (!res || !res.returnCode.isSuccess()) return;
+            const value = res.firstValue.valueOf();
+            
+            const total_locked_token_ids = value.total_locked_token_ids.map((v: any) => v.toString());
+            const total_locked_token_amounts = value.total_locked_token_amounts;
+            const total_locked_tokens = [];
+            for (let i = 0; i < total_locked_token_ids.length; i++) {
+                const token_id = total_locked_token_ids[i];
+                const amount = convertWeiToEsdt(total_locked_token_amounts[i], TOKENS[token_id].decimals);
+
+                total_locked_tokens.push({
+                    ...TOKENS[token_id],
+                    amount,
+                });
+            }
+            
+            const total_lock_count = value.total_lock_count.toNumber();
+            const wegld_token_id = value.wegld_token_id.toString();
+            const wegld_min_fee = convertWeiToEsdt(value.wegld_min_fee);
+            const wegld_base_fee = convertWeiToEsdt(value.wegld_base_fee);
+            const lock_token_fee = value.lock_token_fee.toNumber() / 100;
+
+            const lockSetting = {
+                total_locked_tokens,
+                total_lock_count,
+                wegld_token_id,
+                wegld_min_fee,
+                wegld_base_fee,
+                lock_token_fee,
+            };
+
+            console.log('lockSetting', lockSetting);
+            setLockSetting(lockSetting);
+        })();
+    }, [contractInteractor]);
+
     const my_address = "erd1qqqqqqqqqqqqqpgq7r9n9u389xr23vqyye8maaetcg2r886vj9qsj7sl4G";
 
     /** switch view type (must filter by locker address) */

@@ -63,7 +63,7 @@ export const convertAPR2APY = (apr: number, periodInDays = 1) => {
     return Math.round(apy * factor) / factor;
 };
 
-export const convertWeiToEsdt = (v: any, decimals = 18, precision = 2) => {
+export const convertWeiToEsdt = (v: any, decimals = 18, precision = 4) => {
     // conversion for BigNumber operation
     if (typeof(v) != typeof(BigNumber)) v = new BigNumber(v);
 

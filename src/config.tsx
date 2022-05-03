@@ -82,7 +82,7 @@
 // export const BTX2HETO_CONTRACT_ABI = 'abi/btx2dice.abi.json';
 // export const BTX2HETO_CONTRACT_NAME = 'BitxStake';
 
-
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
 export const ENVIRONMENT = 'devnet';
 
 export const dAppName = 'BitX Platform';
@@ -168,3 +168,8 @@ export const HETO_CLAIM_PERIOD_IN_DAYS = 7;
 export const BTX2HETO_CONTRACT_ADDRESS = 'erd1qqqqqqqqqqqqqpgq7r9n9u389xr23vqyye8maaetcg2r886vj9qsj7sl4k';
 export const BTX2HETO_CONTRACT_ABI = 'abi/btx2dice.abi.json';
 export const BTX2HETO_CONTRACT_NAME = 'BitxStake';
+
+//
+export const VESTING_CONTRACT_ADDRESS = 'erd1qqqqqqqqqqqqqpgqxq8ay7uwrmmeu7hfjgmrz6vcau6rj2l9j9qskqqu84';
+export const VESTING_CONTRACT_ABI_URL = 'abi/btx-vesting.abi.json';
+export const VESTING_CONTRACT_NAME = 'BtxVesting';
