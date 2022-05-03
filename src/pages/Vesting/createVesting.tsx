@@ -1,10 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './index.scss';
 
 import Box from '@mui/material/Box';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Radio from '@mui/material/Radio';
-import RadioGroup from '@mui/material/RadioGroup';
 import Step from '@mui/material/Step';
 import StepConnector, { stepConnectorClasses } from '@mui/material/StepConnector';
 import { StepIconProps } from '@mui/material/StepIcon';
@@ -12,15 +9,13 @@ import StepLabel from '@mui/material/StepLabel';
 import Stepper from '@mui/material/Stepper';
 import { alpha, styled, createTheme, ThemeProvider } from '@mui/material/styles';
 import Switch from '@mui/material/Switch';
-
 import TextField from '@mui/material/TextField';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { MobileDateTimePicker } from '@mui/x-date-pickers/MobileDateTimePicker';
-
-import { Row, Col } from 'react-bootstrap';
+import { Row, Col, Dropdown } from 'react-bootstrap';
 import vestinglogo from 'assets/img/vesting/vesting logo.svg';
-
+import * as data from './data';
 
 const outerTheme = createTheme({
     palette: {
@@ -128,11 +123,18 @@ const CreateVesting = () => {
     const steps = ['Confirm Your Token', 'Locking Token For', 'Finalize Your Lock', 'Track Your Lock'];
     const lockingTokensFor = ['Marketing', 'Ecosystem', 'Team', 'Advisor', 'Foundation', 'Development', 'Partnership', 'investor'];
 
+    const paymentTokens = data.tokens;
     const [activeStep, setActiveStep] = useState<number | undefined>(2);
     const handleChangeStep = (stepNum) => {
         if (stepNum >= 0 && stepNum <= 3) {
             setActiveStep(stepNum);
         }
+    };
+
+    /** for select tokens */
+    const [selectedTokenIndex, setSelectedTokenIndex] = useState<number>(0);
+    const handleSelectTokenId = (token_id) => {
+        setSelectedTokenIndex(token_id);
     };
 
     /** step 2 Locking Tokens for */
@@ -149,18 +151,51 @@ const CreateVesting = () => {
         setLockingTokensForID(index);
     };
 
-    // select lock type
-    const [lockType, setLockType] = React.useState('single');
+    // set lock
+    const [lockList, setLockList] = useState([]);
+    const [lockAmount, setLockAmount] = useState<number>();
+    const [lockCount, setLockCount] = useState<number>();
 
-    const handleRadioLockTypeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setLockType((event.target as HTMLInputElement).value);
+    useEffect(() => {
+        const release = {
+            date: new Date(),
+            percent: ''
+        };
+
+        const tmpLockList = [];
+        for (let i = 0; i < lockCount; i++) {
+            tmpLockList.push(release);
+        }
+
+        setLockList(tmpLockList);
+    }, [lockCount]);
+
+    const handleChangeDate = (index, date) => {
+        const updatedList = lockList.map((item, id) => {
+            if (index == id) {
+                return { ...item, date: date };
+            }
+            return item;
+        });
+
+        setLockList(updatedList);
     };
 
-    // select next release date
-    const [value, setValue] = React.useState<Date | null>(
-        new Date('2018-01-01T00:00:00.000Z'),
-    );
+    const handleChangePercent = (index, percent) => {
+        if (percent > 100) {
+            console.log("should below 100");
+            return;
+        }
 
+        const updatedList = lockList.map((item, id) => {
+            if (index == id) {
+                return { ...item, percent: percent };
+            }
+            return item;
+        });
+
+        setLockList(updatedList);
+    };
 
     return (
         <>
@@ -182,7 +217,28 @@ const CreateVesting = () => {
                             activeStep == 0 && (
                                 <>
                                     <p className="step-title">Confirm Your Token</p>
-                                    <input className='bitx-input w-100' />
+                                    <div className="d-flex justify-content-center">
+                                        <Dropdown className="w-50" onSelect={handleSelectTokenId} drop='down' style={{ width: "150px" }}>
+                                            <Dropdown.Toggle className='token-id-toggle' id="token-id">
+                                                {
+                                                    <>
+                                                        <span>{paymentTokens && paymentTokens[selectedTokenIndex].ticker}</span>
+                                                        <img src={paymentTokens && paymentTokens[selectedTokenIndex].url} />
+                                                    </>
+                                                }
+                                            </Dropdown.Toggle>
+                                            <Dropdown.Menu className='token-id-menu'>
+                                                {
+                                                    paymentTokens && paymentTokens.map((token, index) => (
+                                                        <Dropdown.Item eventKey={index} key={`token-id-menu-item-${token.identifier}`}>
+                                                            <span>{token.ticker}</span>
+                                                            <img src={token.url} />
+                                                        </Dropdown.Item>
+                                                    ))
+                                                }
+                                            </Dropdown.Menu>
+                                        </Dropdown>
+                                    </div>
                                     <p className="step-title mt-3">Token Found</p>
                                     <Row>
                                         <Col xs="12" sm="6">
@@ -229,7 +285,7 @@ const CreateVesting = () => {
                                             <span className={switchLockingTokensForchecked ? "text-primary-color" : "text-dark-color"}> Someone Else </span>
                                         </div>
                                     </div>
-                                    <input className='bitx-input w-100' />
+                                    <input className='bitlock-input w-100' />
                                     <p className="step-title mt-3">Please select</p>
                                     <Row>
                                         {
@@ -249,131 +305,85 @@ const CreateVesting = () => {
                         {
                             activeStep == 2 && (
                                 <>
-                                    <div className="d-flex" style={{ alignItems: "center" }}>
-                                        <p className="step-title" style={{ alignItems: "center" }}>Finalize your Lock</p>
-                                        <div className="ml-5">
-                                            <RadioGroup
-                                                aria-labelledby="demo-form-control-label-placement"
-                                                name="quiz"
-                                                value={lockType}
-                                                onChange={handleRadioLockTypeChange}
-                                            >
-                                                <FormControlLabel value="single" control={<Radio sx={{
-                                                    color: '#05AB76',
-                                                    '&.Mui-checked': {
-                                                        color: '#05AB76',
-                                                    },
-                                                }} />} label="Single Lock" />
+                                    <p className="step-title">Finalize your Lock</p>
 
-                                                <FormControlLabel value="linear" control={<Radio sx={{
-                                                    color: '#05AB76',
-                                                    '&.Mui-checked': {
-                                                        color: '#05AB76',
-                                                    },
-                                                }} />} label="Linear Vesting" />
-
-                                                <FormControlLabel value="custom" control={<Radio sx={{
-                                                    color: '#05AB76',
-                                                    '&.Mui-checked': {
-                                                        color: '#05AB76',
-                                                    },
-                                                }} />} label="Custom Vesting" />
-                                            </RadioGroup>
-                                        </div>
-                                    </div>
                                     <Row className="mt-3">
                                         <Col lg="6">
                                             <Row className="lock-mini-box d-flex align-items-center ml-1 mr-1">
                                                 <span>Lock Amount</span>
                                                 <div className="d-flex ml-auto">
-                                                    <input className='bitx-input' />
+                                                    <input className='bitx-input' type="number" value={lockAmount} onChange={(e) => setLockAmount(Number(e.target.value))} />
                                                     <div className="token-ticker">BTX</div>
                                                 </div>
                                                 <span className='ml-auto'>Balance: 0</span>
-                                                <div className="max-but ml-auto">max</div>
+                                                <div className="max-but ml-auto" onClick={() => setLockAmount(100)}>max</div>
                                             </Row>
                                         </Col>
+
                                         <Col lg="6">
-                                            {
-                                                lockType == "single" && (
-                                                    <>
-                                                        <Row className="lock-mini-box d-flex align-items-center ml-1 mr-1">
-                                                            <span>Locking Duration</span>
-                                                            <div className="d-flex ml-auto">
-                                                                <input className='bitx-input' />
-                                                                <div className="token-ticker">Days</div>
-                                                            </div>
-                                                        </Row>
-                                                        <div className="text-center mt-3">
-                                                            <p style={{ color: "#FEE277" }}>{"You will be able to claim 100 BTX after 5 days."}</p>
-                                                        </div>
-                                                    </>
-
-                                                )
-                                            }
-
-                                            {
-                                                lockType == "linear" && (
-                                                    <>
-                                                        <Row className="lock-mini-box d-flex align-items-center ml-1 mr-1">
-                                                            <span>Every Unlock in</span>
-                                                            <div className="d-flex ml-auto">
-                                                                <input className='bitx-input' />
-                                                                <div className="token-ticker">Days</div>
-                                                            </div>
-                                                        </Row>
-
-                                                        <Row className="lock-mini-box d-flex align-items-center ml-1 mr-1 mt-3">
-                                                            <Col sm="6" className="d-flex align-items-center justify-content-between">
-                                                                <span>Cliff (month)</span>
-                                                                <input className='bitx-input' style={{ width: "100px", borderRadius: "5px" }} />
-                                                            </Col>
-                                                            <Col sm="6" className="d-flex align-items-center justify-content-between">
-                                                                <span>Lock Count</span>
-                                                                <input className='bitx-input' style={{ width: "100px", borderRadius: "5px" }} />
-                                                            </Col>
-                                                        </Row>
-
-                                                        <div className="lock-state-box mt-3 align-items-center">
-                                                            <span>Unlock Time</span>
-                                                            <ThemeProvider theme={outerTheme}>
-                                                                <LocalizationProvider dateAdapter={AdapterDateFns}>
-                                                                    <MobileDateTimePicker
-                                                                        value={value}
-                                                                        onChange={(newValue) => {
-                                                                            setValue(newValue);
-                                                                        }}
-                                                                        renderInput={(params) => <TextField {...params} />}
-                                                                    />
-                                                                </LocalizationProvider>
-                                                            </ThemeProvider>
-                                                        </div>
-
-                                                        <div className="text-center mt-3">
-                                                            <p style={{ color: "#FEE277" }}>{"After 2 Months, You will be able to claim 100 BTX every 30 days."}</p>
-                                                            <span style={{ color: "#05AB76" }}>View Testing Table</span>
-                                                        </div>
-                                                    </>
-                                                )
-                                            }
-                                        </Col>
-                                    </Row>
-
-                                    <Row className={`mt-${lockType}`}>
-                                        <Col lg="6">
-                                            <div className="lock-state-box">
-                                                <span>Total Staked</span>
-                                                <span style={{ color: "#05AB76" }}>100 BTX</span>
-                                            </div>
-                                            <div className="lock-state-box mt-2">
-                                                <span>{lockType == "linear" ? "First Unlock Time" : "Unlock Time"}</span>
-                                                <span style={{ color: "#05AB76" }}>Wed, 27 Apr 2022 02:47:55 UTC</span>
-                                            </div>
-                                            <div className="lock-state-box mt-2">
-                                                <span>Fees</span>
-                                                <span style={{ color: "#05AB76" }}>0.12</span>
+                                            <div className="lock-mini-box d-flex align-items-center ml-1 mr-1">
+                                                <span>Lock Count</span>
+                                                <input className='bitlock-input ml-3' type="number" style={{ borderRadius: "5px", width: "80%" }} onChange={(e) => setLockCount(Number(e.target.value))} value={lockCount} />
                                             </div>
                                         </Col>
+
+                                        {
+                                            lockList.map((row, index) => {
+                                                console.log(row);
+                                                return (
+                                                    <Col md="4" key={index}>
+                                                        <div className="lock-state-box">
+                                                            <div className="d-flex align-items-center">
+                                                                <div className="w-50">
+                                                                    <span>Release Date</span>
+                                                                </div>
+                                                                <div className="w-50">
+                                                                    <ThemeProvider theme={outerTheme}>
+                                                                        <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                                                            <MobileDateTimePicker
+                                                                                value={row.date}
+                                                                                onChange={(newValue) => {
+                                                                                    handleChangeDate(index, newValue);
+                                                                                }}
+                                                                                renderInput={(params) => <TextField {...params} />}
+                                                                            />
+                                                                        </LocalizationProvider>
+                                                                    </ThemeProvider>
+                                                                </div>
+                                                            </div>
+
+                                                            <div className="mt-2 d-flex align-items-center">
+                                                                <div className="w-50">
+                                                                    <span>Relase Percent</span>
+                                                                </div>
+                                                                <div className="w-50">
+                                                                    <input className='bitlock-input w-100' type="number" onChange={(e) => handleChangePercent(index, Number(e.target.value))} value={row.percent} />
+                                                                </div>
+                                                            </div>
+
+                                                            <div className="mt-3 d-flex">
+                                                                <div className="w-50">
+                                                                    <span>Release Amount</span>
+                                                                </div>
+                                                                <div className="w-50">
+                                                                    <span>{lockAmount * row.percent / 100} BTX</span>
+                                                                </div>
+                                                            </div>
+
+                                                            <div className="mt-3 d-flex">
+                                                                <div className="w-50">
+                                                                    <span>Release Value</span>
+                                                                </div>
+                                                                <div className="w-50">
+                                                                    <span>$1,234</span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </Col>
+                                                );
+                                            })
+                                        }
+
                                     </Row>
                                 </>
                             )
