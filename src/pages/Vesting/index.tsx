@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { alpha, styled } from '@mui/material/styles';
 import Switch from '@mui/material/Switch';
 import { Row, Col } from 'react-bootstrap';
@@ -39,16 +39,37 @@ const GreenSwitch = styled(Switch)(({ theme }) => ({
 }));
 
 const BitLock = () => {
+    const my_address = "erd1qqqqqqqqqqqqqpgq7r9n9u389xr23vqyye8maaetcg2r886vj9qsj7sl4G";
 
-    const [switchViewType, setSwitchViewType] = React.useState(true);
+    /** switch view type (must filter by locker address) */
+    const [switchViewType, setSwitchViewType] = useState(false);
     const handleSwitchViewType = (event: React.ChangeEvent<HTMLInputElement>) => {
         setSwitchViewType(event.target.checked);
     };
+    useEffect(() => {
+        filterVestingList();
+    }, [switchViewType]);
 
+    /** click view button (must navigate to bitlock/vault vesting/0x...) */
     const navigate = useNavigate();
-
     const handleClickView = (locker_addr) => {
         navigate(`/bitlock/vault-vesting/${locker_addr}`);
+    };
+
+    /** filter vesting list (should filter by search text)*/
+    const [vestingList, setVestingList] = useState(data.vestingList);
+    const [searchText, setSearchText] = useState("");
+    useEffect(() => {
+        filterVestingList();
+    }, [searchText]);
+
+    const filterVestingList = () => {
+        let filterResult = data.vestingList;
+        if (switchViewType) { // Track My locks
+            filterResult = filterResult.filter(d => d.Locker_Address === my_address);
+        }
+        filterResult = filterResult.filter(d => d.Name.includes(searchText) || d.Locker_Address.includes(searchText));
+        setVestingList(filterResult);
     };
 
     return (
@@ -96,7 +117,8 @@ const BitLock = () => {
                 <p className="text-center" style={{ fontSize: "20px", fontWeight: "500", color: "#D3D3D3" }}>Search A Smart Lock Address</p>
 
                 <Row className="text-center justify-content-center">
-                    <input className='bitx-input w-75' style={{ background: "#191A1E", borderRadius: "5px" }} placeholder="Search a smart lock by name/contract address" />
+                    <input className='bitx-input w-75' style={{ background: "#191A1E", borderRadius: "5px" }} placeholder="Search a smart lock by name/contract address" onChange={(e) => setSearchText(e.target.value)} />
+
                     <Link to={routeNames.createvesting}>
                         <div className="create-vesting-but ml-3">Create Vesting</div>
                     </Link>
@@ -127,7 +149,7 @@ const BitLock = () => {
                     <Tbody>
 
                         {
-                            data.vestingList.map((row, index) => {
+                            vestingList.map((row, index) => {
                                 return (
                                     <Tr key={index}>
                                         <Td>{row.Name}</Td>

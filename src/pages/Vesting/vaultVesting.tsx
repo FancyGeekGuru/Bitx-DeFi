@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Box from '@mui/material/Box';
 import CircularProgress, { CircularProgressProps } from '@mui/material/CircularProgress';
 import { alpha, styled } from '@mui/material/styles';
@@ -63,13 +63,47 @@ function CircularProgressWithLabel(
     );
 }
 
-const VaultVesting = (props) => {
-    
+const VaultVesting = () => {
+    const my_wallet_address = "erd1t5eq3mcuyv44dxzfhshkwfe8pg63szfr43t0hmsuycc4klph7hjqc0ss7v";
+
     const location = useLocation();
-    console.log(location);
+    useEffect(() => {
+        const pathname = location.pathname;
+        const locker_address = pathname.substring(pathname.lastIndexOf('/') + 1);
+        console.log(locker_address); // get locker address from url and must check it and if invalid, go to 404 page.
+        setLockerAddr(locker_address);
+    }, []);
+
+    const [locker_address, setLockerAddr] = useState('');
+
+    useEffect(() => {
+        // check invalid locker address, go to 404
+        // let reg=/^0x([0-9a-fA-F]{16}){1}$/i;
+    }, [locker_address]);
+
+    /** swtich view type (View All locks is false, Track My Locks is true) */
     const [switchViewType, setSwitchViewType] = React.useState(false);
     const handleSwitchViewType = (event: React.ChangeEvent<HTMLInputElement>) => {
         setSwitchViewType(event.target.checked);
+    };
+    useEffect(() => {
+        filterLockedEvents();
+    }, [switchViewType]);
+
+    /** filter Locked Events (should filter by search text)*/
+    const [lockedEvents, setLockedEvents] = useState(data.LockedEvents);
+    const [searchText, setSearchText] = useState("");
+    useEffect(() => {
+        filterLockedEvents();
+    }, [searchText]);
+
+    const filterLockedEvents = () => {
+        let filterResult = data.LockedEvents;
+        if (switchViewType) { // Track My locks
+            filterResult = filterResult.filter(d => d.WalletAddr === my_wallet_address);
+        }
+        filterResult = filterResult.filter(d => d.Purpose.includes(searchText) || d.WalletAddr.includes(searchText));
+        setLockedEvents(filterResult);
     };
 
     return (
@@ -115,11 +149,11 @@ const VaultVesting = (props) => {
                 </Col>
 
                 <Col lg="8">
-                    <input className="bitx-input w-100" placeholder='Search a smart lock by name/contract address' />
+                    <input className="bitx-input w-100" placeholder='Search a smart lock by purpose/wallet-address' onChange={(e) => setSearchText(e.target.value)} />
 
                     <Row className="mt-4 mb-4">
                         {
-                            data.LockedEvents.map((event, index) => {
+                            lockedEvents.map((event, index) => {
                                 return (
                                     <Col sm="6" key={index}>
                                         <div className="lock-box justify-content-between">
