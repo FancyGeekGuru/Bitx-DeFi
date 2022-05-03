@@ -10,11 +10,25 @@ import StepConnector, { stepConnectorClasses } from '@mui/material/StepConnector
 import { StepIconProps } from '@mui/material/StepIcon';
 import StepLabel from '@mui/material/StepLabel';
 import Stepper from '@mui/material/Stepper';
-import { alpha, styled } from '@mui/material/styles';
+import { alpha, styled, createTheme, ThemeProvider } from '@mui/material/styles';
 import Switch from '@mui/material/Switch';
-import { Row, Col } from 'react-bootstrap';
 
+import TextField from '@mui/material/TextField';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { MobileDateTimePicker } from '@mui/x-date-pickers/MobileDateTimePicker';
+
+import { Row, Col } from 'react-bootstrap';
 import vestinglogo from 'assets/img/vesting/vesting logo.svg';
+
+
+const outerTheme = createTheme({
+    palette: {
+        primary: {
+            main: "#05AB76",
+        },
+    }
+});
 
 const ColorlibStepIconRoot = styled('div')<{
     ownerState: { completed?: boolean; active?: boolean };
@@ -114,7 +128,7 @@ const CreateVesting = () => {
     const steps = ['Confirm Your Token', 'Locking Token For', 'Finalize Your Lock', 'Track Your Lock'];
     const lockingTokensFor = ['Marketing', 'Ecosystem', 'Team', 'Advisor', 'Foundation', 'Development', 'Partnership', 'investor'];
 
-    const [activeStep, setActiveStep] = useState<number | undefined>(0);
+    const [activeStep, setActiveStep] = useState<number | undefined>(2);
     const handleChangeStep = (stepNum) => {
         if (stepNum >= 0 && stepNum <= 3) {
             setActiveStep(stepNum);
@@ -124,7 +138,7 @@ const CreateVesting = () => {
     /** step 2 Locking Tokens for */
 
     // switch state
-    const [switchLockingTokensForchecked, setLockingTokensForChecked] = React.useState(true);
+    const [switchLockingTokensForchecked, setLockingTokensForChecked] = React.useState(false);
     const handleSwtichLockingTokensForChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setLockingTokensForChecked(event.target.checked);
     };
@@ -141,6 +155,12 @@ const CreateVesting = () => {
     const handleRadioLockTypeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setLockType((event.target as HTMLInputElement).value);
     };
+
+    // select next release date
+    const [value, setValue] = React.useState<Date | null>(
+        new Date('2018-01-01T00:00:00.000Z'),
+    );
+
 
     return (
         <>
@@ -304,16 +324,29 @@ const CreateVesting = () => {
                                                         </Row>
 
                                                         <Row className="lock-mini-box d-flex align-items-center ml-1 mr-1 mt-3">
-                                                            <span>Cliff (month)</span>
-                                                            <input className='bitx-input ml-auto' style={{ width: "100px", borderRadius: "5px" }} />
-                                                            <span className="ml-auto">Lock Count</span>
-                                                            <input className='bitx-input ml-auto' style={{ width: "100px", borderRadius: "5px" }} />
+                                                            <Col sm="6" className="d-flex align-items-center justify-content-between">
+                                                                <span>Cliff (month)</span>
+                                                                <input className='bitx-input' style={{ width: "100px", borderRadius: "5px" }} />
+                                                            </Col>
+                                                            <Col sm="6" className="d-flex align-items-center justify-content-between">
+                                                                <span>Lock Count</span>
+                                                                <input className='bitx-input' style={{ width: "100px", borderRadius: "5px" }} />
+                                                            </Col>
                                                         </Row>
 
-                                                        <div className="lock-state-box mt-3">
+                                                        <div className="lock-state-box mt-3 align-items-center">
                                                             <span>Unlock Time</span>
-                                                            <span>Wed, 27 Apr 2022 02:47:55 UTC</span>
-                                                            <span style={{ color: "#05AB76" }}>Edit</span>
+                                                            <ThemeProvider theme={outerTheme}>
+                                                                <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                                                    <MobileDateTimePicker
+                                                                        value={value}
+                                                                        onChange={(newValue) => {
+                                                                            setValue(newValue);
+                                                                        }}
+                                                                        renderInput={(params) => <TextField {...params} />}
+                                                                    />
+                                                                </LocalizationProvider>
+                                                            </ThemeProvider>
                                                         </div>
 
                                                         <div className="text-center mt-3">
@@ -333,12 +366,12 @@ const CreateVesting = () => {
                                                 <span style={{ color: "#05AB76" }}>100 BTX</span>
                                             </div>
                                             <div className="lock-state-box mt-2">
-                                                <span>{ lockType == "linear" ? "First Unlock Time" : "Unlock Time"}</span>
-                                                <span>Wed, 27 Apr 2022 02:47:55 UTC</span>
+                                                <span>{lockType == "linear" ? "First Unlock Time" : "Unlock Time"}</span>
+                                                <span style={{ color: "#05AB76" }}>Wed, 27 Apr 2022 02:47:55 UTC</span>
                                             </div>
                                             <div className="lock-state-box mt-2">
                                                 <span>Fees</span>
-                                                <span>0.12</span>
+                                                <span style={{ color: "#05AB76" }}>0.12</span>
                                             </div>
                                         </Col>
                                     </Row>
