@@ -44,6 +44,9 @@ import {
     TIMEOUT,
     convertWeiToEsdt,
     convertEsdtToWei,
+    SECOND_IN_MILLI,
+    precisionfloor,
+    convertTimestampToDateTime,
 } from 'utils';
 
 const GreenSwitch = styled(Switch)(({ theme }) => ({
@@ -97,7 +100,7 @@ const BitLock = () => {
         })();
     }, []); // [] makes useEffect run once
 
-    const [lockSetting, setLockSetting] = React.useState<any>([]);
+    const [lockSetting, setLockSetting] = React.useState<any>();
     React.useEffect(() => {
         (async () => {
             if (!contractInteractor) return;
@@ -110,6 +113,7 @@ const BitLock = () => {
             const total_locked_token_ids = value.total_locked_token_ids.map((v: any) => v.toString());
             const total_locked_token_amounts = value.total_locked_token_amounts;
             const total_locked_tokens = [];
+            let total_locked_value = 0;
             for (let i = 0; i < total_locked_token_ids.length; i++) {
                 const token_id = total_locked_token_ids[i];
                 const amount = convertWeiToEsdt(total_locked_token_amounts[i], TOKENS[token_id].decimals);
@@ -118,7 +122,10 @@ const BitLock = () => {
                     ...TOKENS[token_id],
                     amount,
                 });
+
+                total_locked_value += amount * TOKENS[token_id].unit_price_in_usd;
             }
+            total_locked_value = precisionfloor(total_locked_value);
             
             const total_lock_count = value.total_lock_count.toNumber();
             const wegld_token_id = value.wegld_token_id.toString();
@@ -133,10 +140,73 @@ const BitLock = () => {
                 wegld_min_fee,
                 wegld_base_fee,
                 lock_token_fee,
+                total_locked_value,
             };
 
             console.log('lockSetting', lockSetting);
             setLockSetting(lockSetting);
+        })();
+    }, [contractInteractor]);
+
+    const [locks, setLocks] = React.useState<any>([]);
+    React.useEffect(() => {
+        (async () => {
+            if (!contractInteractor) return;
+            const interaction = contractInteractor.contract.methods.viewLocks();
+            const res = await contractInteractor.controller.query(interaction);
+
+            if (!res || !res.returnCode.isSuccess()) return;
+            const values = res.firstValue.valueOf();
+
+            // console.log(values);
+
+            const locks = [];
+            for (let i = 0; i < values.length; i++) {
+                const value = values[i];
+
+                const lock_id = value.lock_id.toNumber();
+                const locker_address = value.locker_address.toString();
+                const receiver_address = value.receiver_address.toString();
+                const lock_name = value.lock_name.toString();
+                const lock_token_id = value.lock_token_id.toString();
+                const lock_token_amount = convertWeiToEsdt(value.lock_token_amount, TOKENS[lock_token_id].decimals);
+
+                const lock_release_count = value.lock_release_count.toNumber();
+                const lock_release_timestamps = value.lock_release_timestamps.map((v: any) => v.toNumber() * SECOND_IN_MILLI);
+                const lock_release_percentages = value.lock_release_percentages.map((v: any) => v.toNumber() / 100);
+                const lock_release_amounts = value.lock_release_amounts.map((v: any) => convertWeiToEsdt(v, TOKENS[lock_token_id].decimals));
+
+                const lock_left_release_count = value.lock_left_release_count.toNumber();
+                const lock_left_claimable_release_count = value.lock_left_claimable_release_count.toNumber();
+
+                //
+                const unit_price_in_usd = TOKENS[lock_token_id].unit_price_in_usd;
+                const total_value = precisionfloor(lock_release_amounts.reduce((a, b) => a + b, 0) * unit_price_in_usd);
+
+                const next_release_timestamp = lock_left_release_count > 0 ? lock_release_timestamps[lock_release_count - lock_left_release_count - 1] : 0;
+
+                locks.push({
+                    lock_id,
+                    locker_address,
+                    receiver_address,
+                    lock_name,
+                    lock_token_id,
+                    lock_token_amount,
+                    lock_release_count,
+                    lock_release_timestamps,
+                    lock_release_percentages,
+                    lock_release_amounts,
+                    lock_left_release_count,
+                    lock_left_claimable_release_count,
+
+                    unit_price_in_usd,
+                    total_value,
+                    next_release_timestamp,
+                });
+            }
+
+            console.log('locks', locks);
+            setLocks(locks);
         })();
     }, [contractInteractor]);
 
@@ -191,21 +261,21 @@ const BitLock = () => {
                             <Col xs="4">
                                 <div className="">
                                     <img className="w-75" src={Symbol1} alt="Locked Token Value" />
-                                    <p className="mt-3 mb-1" style={{ color: "#D1D1D1" }}>$730,418</p>
+                                    <p className="mt-3 mb-1" style={{ color: "#D1D1D1" }}>${lockSetting ? lockSetting.total_locked_value : '-'}</p>
                                     <span style={{ color: "#D1D1D1" }}>Locked Token Value</span>
                                 </div>
                             </Col>
                             <Col xs="4">
                                 <div className="">
                                     <img className="w-75" src={Symbol2} alt="Locked Token Value" />
-                                    <p className="mt-3 mb-1" style={{ color: "#D1D1D1" }}>25</p>
+                                    <p className="mt-3 mb-1" style={{ color: "#D1D1D1" }}>{lockSetting ? lockSetting.total_locked_tokens.length : '-'}</p>
                                     <span style={{ color: "#D1D1D1" }}>Locked Tokens</span>
                                 </div>
                             </Col>
                             <Col xs="4">
                                 <div className="">
                                     <img className="w-75" src={Symbol3} alt="Locked Token Value" />
-                                    <p className="mt-3 mb-1" style={{ color: "#D1D1D1" }}>225</p>
+                                    <p className="mt-3 mb-1" style={{ color: "#D1D1D1" }}>{lockSetting ? lockSetting.total_lock_count : '-'}</p>
                                     <span style={{ color: "#D1D1D1" }}>Lockers</span>
                                 </div>
                             </Col>
@@ -250,16 +320,29 @@ const BitLock = () => {
                     <Tbody>
 
                         {
-                            vestingList.map((row, index) => {
+                            // vestingList.map((row, index) => {
+                            //     return (
+                            //         <Tr key={index}>
+                            //             <Td>{row.Name}</Td>
+                            //             <Td>{row.Token_Identifier}</Td>
+                            //             <Td>{row.Token_Amount}</Td>
+                            //             <Td>{row.Token_Value}</Td>
+                            //             <Td>{row.Total_Value}</Td>
+                            //             <Td>{row.Next_Relase}</Td>
+                            //             <Td><div className="view-but" onClick={() => handleClickView(row.Locker_Address)}>view</div></Td>
+                            //         </Tr>
+                            //     );
+                            // })
+                            locks && locks.map((lock, index) => {
                                 return (
-                                    <Tr key={index}>
-                                        <Td>{row.Name}</Td>
-                                        <Td>{row.Token_Identifier}</Td>
-                                        <Td>{row.Token_Amount}</Td>
-                                        <Td>{row.Token_Value}</Td>
-                                        <Td>{row.Total_Value}</Td>
-                                        <Td>{row.Next_Relase}</Td>
-                                        <Td><div className="view-but" onClick={() => handleClickView(row.Locker_Address)}>view</div></Td>
+                                    <Tr key={`home-list-${index}`}>
+                                        <Td>{lock.lock_name}</Td>
+                                        <Td>{lock.lock_token_id}</Td>
+                                        <Td>{lock.lock_token_amount}</Td>
+                                        <Td>{lock.unit_price_in_usd}</Td>
+                                        <Td>{lock.total_value}</Td>
+                                        <Td>{lock.next_release_timestamp > 0 ? convertTimestampToDateTime(lock.next_release_timestamp) : '-'}</Td>
+                                        <Td><div className="view-but" onClick={() => handleClickView(lock.locker_address)}>view</div></Td>
                                     </Tr>
                                 );
                             })
