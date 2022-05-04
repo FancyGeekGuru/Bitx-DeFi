@@ -181,7 +181,17 @@ const CreateVesting = () => {
                 return;
             }
         } else if (stepNum == 3) {
+            if (lockAmount == undefined || lockCount == undefined) {
+                console.log("invalid input");
+                return;
+            }
 
+            for (let i = 0; i < lockCount; i++) {
+                if (lockList[i].percent == undefined || lockList[i].percent == '') {
+                    console.log("invalid input");
+                    return;
+                }
+            }
         }
         setActiveStep(stepNum);
     };
@@ -210,8 +220,8 @@ const CreateVesting = () => {
 
     // set lock
     const [lockList, setLockList] = useState([]);
-    const [lockAmount, setLockAmount] = useState<number>();
-    const [lockCount, setLockCount] = useState<number>();
+    const [lockAmount, setLockAmount] = useState<number | undefined>();
+    const [lockCount, setLockCount] = useState<number | undefined>();
 
     ///////////////////////////////
     const [ownedEsdts, setOwnedEsdts] = useState<any>([]);
@@ -353,7 +363,7 @@ const CreateVesting = () => {
                                             <span className={switchLockingTokensForchecked ? "text-primary-color" : "text-dark-color"}> Someone Else </span>
                                         </div>
                                     </div>
-                                    <input className='bitlock-input w-100' value={lockerAddress} onChange={(e) => setLockerAddress(e.target.value)}/>
+                                    <input className='bitlock-input w-100' value={lockerAddress} onChange={(e) => setLockerAddress(e.target.value)} />
                                     <p className="step-title mt-3">Please select</p>
                                     <Row>
                                         {
