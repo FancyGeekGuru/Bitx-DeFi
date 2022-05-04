@@ -39,7 +39,8 @@ import { Table, Thead, Tbody, Tr, Th, Td } from 'react-super-responsive-table';
 import vestinglogo from 'assets/img/vesting/vesting logo.svg';
 import * as data from './data';
 import { Divider } from '@mui/material';
-
+import AlertModal from 'components/AlertModal';
+import {TOKENS} from 'data';
 
 import {
     VESTING_CONTRACT_ADDRESS,
@@ -167,6 +168,75 @@ const CreateVesting = () => {
     const { hasPendingTransactions } = useGetPendingTransactions();
     const provider = new ProxyProvider(network.apiAddress, { timeout: TIMEOUT });
 
+    const [contractInteractor, setContractInteractor] = React.useState<IContractInteractor | undefined>();
+    // load smart contract abi and parse it to SmartContract object for tx
+    React.useEffect(() => {
+        (async () => {
+            const registry = await AbiRegistry.load({ urls: [`/${VESTING_CONTRACT_ABI_URL}`] });
+            const abi = new SmartContractAbi(registry, [VESTING_CONTRACT_NAME]);
+            const contract = new SmartContract({ address: new Address(VESTING_CONTRACT_ADDRESS), abi: abi });
+            const controller = new DefaultSmartContractController(abi, provider);
+
+            // console.log('contractInteractor', {
+            //     contract,
+            //     controller,
+            // });
+
+            setContractInteractor({
+                contract,
+                controller,
+            });
+        })();
+    }, []); // [] makes useEffect run once
+
+    const [lockSetting, setLockSetting] = React.useState<any>();
+    React.useEffect(() => {
+        (async () => {
+            if (!contractInteractor) return;
+            const interaction = contractInteractor.contract.methods.viewLockSetting();
+            const res = await contractInteractor.controller.query(interaction);
+
+            if (!res || !res.returnCode.isSuccess()) return;
+            const value = res.firstValue.valueOf();
+            
+            const total_locked_token_ids = value.total_locked_token_ids.map((v: any) => v.toString());
+            const total_locked_token_amounts = value.total_locked_token_amounts;
+            const total_locked_tokens = [];
+            let total_locked_value = 0;
+            for (let i = 0; i < total_locked_token_ids.length; i++) {
+                const token_id = total_locked_token_ids[i];
+                const amount = convertWeiToEsdt(total_locked_token_amounts[i], TOKENS[token_id].decimals);
+
+                total_locked_tokens.push({
+                    ...TOKENS[token_id],
+                    amount,
+                });
+
+                total_locked_value += amount * TOKENS[token_id].unit_price_in_usd;
+            }
+            total_locked_value = precisionFloor(total_locked_value);
+            
+            const total_lock_count = value.total_lock_count.toNumber();
+            const wegld_token_id = value.wegld_token_id.toString();
+            const wegld_min_fee = convertWeiToEsdt(value.wegld_min_fee);
+            const wegld_base_fee = convertWeiToEsdt(value.wegld_base_fee);
+            const lock_token_fee = value.lock_token_fee.toNumber() / 100;
+
+            const lockSetting = {
+                total_locked_tokens,
+                total_lock_count,
+                wegld_token_id,
+                wegld_min_fee,
+                wegld_base_fee,
+                lock_token_fee,
+                total_locked_value,
+            };
+
+            console.log('lockSetting', lockSetting);
+            setLockSetting(lockSetting);
+        })();
+    }, [contractInteractor]);
+
     const steps = ['Select Your Token', 'Locking Token For', 'Organize Schedule', 'Finalize Your Lock'];
     const lockingTokensFor = ['Team', 'Marketing', 'Ecosystem', 'Advisor', 'Foundation', 'Development', 'Partnership', 'Investor', 'Other'];
 
@@ -176,7 +246,28 @@ const CreateVesting = () => {
         if (stepNum >= 0 && stepNum <= 3) {
             if (activeStep == 1 && stepNum == 2) {
                 if (!isValidAddress(selectedReceiverAddress)) {
-                    alert('Invalid receiver address.');
+                    onShowAlertModal('Invalid receiver address.');
+                    return;
+                }
+            }
+
+            if (activeStep == 2 && stepNum == 3) {
+                if (lockAmount <= 0) {
+                    onShowAlertModal('Invalid lock amount.');
+                    return;
+                }
+                if (lockCount <= 0) {
+                    onShowAlertModal('Invalid lock count.');
+                    return;
+                }
+
+                let total_percentage = 0;
+                for (let i = 0; i < lockCount; i++) {
+                    total_percentage += lockList[i].percent;
+                }
+
+                if (total_percentage != 100) {
+                    onShowAlertModal('Sum of percentages should be 100%.');
                     return;
                 }
             }
@@ -184,24 +275,6 @@ const CreateVesting = () => {
             setActiveStep(stepNum);
         }
 
-        if (stepNum == 2) {
-            if (selectedLockingTokensForID == undefined || lockerAddress == '') {
-                console.log("invalid input");
-                return;
-            }
-        } else if (stepNum == 3) {
-            if (lockAmount == undefined || lockCount == undefined) {
-                console.log("invalid input");
-                return;
-            }
-
-            for (let i = 0; i < lockCount; i++) {
-                if (lockList[i].percent == undefined || lockList[i].percent == '') {
-                    console.log("invalid input");
-                    return;
-                }
-            }
-        }
         setActiveStep(stepNum);
     };
 
@@ -225,12 +298,10 @@ const CreateVesting = () => {
         setLockingTokensForID(index);
     };
 
-    const [lockerAddress, setLockerAddress] = useState<string>('');
-
     // set lock
     const [lockList, setLockList] = useState([]);
-    const [lockAmount, setLockAmount] = useState<number | undefined>();
-    const [lockCount, setLockCount] = useState<number | undefined>();
+    const [lockAmount, setLockAmount] = useState<number>(0);
+    const [lockCount, setLockCount] = useState<number>(0);
 
     ///////////////////////////////
     const [ownedEsdts, setOwnedEsdts] = useState<any>([]);
@@ -242,20 +313,6 @@ const CreateVesting = () => {
             setOwnedEsdts(ownedEsdts);
         })();
     }, [address, hasPendingTransactions]);
-
-    useEffect(() => {
-        const release = {
-            date: new Date(),
-            percent: ''
-        };
-
-        const tmpLockList = [];
-        for (let i = 0; i < lockCount; i++) {
-            tmpLockList.push(release);
-        }
-
-        setLockList(tmpLockList);
-    }, [lockCount]);
 
     const handleChangeDate = (index, date) => {
         const updatedList = lockList.map((item, id) => {
@@ -273,6 +330,7 @@ const CreateVesting = () => {
             console.log("should below 100");
             return;
         }
+        percent = Math.floor(percent);
 
         const updatedList = lockList.map((item, id) => {
             if (index == id) {
@@ -289,6 +347,34 @@ const CreateVesting = () => {
         setSelectedReceiverAddress(switchLockingTokensForchecked ? '' : address);
     }, [switchLockingTokensForchecked]);
 
+    function onChangeLockCount(e) {
+        const newLockCount = Number(e.target.value);
+
+        const release = {
+            date: new Date(),
+            percent: 0
+        };
+
+        const tmpLockList = [];
+        for (let i = 0; i < newLockCount; i++) {
+            if (i < lockCount) {
+                tmpLockList.push(lockList[i]);
+            } else {
+                tmpLockList.push(release);
+            }
+        }
+
+        setLockCount(newLockCount);
+        setLockList(tmpLockList);
+    }
+
+    ///////////////////////////////////////////////////////////////////
+    const [alertModalShow, setAlertModalShow] = React.useState<boolean>(false);
+    const [alertModalText, setAlertModalText] = React.useState<string>('');
+    function onShowAlertModal(text: string) {
+        setAlertModalText(text);
+        setAlertModalShow(true);
+    }
     return (
         <>
             <div className="home-container mb-5" >
@@ -308,7 +394,7 @@ const CreateVesting = () => {
                         {
                             activeStep == 0 && (
                                 <>
-                                    <p className="step-title">steps[0]</p>
+                                    <p className="step-title">{steps[0]}</p>
                                     <div className="d-flex justify-content-center">
                                         <Dropdown className="w-50" onSelect={handleSelectTokenId} drop='down' style={{ width: "150px" }}>
                                             <Dropdown.Toggle className='token-id-toggle' id="token-id">
@@ -366,7 +452,7 @@ const CreateVesting = () => {
                             activeStep == 1 && (
                                 <>
                                     <div className="d-flex" style={{ alignItems: "center" }}>
-                                        <p className="step-title" style={{ alignItems: "center" }}>steps[1]</p>
+                                        <p className="step-title" style={{ alignItems: "center" }}>{steps[1]}</p>
                                         <div className="ml-5">
                                             <span className={!switchLockingTokensForchecked ? "text-primary-color" : "text-dark-color"}> Myself </span>
                                             <GreenSwitch
@@ -398,7 +484,7 @@ const CreateVesting = () => {
                         {
                             activeStep == 2 && (
                                 <>
-                                    <p className="step-title">Finalize your Lock</p>
+                                    <p className="step-title">{steps[2]}</p>
 
                                     <Row className="mt-3">
                                         <Col lg="6">
@@ -416,7 +502,7 @@ const CreateVesting = () => {
                                         <Col lg="6">
                                             <div className="lock-mini-box d-flex align-items-center ml-1 mr-1">
                                                 <span>Lock Count</span>
-                                                <input className='bitlock-input ml-3' type="number" style={{ borderRadius: "5px", width: "80%" }} onChange={(e) => setLockCount(Number(e.target.value))} value={lockCount} />
+                                                <input className='bitlock-input ml-3' type="number" style={{ borderRadius: "5px", width: "80%" }} onChange={onChangeLockCount} value={lockCount} />
                                             </div>
                                         </Col>
 
@@ -459,7 +545,7 @@ const CreateVesting = () => {
                                                                     <span>Release Amount</span>
                                                                 </div>
                                                                 <div className="w-50">
-                                                                    <span>{lockAmount * row.percent / 100} BTX</span>
+                                                                    <span>{lockSetting && (lockAmount * row.percent / 100 * (100 - lockSetting.lock_token_fee) / 100)} BTX</span>
                                                                 </div>
                                                             </div>
 
@@ -468,7 +554,7 @@ const CreateVesting = () => {
                                                                     <span>Release Value</span>
                                                                 </div>
                                                                 <div className="w-50">
-                                                                    <span>$1,234</span>
+                                                                    <span>${lockSetting && (lockAmount * row.percent / 100 * (100 - lockSetting.lock_token_fee) / 100 * (TOKENS[ownedEsdts[selectedTokenIndex].identifier] ? TOKENS[ownedEsdts[selectedTokenIndex].identifier].unit_price_in_usd : 0))}</span>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -486,7 +572,7 @@ const CreateVesting = () => {
                             activeStep == 3 && (
                                 <>
                                     <div className='d-flex justify-content-between'>
-                                        <p className="step-title">Finalize your Lock</p>
+                                        <p className="step-title">{steps[3]}</p>
                                         <div>
                                             <span>Total Lock Amount: </span>
                                             <span style={{ color: "#05ab76" }}>{lockAmount} BTX</span>
@@ -536,6 +622,11 @@ const CreateVesting = () => {
                     </div>
                 </Box>
             </div >
+            <AlertModal
+                show={alertModalShow}
+                onHide={() => setAlertModalShow(false)}
+                alertmodaltext={alertModalText}
+            />
         </>
     );
 };
