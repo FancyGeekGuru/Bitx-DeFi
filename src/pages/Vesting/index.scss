@@ -334,6 +334,12 @@
     }
 }
 
+.css-igs3ac{
+    color: white !important;
+    border-color: rgba(112, 112, 112, 0.7) !important;
+    border: none !important;
+}
+
 .css-1x5jdmq-MuiInputBase-input-MuiOutlinedInput-input {
     color: white !important;
     box-sizing: none !important;
@@ -347,12 +353,6 @@
     &:hover {
         border: none !important;
     }
-}
-
-.css-igs3ac{
-    color: white !important;
-    border-color: rgba(112, 112, 112, 0.7) !important;
-    border: none !important;
 }
 
 .css-igs3ac-MuiOutlinedInput-notchedOutline {
@@ -424,10 +424,10 @@
     }
 }
 
-.dropdown-menu {
-    min-width: inherit !important;
-    width: 100%;
-}
+// .dropdown-menu {
+//     min-width: inherit !important;
+//     width: 100%;
+// }
 
 .token-id-menu {
     background-color: rgba(29, 26, 29, 0.9) !important;

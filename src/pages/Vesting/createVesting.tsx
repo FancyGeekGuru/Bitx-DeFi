@@ -35,8 +35,11 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { MobileDateTimePicker } from '@mui/x-date-pickers/MobileDateTimePicker';
 import { Row, Col, Dropdown } from 'react-bootstrap';
+import { Table, Thead, Tbody, Tr, Th, Td } from 'react-super-responsive-table';
 import vestinglogo from 'assets/img/vesting/vesting logo.svg';
 import * as data from './data';
+import { Divider } from '@mui/material';
+
 
 import {
     VESTING_CONTRACT_ADDRESS,
@@ -180,6 +183,26 @@ const CreateVesting = () => {
 
             setActiveStep(stepNum);
         }
+
+        if (stepNum == 2) {
+            if (selectedLockingTokensForID == undefined || lockerAddress == '') {
+                console.log("invalid input");
+                return;
+            }
+        } else if (stepNum == 3) {
+            if (lockAmount == undefined || lockCount == undefined) {
+                console.log("invalid input");
+                return;
+            }
+
+            for (let i = 0; i < lockCount; i++) {
+                if (lockList[i].percent == undefined || lockList[i].percent == '') {
+                    console.log("invalid input");
+                    return;
+                }
+            }
+        }
+        setActiveStep(stepNum);
     };
 
     /** for select tokens */
@@ -202,10 +225,12 @@ const CreateVesting = () => {
         setLockingTokensForID(index);
     };
 
+    const [lockerAddress, setLockerAddress] = useState<string>('');
+
     // set lock
     const [lockList, setLockList] = useState([]);
-    const [lockAmount, setLockAmount] = useState<number>();
-    const [lockCount, setLockCount] = useState<number>();
+    const [lockAmount, setLockAmount] = useState<number | undefined>();
+    const [lockCount, setLockCount] = useState<number | undefined>();
 
     ///////////////////////////////
     const [ownedEsdts, setOwnedEsdts] = useState<any>([]);
@@ -453,6 +478,50 @@ const CreateVesting = () => {
                                         }
 
                                     </Row>
+                                </>
+                            )
+                        }
+
+                        {
+                            activeStep == 3 && (
+                                <>
+                                    <div className='d-flex justify-content-between'>
+                                        <p className="step-title">Finalize your Lock</p>
+                                        <div>
+                                            <span>Total Lock Amount: </span>
+                                            <span style={{ color: "#05ab76" }}>{lockAmount} BTX</span>
+                                        </div>
+                                    </div>
+                                    <Table className="text-center mt-3" style={{ color: "#ACACAC" }}>
+                                        <Thead>
+                                            <Tr>
+                                                <Th>Release Date</Th>
+                                                <Th>Release Percent</Th>
+                                                <Th>Release Amount</Th>
+                                                <Th>Release Value</Th>
+                                            </Tr>
+                                        </Thead>
+                                        <Tbody>
+
+                                            {
+                                                lockList.map((row, index) => {
+                                                    console.log(row);
+                                                    return (
+                                                        <Tr key={index}>
+                                                            <Td>
+                                                                {
+                                                                    new Intl.DateTimeFormat('en-US', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' }).format(row.date)
+                                                                }
+                                                            </Td>
+                                                            <Td>{row.percent}</Td>
+                                                            <Td>{lockAmount * row.percent / 100}</Td>
+                                                            <Td>${lockAmount * row.percent / 100 * 1}</Td>
+                                                        </Tr>
+                                                    );
+                                                })
+                                            }
+                                        </Tbody>
+                                    </Table>
                                 </>
                             )
                         }
