@@ -1,5 +1,7 @@
 import {
     Address,
+	U64Value,
+	List,
 } from '@elrondnetwork/erdjs';
 
 export const SECOND_IN_MILLI = 1000;
@@ -19,6 +21,11 @@ export function isValidAddress(address: string) {
     } catch(e) {
         return false;
     }
+}
+
+export function createListOfU64(items: number[]): List {
+    const itemsTyped = items.map(item => new U64Value(item));
+    return List.fromItems(itemsTyped);
 }
 
 export * from './convert';

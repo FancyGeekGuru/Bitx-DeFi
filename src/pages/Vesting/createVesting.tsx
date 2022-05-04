@@ -20,6 +20,10 @@ import {
     GasLimit,
     DefaultSmartContractController,
     U32Value,
+    U64Value,
+    BytesValue,
+    BigUIntValue,
+    TransactionPayload,
 } from '@elrondnetwork/erdjs';
 
 import Box from '@mui/material/Box';
@@ -57,8 +61,9 @@ import {
     convertTimestampToDateTime,
     getEsdtsOfAddress,
     isValidAddress,
+    createListOfU64,
 } from 'utils';
-import { isValid } from 'date-fns';
+import { isValid, max } from 'date-fns';
 
 const outerTheme = createTheme({
     palette: {
@@ -256,6 +261,10 @@ const CreateVesting = () => {
                     onShowAlertModal('Invalid lock amount.');
                     return;
                 }
+                if (lockAmount > ownedEsdts[selectedTokenIndex].balance) {
+                    onShowAlertModal('Not enough balance.');
+                    return;
+                }
                 if (lockCount <= 0) {
                     onShowAlertModal('Invalid lock count.');
                     return;
@@ -275,7 +284,11 @@ const CreateVesting = () => {
             setActiveStep(stepNum);
         }
 
-        setActiveStep(stepNum);
+        if (stepNum > 3) {
+            (async() => {
+                createBlock();
+            })();
+        }
     };
 
     /** for select tokens */
@@ -366,6 +379,49 @@ const CreateVesting = () => {
 
         setLockCount(newLockCount);
         setLockList(tmpLockList);
+    }
+
+    async function createBlock() {
+        if (!address || !ownedEsdts || !lockSetting) return;
+
+        const releaseRimestamps = lockList.map(v => Math.floor(v.date.getTime() / 1000));
+        const releasePercentages = lockList.map(v => v.percent * 100);
+        console.log('releaseRimestamps', releaseRimestamps);
+        console.log('releasePercentages', releasePercentages);
+
+        const args: TypedValue[] = [
+            new AddressValue(new Address(VESTING_CONTRACT_ADDRESS)),	// tx receiver address
+            new U32Value(2),	// number of tokens to send
+            BytesValue.fromUTF8(ownedEsdts[selectedTokenIndex].identifier),
+            new U64Value(0),	// nonce
+            new BigUIntValue(convertEsdtToWei(lockAmount, ownedEsdts[selectedTokenIndex].decimals)),
+            BytesValue.fromUTF8(lockSetting.wegld_token_id),
+            new U64Value(0),	// nonce
+            new BigUIntValue(convertEsdtToWei(calculateWegldFee())),
+            BytesValue.fromUTF8('createLock'),
+            new AddressValue(new Address(selectedReceiverAddress)),	// lock receiver address
+            BytesValue.fromUTF8('Lock #1'),
+            BytesValue.fromUTF8(lockingTokensFor[selectedLockingTokensForID]),
+            createListOfU64(releaseRimestamps),
+            createListOfU64(releasePercentages),
+        ];
+        const { argumentsString } = new ArgSerializer().valuesToString(args);
+        const data = `MultiESDTNFTTransfer@${argumentsString}`;
+
+        const tx = {
+            receiver: address,
+            gasLimit: new GasLimit(10000000),
+            data: data,
+        };
+
+        await refreshAccount();
+        sendTransactions({
+            transactions: tx,
+        });
+    }
+
+    function calculateWegldFee() {
+        return Math.max(lockSetting.wegld_min_fee, lockSetting.wegld_base_fee * lockCount);
     }
 
     ///////////////////////////////////////////////////////////////////
@@ -545,7 +601,16 @@ const CreateVesting = () => {
                                                                     <span>Release Amount</span>
                                                                 </div>
                                                                 <div className="w-50">
-                                                                    <span>{lockSetting && (lockAmount * row.percent / 100 * (100 - lockSetting.lock_token_fee) / 100)} BTX</span>
+                                                                    <span>{lockSetting && (lockAmount * row.percent / 100 * (100 - lockSetting.lock_token_fee) / 100)} {ownedEsdts.length > 0 && ownedEsdts[selectedTokenIndex].ticker}</span>
+                                                                </div>
+                                                            </div>
+
+                                                            <div className="mt-3 d-flex">
+                                                                <div className="w-50">
+                                                                    <span>Token Fee</span>
+                                                                </div>
+                                                                <div className="w-50">
+                                                                    <span>{lockSetting && lockSetting.lock_token_fee} %</span>
                                                                 </div>
                                                             </div>
 
@@ -575,7 +640,7 @@ const CreateVesting = () => {
                                         <p className="step-title">{steps[3]}</p>
                                         <div>
                                             <span>Total Lock Amount: </span>
-                                            <span style={{ color: "#05ab76" }}>{lockAmount} BTX</span>
+                                            <span style={{ color: "#05ab76" }}>{lockAmount} {ownedEsdts.length > 0 && ownedEsdts[selectedTokenIndex].ticker}</span>
                                         </div>
                                     </div>
                                     <Table className="text-center mt-3" style={{ color: "#ACACAC" }}>
@@ -584,6 +649,7 @@ const CreateVesting = () => {
                                                 <Th>Release Date</Th>
                                                 <Th>Release Percent</Th>
                                                 <Th>Release Amount</Th>
+                                                <Th>Token Fee</Th>
                                                 <Th>Release Value</Th>
                                             </Tr>
                                         </Thead>
@@ -600,8 +666,9 @@ const CreateVesting = () => {
                                                                 }
                                                             </Td>
                                                             <Td>{row.percent}</Td>
-                                                            <Td>{lockAmount * row.percent / 100}</Td>
-                                                            <Td>${lockAmount * row.percent / 100 * 1}</Td>
+                                                            <Td>{lockSetting && (lockAmount * row.percent / 100 * (100 - lockSetting.lock_token_fee) / 100)} {' '}  {ownedEsdts.length > 0 && ownedEsdts[selectedTokenIndex].ticker}</Td>
+                                                            <Td>{lockSetting && lockSetting.lock_token_fee} %</Td>
+                                                            <Td>${lockSetting && (lockAmount * row.percent / 100 * (100 - lockSetting.lock_token_fee) / 100 * (TOKENS[ownedEsdts[selectedTokenIndex].identifier] ? TOKENS[ownedEsdts[selectedTokenIndex].identifier].unit_price_in_usd : 0))}</Td>
                                                         </Tr>
                                                     );
                                                 })
@@ -616,7 +683,7 @@ const CreateVesting = () => {
                             <div className="d-flex align-items-center justify-content-center" >
                                 <div className="step-but" onClick={() => handleChangeStep(activeStep - 1)}>Back</div>
                                 <img src={vestinglogo} alt="elrond vesting" />
-                                <div className="step-but" onClick={() => handleChangeStep(activeStep + 1)}>Next</div>
+                                <div className="step-but" onClick={() => handleChangeStep(activeStep + 1)}>{activeStep == 3 ? 'Lock' : 'Next'}</div>
                             </div>
                         </div>
                     </div>
