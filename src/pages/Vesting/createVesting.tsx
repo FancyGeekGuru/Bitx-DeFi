@@ -321,7 +321,8 @@ const CreateVesting = () => {
     useEffect(() => {
         (async () => {
             if (!address || hasPendingTransactions) return;
-            const ownedEsdts = await getEsdtsOfAddress(network.apiAddress, account);
+            let ownedEsdts = await getEsdtsOfAddress(network.apiAddress, account);
+            ownedEsdts = ownedEsdts.filter(v => !!TOKENS[v.identifier]);
             console.log('ownedEsdts', ownedEsdts);
             setOwnedEsdts(ownedEsdts);
         })();
