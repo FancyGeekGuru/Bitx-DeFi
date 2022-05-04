@@ -305,10 +305,19 @@ const BitLock = () => {
 
                 <Row className="text-center justify-content-center">
                     <input className='bitx-input w-75' style={{ background: "#191A1E", borderRadius: "5px" }} placeholder="Search a smart lock by name/contract address" onChange={(e) => setSearchText(e.target.value)} />
-
                     <Link to={routeNames.createvesting}>
                         <div className="create-vesting-but ml-3">Create Vesting</div>
                     </Link>
+                    {/* {
+                        address ? (
+                        <Link to={routeNames.createvesting}>
+                            <div className="create-vesting-but ml-3">Create Vesting</div>
+                        </Link>) : (
+                        <Link to={routeNames.unlock}>
+                            <div className="create-vesting-but ml-3">Connect Your Wallet</div>
+                        </Link>
+                        )
+                    } */}
                 </Row>
 
                 <div className="text-center mt-3">

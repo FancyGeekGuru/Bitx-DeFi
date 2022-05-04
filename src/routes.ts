@@ -92,7 +92,8 @@ const routes: Array<any> = [
   {
     path: routeNames.createvesting,
     title: 'Create Vesting',
-    component: CreateVesting
+    component: CreateVesting,
+    authenticatedRoute: true,
   },
 
   {

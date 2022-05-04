@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js/bignumber.js';
+import { Egld } from '@elrondnetwork/erdjs';
 import {
     ONE_DAY_IN_SECONDS
 } from '.';
@@ -75,6 +76,12 @@ export const convertWeiToEsdt = (v: any, decimals = 18, precision = 4) => {
 export const convertEsdtToWei = (v: number, decimals = 18) => {
     const factor = Math.pow(10, decimals);
     return (new BigNumber(v)).multipliedBy(factor);
+};
+
+export const convertWeiToEgld = (v: any, precision = 4) => {
+    const factor = Math.pow(10, precision);
+    const number = parseFloat(Egld.raw(v).toDenominated());
+    return Math.floor(number * factor) / factor;
 };
 
 export const precisionRound = (number: number, precision = 4) => {

@@ -1,6 +1,27 @@
 import React, { useEffect, useState } from 'react';
 import './index.scss';
 
+import {
+    refreshAccount,
+    sendTransactions,
+    useGetAccountInfo,
+    useGetNetworkConfig,
+    useGetPendingTransactions,
+} from '@elrondnetwork/dapp-core';
+import {
+    Address,
+    AddressValue,
+    AbiRegistry,
+    SmartContractAbi,
+    SmartContract,
+    ProxyProvider,
+    TypedValue,
+    ArgSerializer,
+    GasLimit,
+    DefaultSmartContractController,
+    U32Value,
+} from '@elrondnetwork/erdjs';
+
 import Box from '@mui/material/Box';
 import Step from '@mui/material/Step';
 import StepConnector, { stepConnectorClasses } from '@mui/material/StepConnector';
@@ -16,6 +37,22 @@ import { MobileDateTimePicker } from '@mui/x-date-pickers/MobileDateTimePicker';
 import { Row, Col, Dropdown } from 'react-bootstrap';
 import vestinglogo from 'assets/img/vesting/vesting logo.svg';
 import * as data from './data';
+
+import {
+    VESTING_CONTRACT_ADDRESS,
+    VESTING_CONTRACT_ABI_URL,
+    VESTING_CONTRACT_NAME,
+} from 'config';
+import {
+    IContractInteractor,
+    TIMEOUT,
+    convertWeiToEsdt,
+    convertEsdtToWei,
+    SECOND_IN_MILLI,
+    precisionfloor,
+    convertTimestampToDateTime,
+    getEsdtsOfAddress,
+} from 'utils';
 
 const outerTheme = createTheme({
     palette: {
@@ -120,11 +157,16 @@ const GreenSwitch = styled(Switch)(({ theme }) => ({
 }));
 
 const CreateVesting = () => {
-    const steps = ['Confirm Your Token', 'Locking Token For', 'Finalize Your Lock', 'Track Your Lock'];
+    const { account, address } = useGetAccountInfo();
+    const { network } = useGetNetworkConfig();
+    const { hasPendingTransactions } = useGetPendingTransactions();
+    const provider = new ProxyProvider(network.apiAddress, { timeout: TIMEOUT });
+
+    const steps = ['Select Your Token', 'Locking Token For', 'Finalize Your Lock', 'Track Your Lock'];
     const lockingTokensFor = ['Marketing', 'Ecosystem', 'Team', 'Advisor', 'Foundation', 'Development', 'Partnership', 'investor'];
 
     const paymentTokens = data.tokens;
-    const [activeStep, setActiveStep] = useState<number | undefined>(2);
+    const [activeStep, setActiveStep] = useState<number>(0);
     const handleChangeStep = (stepNum) => {
         if (stepNum >= 0 && stepNum <= 3) {
             setActiveStep(stepNum);
@@ -155,6 +197,17 @@ const CreateVesting = () => {
     const [lockList, setLockList] = useState([]);
     const [lockAmount, setLockAmount] = useState<number>();
     const [lockCount, setLockCount] = useState<number>();
+
+    ///////////////////////////////
+    const [ownedEsdts, setOwnedEsdts] = useState<any>([]);
+    useEffect(() => {
+        (async () => {
+            if (!address || hasPendingTransactions) return;
+            const ownedEsdts = await getEsdtsOfAddress(network.apiAddress, account);
+            console.log('ownedEsdts', ownedEsdts);
+            setOwnedEsdts(ownedEsdts);
+        })();
+    }, [address, hasPendingTransactions]);
 
     useEffect(() => {
         const release = {
@@ -216,23 +269,23 @@ const CreateVesting = () => {
                         {
                             activeStep == 0 && (
                                 <>
-                                    <p className="step-title">Confirm Your Token</p>
+                                    <p className="step-title">Select Your Token</p>
                                     <div className="d-flex justify-content-center">
                                         <Dropdown className="w-50" onSelect={handleSelectTokenId} drop='down' style={{ width: "150px" }}>
                                             <Dropdown.Toggle className='token-id-toggle' id="token-id">
                                                 {
                                                     <>
-                                                        <span>{paymentTokens && paymentTokens[selectedTokenIndex].ticker}</span>
-                                                        <img src={paymentTokens && paymentTokens[selectedTokenIndex].url} />
+                                                        <span>{ownedEsdts.length && ownedEsdts[selectedTokenIndex].ticker}</span>
+                                                        <img src={ownedEsdts.length && ownedEsdts[selectedTokenIndex].logo} />
                                                     </>
                                                 }
                                             </Dropdown.Toggle>
                                             <Dropdown.Menu className='token-id-menu'>
                                                 {
-                                                    paymentTokens && paymentTokens.map((token, index) => (
+                                                    ownedEsdts.length && ownedEsdts.map((token, index) => (
                                                         <Dropdown.Item eventKey={index} key={`token-id-menu-item-${token.identifier}`}>
                                                             <span>{token.ticker}</span>
-                                                            <img src={token.url} />
+                                                            <img src={token.logo} />
                                                         </Dropdown.Item>
                                                     ))
                                                 }
@@ -243,26 +296,26 @@ const CreateVesting = () => {
                                     <Row>
                                         <Col xs="12" sm="6">
                                             <div className="token-info">
-                                                <span> {"Token Name : "}</span>
-                                                <span> {"BitX"} </span>
+                                                <span> {"Token Identifier : "}</span>
+                                                <span> {ownedEsdts.length && ownedEsdts[selectedTokenIndex].identifier} </span>
                                             </div>
                                         </Col>
                                         <Col xs="12" sm="6">
                                             <div className="token-info">
                                                 <span> {"Token Ticker : "}</span>
-                                                <span> {"BitX"} </span>
+                                                <span> {ownedEsdts.length && ownedEsdts[selectedTokenIndex].ticker} </span>
                                             </div>
                                         </Col>
                                         <Col xs="12" sm="6">
                                             <div className="token-info">
-                                                <span> {"Total Supply : "}</span>
-                                                <span> {"1038400000"} </span>
+                                                <span> {"Token Decimals: "}</span>
+                                                <span> {ownedEsdts.length && ownedEsdts[selectedTokenIndex].decimals} </span>
                                             </div>
                                         </Col>
                                         <Col xs="12" sm="6">
                                             <div className="token-info">
                                                 <span> {"Your Balance : "}</span>
-                                                <span> {"0"} </span>
+                                                <span> {ownedEsdts.length && ownedEsdts[selectedTokenIndex].balance} </span>
                                             </div>
                                         </Col>
                                     </Row>
