@@ -168,6 +168,7 @@ const BitLock = () => {
                 const locker_address = value.locker_address.toString();
                 const receiver_address = value.receiver_address.toString();
                 const lock_name = value.lock_name.toString();
+                const lock_purpose = value.lock_purpose.toString();
                 const lock_token_id = value.lock_token_id.toString();
                 const lock_token_amount = convertWeiToEsdt(value.lock_token_amount, TOKENS[lock_token_id].decimals);
 
@@ -190,6 +191,7 @@ const BitLock = () => {
                     locker_address,
                     receiver_address,
                     lock_name,
+                    lock_purpose,
                     lock_token_id,
                     lock_token_amount,
                     lock_release_count,
@@ -209,8 +211,6 @@ const BitLock = () => {
             setLocks(locks);
         })();
     }, [contractInteractor]);
-
-    const my_address = "erd1qqqqqqqqqqqqqpgq7r9n9u389xr23vqyye8maaetcg2r886vj9qsj7sl4G";
 
     /** switch view type (must filter by locker address) */
     const [switchViewType, setSwitchViewType] = useState(false);
@@ -234,13 +234,29 @@ const BitLock = () => {
         filterVestingList();
     }, [searchText]);
 
+    useEffect(() => {
+        filterVestingList();
+    }, [locks]);
+
+    const [filteredLocks, setFilteredLocks] = React.useState<any>([]);
     const filterVestingList = () => {
-        let filterResult = data.vestingList;
-        if (switchViewType) { // Track My locks
-            filterResult = filterResult.filter(d => d.Locker_Address === my_address);
+        // let filterResult = data.vestingList;
+        // if (switchViewType) { // Track My locks
+        //     filterResult = filterResult.filter(d => d.Locker_Address === my_address);
+        // }
+        // filterResult = filterResult.filter(d => d.Name.includes(searchText) || d.Locker_Address.includes(searchText));
+        // setVestingList(filterResult);
+
+        let filteredLocks = locks;
+        if (switchViewType) {
+            filteredLocks = filteredLocks.filter(v => v.locker_address == address);
         }
-        filterResult = filterResult.filter(d => d.Name.includes(searchText) || d.Locker_Address.includes(searchText));
-        setVestingList(filterResult);
+        if (searchText.length > 0) {
+            const key = searchText.trim().toLowerCase();
+            filteredLocks = filteredLocks.filter(d => d.locker_address.toLowerCase().includes(key) || d.receiver_address.toLowerCase().includes(key) || d.lock_name.toLowerCase().includes(key) || d.lock_purpose.toLowerCase().includes(key) || d.lock_token_id.toLowerCase().includes(key));
+        }
+
+        setFilteredLocks(filteredLocks);
     };
 
     return (
@@ -333,7 +349,7 @@ const BitLock = () => {
                             //         </Tr>
                             //     );
                             // })
-                            locks && locks.map((lock, index) => {
+                            filteredLocks && filteredLocks.map((lock, index) => {
                                 return (
                                     <Tr key={`home-list-${index}`}>
                                         <Td>{lock.lock_name}</Td>
