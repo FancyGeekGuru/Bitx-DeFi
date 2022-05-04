@@ -49,10 +49,12 @@ import {
     convertWeiToEsdt,
     convertEsdtToWei,
     SECOND_IN_MILLI,
-    precisionfloor,
+    precisionFloor,
     convertTimestampToDateTime,
     getEsdtsOfAddress,
+    isValidAddress,
 } from 'utils';
+import { isValid } from 'date-fns';
 
 const outerTheme = createTheme({
     palette: {
@@ -163,12 +165,19 @@ const CreateVesting = () => {
     const provider = new ProxyProvider(network.apiAddress, { timeout: TIMEOUT });
 
     const steps = ['Select Your Token', 'Locking Token For', 'Finalize Your Lock', 'Track Your Lock'];
-    const lockingTokensFor = ['Marketing', 'Ecosystem', 'Team', 'Advisor', 'Foundation', 'Development', 'Partnership', 'investor'];
+    const lockingTokensFor = ['Team', 'Marketing', 'Ecosystem', 'Advisor', 'Foundation', 'Development', 'Partnership', 'Investor', 'Other'];
 
     const paymentTokens = data.tokens;
     const [activeStep, setActiveStep] = useState<number>(0);
     const handleChangeStep = (stepNum) => {
         if (stepNum >= 0 && stepNum <= 3) {
+            if (activeStep == 1 && stepNum == 2) {
+                if (!isValidAddress(selectedReceiverAddress)) {
+                    alert('Invalid receiver address.');
+                    return;
+                }
+            }
+
             setActiveStep(stepNum);
         }
     };
@@ -188,7 +197,7 @@ const CreateVesting = () => {
     };
 
     // select why u lock tokens
-    const [selectedLockingTokensForID, setLockingTokensForID] = React.useState<number | undefined>();
+    const [selectedLockingTokensForID, setLockingTokensForID] = React.useState<number>(0);
     const handleSelectTokensFor = (index) => {
         setLockingTokensForID(index);
     };
@@ -249,6 +258,11 @@ const CreateVesting = () => {
 
         setLockList(updatedList);
     };
+
+    const [selectedReceiverAddress, setSelectedReceiverAddress] = useState<string>(address);
+    useEffect(() => {
+        setSelectedReceiverAddress(switchLockingTokensForchecked ? '' : address);
+    }, [switchLockingTokensForchecked]);
 
     return (
         <>
@@ -338,7 +352,8 @@ const CreateVesting = () => {
                                             <span className={switchLockingTokensForchecked ? "text-primary-color" : "text-dark-color"}> Someone Else </span>
                                         </div>
                                     </div>
-                                    <input className='bitlock-input w-100' />
+                                    <input className='bitlock-input w-100' value={selectedReceiverAddress} onChange={(e) => setSelectedReceiverAddress(e.target.value)} />
+                                    <div>{!isValidAddress(selectedReceiverAddress) && 'Invalid address.'}</div>
                                     <p className="step-title mt-3">Please select</p>
                                     <Row>
                                         {
@@ -366,9 +381,9 @@ const CreateVesting = () => {
                                                 <span>Lock Amount</span>
                                                 <div className="d-flex ml-auto">
                                                     <input className='bitx-input' type="number" value={lockAmount} onChange={(e) => setLockAmount(Number(e.target.value))} />
-                                                    <div className="token-ticker">BTX</div>
+                                                    <div className="token-ticker">{ownedEsdts.length && ownedEsdts[selectedTokenIndex].ticker}</div>
                                                 </div>
-                                                <span className='ml-auto'>Balance: 0</span>
+                                                <span className='ml-auto'>Balance: {ownedEsdts.length && ownedEsdts[selectedTokenIndex].balance}</span>
                                                 <div className="max-but ml-auto" onClick={() => setLockAmount(100)}>max</div>
                                             </Row>
                                         </Col>

@@ -46,7 +46,7 @@ export const paddingTwoDigits = (num: any) => {
     });
 };
 
-export const precisionfloor = (number: number, precision = 4) => {
+export const precisionFloor = (number: number, precision = 4) => {
     const factor = Math.pow(10, precision);
     return Math.floor(number * factor) / factor;
 };

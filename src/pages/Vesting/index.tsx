@@ -45,7 +45,7 @@ import {
     convertWeiToEsdt,
     convertEsdtToWei,
     SECOND_IN_MILLI,
-    precisionfloor,
+    precisionFloor,
     convertTimestampToDateTime,
 } from 'utils';
 
@@ -125,7 +125,7 @@ const BitLock = () => {
 
                 total_locked_value += amount * TOKENS[token_id].unit_price_in_usd;
             }
-            total_locked_value = precisionfloor(total_locked_value);
+            total_locked_value = precisionFloor(total_locked_value);
             
             const total_lock_count = value.total_lock_count.toNumber();
             const wegld_token_id = value.wegld_token_id.toString();
@@ -182,7 +182,7 @@ const BitLock = () => {
 
                 //
                 const unit_price_in_usd = TOKENS[lock_token_id].unit_price_in_usd;
-                const total_value = precisionfloor(lock_release_amounts.reduce((a, b) => a + b, 0) * unit_price_in_usd);
+                const total_value = precisionFloor(lock_release_amounts.reduce((a, b) => a + b, 0) * unit_price_in_usd);
 
                 const next_release_timestamp = lock_left_release_count > 0 ? lock_release_timestamps[lock_release_count - lock_left_release_count - 1] : 0;
 
