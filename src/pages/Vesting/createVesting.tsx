@@ -167,7 +167,7 @@ const CreateVesting = () => {
     const { hasPendingTransactions } = useGetPendingTransactions();
     const provider = new ProxyProvider(network.apiAddress, { timeout: TIMEOUT });
 
-    const steps = ['Select Your Token', 'Locking Token For', 'Finalize Your Lock', 'Track Your Lock'];
+    const steps = ['Select Your Token', 'Locking Token For', 'Organize Schedule', 'Finalize Your Lock'];
     const lockingTokensFor = ['Team', 'Marketing', 'Ecosystem', 'Advisor', 'Foundation', 'Development', 'Partnership', 'Investor', 'Other'];
 
     const paymentTokens = data.tokens;
@@ -308,7 +308,7 @@ const CreateVesting = () => {
                         {
                             activeStep == 0 && (
                                 <>
-                                    <p className="step-title">Select Your Token</p>
+                                    <p className="step-title">steps[0]</p>
                                     <div className="d-flex justify-content-center">
                                         <Dropdown className="w-50" onSelect={handleSelectTokenId} drop='down' style={{ width: "150px" }}>
                                             <Dropdown.Toggle className='token-id-toggle' id="token-id">
@@ -366,7 +366,7 @@ const CreateVesting = () => {
                             activeStep == 1 && (
                                 <>
                                     <div className="d-flex" style={{ alignItems: "center" }}>
-                                        <p className="step-title" style={{ alignItems: "center" }}>I am Locking Tokens for</p>
+                                        <p className="step-title" style={{ alignItems: "center" }}>steps[1]</p>
                                         <div className="ml-5">
                                             <span className={!switchLockingTokensForchecked ? "text-primary-color" : "text-dark-color"}> Myself </span>
                                             <GreenSwitch
