@@ -217,15 +217,25 @@ const NFTMint = () => {
 
                     <button
                         className="mint-button"
+                        style={{ marginTop: "30px", backgroundColor: '#FFCC0011', color: '#ffffff33' }}
+                        disabled={true}
+                    >
+                        Mint
+                    </button>
+                    <p style={{ marginTop: "30px", color: "#FF0000" }}>
+                        Minting is finished.
+                    </p>
+
+                    {/* <button
+                        className="mint-button"
                         style={{ marginTop: "30px" }}
                         onClick={mintNft}
                     >
                         Mint
                     </button>
-
                     <p style={{ marginTop: "30px", color: "#FEE277" }}>
                         {"You selected " + NFT_CARDS[mintCardType].name + " vip card and need to pay " + (collections.length ? collections[mintCardType].collection_price : '-') + " EGLD."}
-                    </p>
+                    </p> */}
                 </Col>
 
                 <Col md="12" lg="6">
