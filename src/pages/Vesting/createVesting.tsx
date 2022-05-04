@@ -171,9 +171,19 @@ const CreateVesting = () => {
     const paymentTokens = data.tokens;
     const [activeStep, setActiveStep] = useState<number>(0);
     const handleChangeStep = (stepNum) => {
-        if (stepNum >= 0 && stepNum <= 3) {
-            setActiveStep(stepNum);
+        if (stepNum < 0 || stepNum > 3) {
+            return;
         }
+
+        if (stepNum == 2) {
+            if (selectedLockingTokensForID == undefined || lockerAddress == '') {
+                console.log("invalid input");
+                return;
+            }
+        } else if (stepNum == 3) {
+
+        }
+        setActiveStep(stepNum);
     };
 
     /** for select tokens */
@@ -195,6 +205,8 @@ const CreateVesting = () => {
     const handleSelectTokensFor = (index) => {
         setLockingTokensForID(index);
     };
+
+    const [lockerAddress, setLockerAddress] = useState<string>('');
 
     // set lock
     const [lockList, setLockList] = useState([]);
@@ -341,7 +353,7 @@ const CreateVesting = () => {
                                             <span className={switchLockingTokensForchecked ? "text-primary-color" : "text-dark-color"}> Someone Else </span>
                                         </div>
                                     </div>
-                                    <input className='bitlock-input w-100' />
+                                    <input className='bitlock-input w-100' value={lockerAddress} onChange={(e) => setLockerAddress(e.target.value)}/>
                                     <p className="step-title mt-3">Please select</p>
                                     <Row>
                                         {
@@ -452,7 +464,7 @@ const CreateVesting = () => {
                                         <p className="step-title">Finalize your Lock</p>
                                         <div>
                                             <span>Total Lock Amount: </span>
-                                            <span  style={{ color: "#05ab76" }}>{lockAmount} BTX</span>
+                                            <span style={{ color: "#05ab76" }}>{lockAmount} BTX</span>
                                         </div>
                                     </div>
                                     <Table className="text-center mt-3" style={{ color: "#ACACAC" }}>
