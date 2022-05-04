@@ -292,7 +292,7 @@ const BitLock = () => {
                                 <div className="">
                                     <img className="w-75" src={Symbol3} alt="Locked Token Value" />
                                     <p className="mt-3 mb-1" style={{ color: "#D1D1D1" }}>{lockSetting ? lockSetting.total_lock_count : '-'}</p>
-                                    <span style={{ color: "#D1D1D1" }}>Lockers</span>
+                                    <span style={{ color: "#D1D1D1" }}>Number Of Locks</span>
                                 </div>
                             </Col>
                         </Row>
@@ -363,9 +363,9 @@ const BitLock = () => {
                                     <Tr key={`home-list-${index}`}>
                                         <Td>{lock.lock_name}</Td>
                                         <Td>{lock.lock_token_id}</Td>
-                                        <Td>{lock.lock_token_amount}</Td>
-                                        <Td>{lock.unit_price_in_usd}</Td>
-                                        <Td>{lock.total_value}</Td>
+                                        <Td>{lock.lock_token_amount} {lock.lock_token_id.split('-')[0]}</Td>
+                                        <Td>$ {lock.unit_price_in_usd}</Td>
+                                        <Td>$ {lock.total_value}</Td>
                                         <Td>{lock.next_release_timestamp > 0 ? convertTimestampToDateTime(lock.next_release_timestamp) : '-'}</Td>
                                         <Td><div className="view-but" onClick={() => handleClickView(lock.locker_address)}>view</div></Td>
                                     </Tr>
