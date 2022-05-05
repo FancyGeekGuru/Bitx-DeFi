@@ -540,10 +540,10 @@
     font-size: 12px;
     cursor: pointer;
     transition: .3s all ease-in-out;
-    
+    border: none;
+
     &:hover {
         background: gray;
-        transform: scale(1.05);
     }
 }
 

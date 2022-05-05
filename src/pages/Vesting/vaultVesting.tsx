@@ -357,7 +357,7 @@ const VaultVesting = () => {
                         </div>
 
                         {/** when claimable is false then use className as claim-but-disable */}
-                        <button className="mt-3 claim-but" onClick={claimLock}>Claim</button>
+                        <button className="mt-3 claim-but w-100" onClick={claimLock}>Claim</button>
 
                         
                         {/* <div className="mt-4">

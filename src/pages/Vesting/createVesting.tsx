@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import './index.scss';
-
 import {
     refreshAccount,
     sendTransactions,
@@ -69,6 +67,8 @@ import {
 } from 'utils';
 import { isValid, max } from 'date-fns';
 import { convertWeiToEgld } from '../../utils/convert';
+
+import './index.scss';
 
 const outerTheme = createTheme({
     palette: {
