@@ -5,7 +5,9 @@ import { alpha, styled } from '@mui/material/styles';
 import Switch from '@mui/material/Switch';
 import Typography from '@mui/material/Typography';
 import { Row, Col, ProgressBar } from 'react-bootstrap';
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
+import { routeNames } from 'routes';
+
 import BTX from 'assets/img/token logos/BTX.png';
 
 import {
@@ -30,7 +32,7 @@ import {
 } from '@elrondnetwork/erdjs';
 
 import * as data from './data';
-import {TOKENS} from 'data';
+import { TOKENS } from 'data';
 
 
 import {
@@ -136,7 +138,7 @@ const VaultVesting = () => {
 
             if (!res || !res.returnCode.isSuccess()) return;
             const value = res.firstValue.valueOf();
-            
+
             const total_locked_token_ids = value.total_locked_token_ids.map((v: any) => v.toString());
             const total_locked_token_amounts = value.total_locked_token_amounts;
             const total_locked_tokens = [];
@@ -153,7 +155,7 @@ const VaultVesting = () => {
                 total_locked_value += amount * TOKENS[token_id].unit_price_in_usd;
             }
             total_locked_value = precisionFloor(total_locked_value);
-            
+
             const total_lock_count = value.total_lock_count.toNumber();
             const wegld_token_id = value.wegld_token_id.toString();
             const wegld_min_fee = convertWeiToEsdt(value.wegld_min_fee);
@@ -237,7 +239,7 @@ const VaultVesting = () => {
                 total_value,
                 next_release_timestamp,
             };
-            
+
 
             console.log('lock', lock);
             setLock(lock);
@@ -268,8 +270,26 @@ const VaultVesting = () => {
         setLockedEvents(events);
     }, [lock]);
 
+    const calculateRemainDays = (to) => {
+        const now: number = Date.now();
+        return Math.round((to - now) / 1000 / 60 / 60 / 24);
+    };
+
+    const calculatePercent = (from, to) => {
+        const remainDays = calculateRemainDays(to);
+        if (calculateRemainDays(to) == 0) {
+            return 100;
+        }
+
+        const numberOfDays = Math.round((to - from) / 1000 / 60 / 60 / 24);
+        console.log(numberOfDays, remainDays);
+        return (numberOfDays - remainDays) / numberOfDays * 100;
+    };
     return (
-        <div className="home-container">
+        <div className="home-container" style={{ marginTop: "20px" }}>
+            <Link to={routeNames.bitlock}>
+                <p className="go-back"> {"< go to home"}</p>
+            </Link>
             <p className='lock-process text-center'>Vault Explorer</p>
 
             <Row>
@@ -301,6 +321,14 @@ const VaultVesting = () => {
                             <span style={{ color: "#B5B5B5" }}>Lock Purpose</span>
                             <span style={{ color: "#05AB76" }}>{lock ? lock.lock_purpose : '-'}</span>
                         </div>
+                        <div className="d-flex justify-content-between mt-2">
+                            <span style={{ color: "#B5B5B5" }}>Claimable Amount</span>
+                            <span style={{ color: "#05AB76" }}>{"100"}</span>
+                        </div>
+                        <div className="d-flex justify-content-between mt-2">
+                            <span style={{ color: "#B5B5B5" }}>Claimable Release Amount</span>
+                            <span style={{ color: "#05AB76" }}>{"2"}</span>
+                        </div>
 
                         {/* <div className="mt-4">
                             <span className={!switchViewType ? "text-primary-color" : "text-dark-color"}> View All Locks </span>
@@ -315,7 +343,7 @@ const VaultVesting = () => {
                 </Col>
 
                 <Col lg="8">
-                    <div className="receiver-address-box" style={{marginBottom: '1rem'}}>
+                    <div className="receiver-address-box" style={{ marginBottom: '1rem' }}>
                         <span>Locker Address : </span>
                         <span className="text-address" style={{ color: "#05AB76" }}>{lock ? lock.locker_address : '-'}</span>
                     </div>
@@ -348,15 +376,22 @@ const VaultVesting = () => {
                                                     <span style={{ color: "#B5B5B5" }}>Release: </span>
                                                     <span>{convertTimestampToDateTime(event.lock_release_timestamp)}</span>
                                                 </div>
+                                                <div className="mt-2">
+                                                    <span style={{ color: "#B5B5B5" }}>Claimable Value: </span>
+                                                    <span>{"0"}</span>
+                                                </div>
                                             </div>
-                                            {/* <div className="d-flex flex-column justify-content-center align-items-center text-center">
-                                                <CircularProgressWithLabel value={event.progress} color={event.progress == 100 ? "success" : "secondary"} />
-                                                <span className="mt-1" style={{ color: "#B5B5B5"}}>
+                                            <div className="d-flex flex-column justify-content-center align-items-center text-center">
+                                                <CircularProgressWithLabel value={calculatePercent(lock.lock_creation_timestamp, event.lock_release_timestamp)} color={event.lock_release_timestamp <= Date.now() ? "success" : "secondary"} />
+                                                <span className="mt-1" style={{ color: "#B5B5B5" }}>
                                                     {
-                                                        event.progress == 100 ? "Token Unlocked" : "Remain : " + event.Remain
+                                                        event.progress == 100 ? "Token Unlocked" : "Remain : " + calculateRemainDays(event.lock_release_timestamp) + " days"
                                                     }
                                                 </span>
-                                            </div> */}
+
+                                                {/** when claimable is false then use className as claim-but-disable */}
+                                                <div className="mt-3 claim-but">Claim</div>
+                                            </div>
                                         </div>
                                     </Col>
                                 );

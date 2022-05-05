@@ -522,3 +522,34 @@
         transform: scale(1);
     }
 }
+
+.go-back {
+    color: white;
+    text-decoration: underline;
+
+    &:hover {
+        color: #05AB76;
+    }
+}
+
+.claim-but {
+    padding: 5px;
+    background: #FEE277;
+    border-radius: 3px;
+    color: black;
+    font-size: 12px;
+    cursor: pointer;
+
+    &:hover {
+        transform: scale(1.05);
+    }
+}
+
+.claim-but-disable {
+    padding: 5px;
+    background: gray;
+    border-radius: 3px;
+    color: black;
+    font-size: 12px;
+    cursor: not-allowed;
+}
