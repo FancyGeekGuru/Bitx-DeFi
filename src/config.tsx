@@ -173,3 +173,5 @@ export const BTX2HETO_CONTRACT_NAME = 'BitxStake';
 export const VESTING_CONTRACT_ADDRESS = 'erd1qqqqqqqqqqqqqpgqq0pw2yqjjmazj75j8ly5tmm5udg5hfkej9qs657v62';
 export const VESTING_CONTRACT_ABI_URL = 'abi/btx-vesting.abi.json';
 export const VESTING_CONTRACT_NAME = 'BtxVesting';
+
+export const EGLD_WRAPPER_SC_ADDRESS = 'erd1qqqqqqqqqqqqqpgq7ykazrzd905zvnlr88dpfw06677lxe9w0n4suz00uh';

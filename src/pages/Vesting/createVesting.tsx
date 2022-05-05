@@ -24,6 +24,7 @@ import {
     BytesValue,
     BigUIntValue,
     TransactionPayload,
+    Balance,
 } from '@elrondnetwork/erdjs';
 
 import Box from '@mui/material/Box';
@@ -51,6 +52,7 @@ import {
     VESTING_CONTRACT_ADDRESS,
     VESTING_CONTRACT_ABI_URL,
     VESTING_CONTRACT_NAME,
+    EGLD_WRAPPER_SC_ADDRESS,
 } from 'config';
 import {
     IContractInteractor,
@@ -63,8 +65,10 @@ import {
     getEsdtsOfAddress,
     isValidAddress,
     createListOfU64,
+    getBalanceOfToken,
 } from 'utils';
 import { isValid, max } from 'date-fns';
+import { convertWeiToEgld } from '../../utils/convert';
 
 const outerTheme = createTheme({
     palette: {
@@ -243,12 +247,27 @@ const CreateVesting = () => {
         })();
     }, [contractInteractor]);
 
+    const [egldBalance, setEgldBalance] = useState(0);
+    const [wegldBalance, setWegldBalance] = useState(0);
+    useEffect(() => {
+        if (!account || hasPendingTransactions) return;
+        setEgldBalance(convertWeiToEgld(account.balance));
+    }, [account, hasPendingTransactions]);
+    useEffect(() => {
+        if (!account || !lockSetting || hasPendingTransactions) return;
+        (async() => {
+            setWegldBalance(await getBalanceOfToken(network.apiAddress, account, lockSetting.wegld_token_id));
+        })();
+    }, [account, lockSetting, hasPendingTransactions]);
+
     const steps = ['Select Your Token', 'Locking Token For', 'Organize Schedule', 'Finalize Your Lock'];
     const lockingTokensFor = ['Team', 'Marketing', 'Ecosystem', 'Advisor', 'Foundation', 'Development', 'Partnership', 'Investor', 'Other'];
 
     const paymentTokens = data.tokens;
     const [activeStep, setActiveStep] = useState<number>(0);
     const handleChangeStep = (stepNum) => {
+        if (!address || !lockSetting) return;
+
         if (stepNum >= 0 && stepNum <= 3) {
             if (activeStep == 0 && stepNum == 1) {
                 if (ownedEsdts.length == 0) {
@@ -292,6 +311,11 @@ const CreateVesting = () => {
         }
 
         if (stepNum > 3) {
+            if (calculateWegldFee() > wegldBalance) {
+                onShowAlertModal('Not enough WEGLD balance. Wrap your EGLD first.');
+                return;
+            }
+
             (async () => {
                 createBlock();
             })();
@@ -441,16 +465,40 @@ const CreateVesting = () => {
     }
 
     /** wrap egld modal */
-    const [showModal, setShowModal] = useState(false);
-    const [wrapEgldAmount, setWrapEgldAmount] = useState<number>();
-
+    const [showWrapEgldModal, setShowWrapEgldModal] = useState(false);
+    const [wrapEgldAmount, setWrapEgldAmount] = useState<number>(0);
     const handleClickWrapMaxBut = () => {
-        setWrapEgldAmount(100);
+        setWrapEgldAmount(egldBalance);
+    };
+    const handleClickWrapBut = () => {
+        if (wrapEgldAmount <= 0) {
+            onShowAlertModal('Invalid amount.');
+            return;
+        } else if (wrapEgldAmount > egldBalance) {
+            onShowAlertModal('Not enough balance.');
+            return;
+        }
+
+        wrapEgld();
+        setShowWrapEgldModal(false);
     };
 
-    const handleClickWrapBut = () => {
-        setShowModal(false);
-    };
+    async function wrapEgld() {
+        if (!address) return;
+
+        const tx = {
+            receiver: EGLD_WRAPPER_SC_ADDRESS,
+            gasLimit: new GasLimit(6000000),
+            data: 'wrapEgld',
+            value: Balance.egld(wrapEgldAmount),
+        };
+
+        await refreshAccount();
+        sendTransactions({
+            transactions: tx,
+        });
+    }
+
     return (
         <>
             <div className="home-container mb-5" >
@@ -697,7 +745,7 @@ const CreateVesting = () => {
                                     </Table>
 
                                     <div className='mt-2 d-flex text-center justify-content-center align-items-center'>
-                                        <div className="wrapegld-but" onClick={() => setShowModal(true)}>Wrap Egld</div>
+                                        <div className="wrapegld-but" onClick={() => setShowWrapEgldModal(true)}>Wrap Egld</div>
                                     </div>
                                 </>
                             )
@@ -716,9 +764,9 @@ const CreateVesting = () => {
             </div >
 
             <Modal
-                isOpen={showModal}
+                isOpen={showWrapEgldModal}
                 onRequestClose={() => {
-                    setShowModal(false);
+                    setShowWrapEgldModal(false);
                 }}
                 ariaHideApp={false}
                 className='wrapmodalcard box-shadow'
@@ -738,11 +786,21 @@ const CreateVesting = () => {
                 <div className="d-flex justify-content-between p-1 mt-2">
                     <div>
                         <span>EGLD Balance : </span>
-                        <span style={{ color: '#FEE277' }}>50 Egld</span>
+                        <span style={{ color: '#FEE277' }}>{egldBalance}</span>
+                    </div>
+                    <div>
+                        <span>WEGLD Fee: </span>
+                        <span style={{ color: '#FEE277' }}>{lockSetting ? calculateWegldFee() : '-'}</span>
+                    </div>
+                </div>
+                <div className="d-flex justify-content-between p-1 mt-2">
+                    <div>
+                        <span>WEGLD Balance : </span>
+                        <span style={{ color: '#FEE277' }}>{wegldBalance}</span>
                     </div>
                     <div>
                         <span>Need WEGLD : </span>
-                        <span style={{ color: '#FEE277' }}>50 Wegld</span>
+                        <span style={{ color: '#FEE277' }}>{lockSetting ? ((calculateWegldFee() - wegldBalance) > 0 ? (calculateWegldFee() - wegldBalance) : 0) : '-'}</span>
                     </div>
                 </div>
                 <div className='modal-divider mt-2' />
