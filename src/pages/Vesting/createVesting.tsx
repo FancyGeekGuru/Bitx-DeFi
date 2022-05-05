@@ -249,6 +249,12 @@ const CreateVesting = () => {
     const [activeStep, setActiveStep] = useState<number>(0);
     const handleChangeStep = (stepNum) => {
         if (stepNum >= 0 && stepNum <= 3) {
+            if (activeStep == 0 && stepNum == 1) {
+                if (ownedEsdts.length == 0) {
+                    onShowAlertModal('You have no tokens');
+                    return;
+                }
+            }
             if (activeStep == 1 && stepNum == 2) {
                 if (!isValidAddress(selectedReceiverAddress)) {
                     onShowAlertModal('Invalid receiver address.');
