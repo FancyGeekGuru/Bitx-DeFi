@@ -468,3 +468,57 @@
     color: #B5B5B5;
     border-radius: 5px;
 }
+
+.wrapegld-but {
+    padding: 8px 25px;
+    border-radius: 5px;
+    // border: 1px solid #05AB76;
+    background-color: #05AB76;
+    transition: .3s ease-in-out;
+    color: black;
+
+    &:hover {
+        background: transparent;
+        color: white;
+        cursor: pointer;
+        border: 1px solid #05AB76;
+    }
+}
+
+.wrapmodalcard {
+    display: flex;
+    flex-direction: column;
+    max-width: 500px;
+    margin: 35vh auto;
+    padding: 40px;
+    background-color: #2B2D2E;
+    border-radius: 8px;
+    color: #D9D9D9;
+    font-family: 'Segoe UI';
+    z-index: 9999 !important;
+
+    @media (max-width: 576px) {
+        margin: 35vh 1.5rem;
+    }
+}
+
+.egld-max-but {
+    padding: 6px 10px;
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    border: none;
+    border-radius: 0 5px 5px 0;
+    transition: 0.15s ease-in-out;
+    cursor: pointer;
+
+    &:hover {
+        transform: scale(1);
+        background: #05ab769c;
+        color: white;
+    }
+
+    &:active {
+        transition: 0.1s ease-out;
+        transform: scale(1);
+    }
+}

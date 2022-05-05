@@ -39,12 +39,13 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { MobileDateTimePicker } from '@mui/x-date-pickers/MobileDateTimePicker';
 import { Row, Col, Dropdown } from 'react-bootstrap';
+import Modal from 'react-modal';
 import { Table, Thead, Tbody, Tr, Th, Td } from 'react-super-responsive-table';
 import vestinglogo from 'assets/img/vesting/vesting logo.svg';
 import * as data from './data';
 import { Divider } from '@mui/material';
 import AlertModal from 'components/AlertModal';
-import {TOKENS} from 'data';
+import { TOKENS } from 'data';
 
 import {
     VESTING_CONTRACT_ADDRESS,
@@ -203,7 +204,7 @@ const CreateVesting = () => {
 
             if (!res || !res.returnCode.isSuccess()) return;
             const value = res.firstValue.valueOf();
-            
+
             const total_locked_token_ids = value.total_locked_token_ids.map((v: any) => v.toString());
             const total_locked_token_amounts = value.total_locked_token_amounts;
             const total_locked_tokens = [];
@@ -220,7 +221,7 @@ const CreateVesting = () => {
                 total_locked_value += amount * TOKENS[token_id].unit_price_in_usd;
             }
             total_locked_value = precisionFloor(total_locked_value);
-            
+
             const total_lock_count = value.total_lock_count.toNumber();
             const wegld_token_id = value.wegld_token_id.toString();
             const wegld_min_fee = convertWeiToEsdt(value.wegld_min_fee);
@@ -291,7 +292,7 @@ const CreateVesting = () => {
         }
 
         if (stepNum > 3) {
-            (async() => {
+            (async () => {
                 createBlock();
             })();
         }
@@ -438,6 +439,18 @@ const CreateVesting = () => {
         setAlertModalText(text);
         setAlertModalShow(true);
     }
+
+    /** wrap egld modal */
+    const [showModal, setShowModal] = useState(false);
+    const [wrapEgldAmount, setWrapEgldAmount] = useState<number>();
+
+    const handleClickWrapMaxBut = () => {
+        setWrapEgldAmount(100);
+    };
+
+    const handleClickWrapBut = () => {
+        setShowModal(false);
+    };
     return (
         <>
             <div className="home-container mb-5" >
@@ -682,11 +695,16 @@ const CreateVesting = () => {
                                             }
                                         </Tbody>
                                     </Table>
+
+                                    <div className='mt-2 d-flex text-center justify-content-center align-items-center'>
+                                        <div className="wrapegld-but" onClick={() => setShowModal(true)}>Wrap Egld</div>
+                                    </div>
                                 </>
                             )
                         }
 
-                        <div className='mt-2 d-flex text-center justify-content-center'>
+                        <div className='mt-2 text-center justify-content-center align-items-center'>
+
                             <div className="d-flex align-items-center justify-content-center" >
                                 <div className="step-but" onClick={() => handleChangeStep(activeStep - 1)}>Back</div>
                                 <img src={vestinglogo} alt="elrond vesting" />
@@ -696,6 +714,43 @@ const CreateVesting = () => {
                     </div>
                 </Box>
             </div >
+
+            <Modal
+                isOpen={showModal}
+                onRequestClose={() => {
+                    setShowModal(false);
+                }}
+                ariaHideApp={false}
+                className='wrapmodalcard box-shadow'
+            >
+                <div className='modaldiv'>
+                    <h3 className='modalHeader' style={{ fontSize: "20px" }}>
+                        Wrap Egld
+                    </h3>
+                </div>
+                <div className="d-flex">
+                    <input className="bitx-input" type="number" placeholder="input egld amount" style={{ width: "80%" }} value={wrapEgldAmount} onChange={(e) => setWrapEgldAmount(Number(e.target.value))} />
+                    <div className="egld-max-but text-center" style={{ width: "20%" }} onClick={handleClickWrapMaxBut}>
+                        max
+                    </div>
+                </div>
+                <div className='modal-divider mt-2' />
+                <div className="d-flex justify-content-between p-1 mt-2">
+                    <div>
+                        <span>EGLD Balance : </span>
+                        <span style={{ color: '#FEE277' }}>50 Egld</span>
+                    </div>
+                    <div>
+                        <span>Need WEGLD : </span>
+                        <span style={{ color: '#FEE277' }}>50 Wegld</span>
+                    </div>
+                </div>
+                <div className='modal-divider mt-2' />
+                <div className="d-flex text-center justify-content-center mt-3">
+                    <div className='wrapegld-but' onClick={handleClickWrapBut}> WRAP </div>
+                </div>
+
+            </Modal>
             <AlertModal
                 show={alertModalShow}
                 onHide={() => setAlertModalShow(false)}
