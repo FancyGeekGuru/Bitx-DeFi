@@ -216,6 +216,11 @@ const VaultVesting = () => {
 
             const next_release_timestamp = lock_left_release_count > 0 ? lock_release_timestamps[lock_release_count - lock_left_release_count - 1] : 0;
 
+            let lock_left_claimable_amount = 0;
+            for (let i = 0; i < lock_left_claimable_release_count; i++) {
+                lock_left_claimable_amount += lock_release_amounts[lock_release_count - i - 1];
+            }
+
             const lock = {
                 lock_id,
                 locker_address,
@@ -237,6 +242,7 @@ const VaultVesting = () => {
                 unit_price_in_usd,
                 total_value,
                 next_release_timestamp,
+                lock_left_claimable_amount,
             };
 
 
@@ -289,7 +295,7 @@ const VaultVesting = () => {
         if (!address || !lock) return;
 
         if (lock.lock_left_claimable_release_count == 0) {
-            alert('No claimable release.');
+            alert('No claimable releases.');
             return;
         }
 
@@ -315,7 +321,7 @@ const VaultVesting = () => {
             <Row>
                 <Col lg="4">
                     <div className="vesting-info-box text-center">
-                        <img src={BTX} alt="BTX" />
+                        <img src={lock && TOKENS[lock.lock_token_id].logo} style={{width: '8rem'}} alt="BTX" />
                         <p className="mt-3 mb-2" style={{ fontSize: "22px", fontWeight: "700", color: "#D6D6D6" }}>{lock && lock.lock_token_id}</p>
                         {/* <p className="text-address" style={{ color: '#05AB76' }}> {lock}</p> */}
 
@@ -342,16 +348,16 @@ const VaultVesting = () => {
                             <span style={{ color: "#05AB76" }}>{lock ? lock.lock_purpose : '-'}</span>
                         </div>
                         <div className="d-flex justify-content-between mt-2">
-                            <span style={{ color: "#B5B5B5" }}>Claimable Amount</span>
-                            <span style={{ color: "#05AB76" }}>{"100"}</span>
+                            <span style={{ color: "#B5B5B5" }}>Claimable Release Count</span>
+                            <span style={{ color: "#05AB76" }}>{lock ? lock.lock_left_claimable_release_count : '-'}</span>
                         </div>
                         <div className="d-flex justify-content-between mt-2">
                             <span style={{ color: "#B5B5B5" }}>Claimable Release Amount</span>
-                            <span style={{ color: "#05AB76" }}>{"2"}</span>
+                            <span style={{ color: "#05AB76" }}>{lock ? lock.lock_left_claimable_amount : '-'}</span>
                         </div>
 
                         {/** when claimable is false then use className as claim-but-disable */}
-                        <div className="mt-3 claim-but">Claim</div>
+                        <button className="mt-3 claim-but" onClick={claimLock}>Claim</button>
 
                         
                         {/* <div className="mt-4">
