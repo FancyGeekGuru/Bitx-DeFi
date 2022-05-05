@@ -292,10 +292,10 @@
 
 .text-address {
     width: 100%;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    // overflow-wrap: break-word;
+    // overflow: hidden;
+    // white-space: nowrap;
+    // text-overflow: ellipsis;
+    overflow-wrap: break-word;
 }
 
 .progress {

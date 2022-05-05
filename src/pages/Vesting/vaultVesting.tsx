@@ -254,6 +254,7 @@ const VaultVesting = () => {
     useEffect(() => {
         if (!lock) return;
 
+        console.log(lock);
         const events = [];
         for (let i = 0; i < lock.lock_release_count; i++) {
             events.push({
@@ -315,11 +316,11 @@ const VaultVesting = () => {
                 <Col lg="8">
                     <div className="receiver-address-box" style={{marginBottom: '1rem'}}>
                         <span>Locker Address : </span>
-                        <span style={{ color: "#05AB76" }}>{lock ? lock.locker_address : '-'}</span>
+                        <span className="text-address" style={{ color: "#05AB76" }}>{lock ? lock.locker_address : '-'}</span>
                     </div>
                     <div className="receiver-address-box">
                         <span>Reciever Address : </span>
-                        <span style={{ color: "#05AB76" }}>{lock ? lock.receiver_address : '-'}</span>
+                        <span className="text-address" style={{ color: "#05AB76" }}>{lock ? lock.receiver_address : '-'}</span>
                     </div>
                     {/* <input className="bitx-input w-100" placeholder='Search a smart lock by purpose/wallet-address' onChange={(e) => setSearchText(e.target.value)} /> */}
 
