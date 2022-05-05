@@ -207,6 +207,7 @@ const VaultVesting = () => {
 
             const lock_left_release_count = value.lock_left_release_count.toNumber();
             const lock_left_claimable_release_count = value.lock_left_claimable_release_count.toNumber();
+            const lock_creation_timestamp = value.lock_creation_timestamp.toNumber() * SECOND_IN_MILLI;
 
             //
             const unit_price_in_usd = TOKENS[lock_token_id].unit_price_in_usd;
@@ -230,6 +231,7 @@ const VaultVesting = () => {
                 lock_release_values,
                 lock_left_release_count,
                 lock_left_claimable_release_count,
+                lock_creation_timestamp,
 
                 unit_price_in_usd,
                 total_value,

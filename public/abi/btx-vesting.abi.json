@@ -361,6 +361,21 @@
             ]
         },
         {
+            "name": "getLockCreationTimestamp",
+            "mutability": "readonly",
+            "inputs": [
+                {
+                    "name": "lock_id",
+                    "type": "u32"
+                }
+            ],
+            "outputs": [
+                {
+                    "type": "u64"
+                }
+            ]
+        },
+        {
             "name": "getTotalLockedTokens",
             "mutability": "readonly",
             "inputs": [],
@@ -538,6 +553,10 @@
                 {
                     "name": "lock_left_claimable_release_count",
                     "type": "u32"
+                },
+                {
+                    "name": "lock_creation_timestamp",
+                    "type": "u64"
                 }
             ]
         },
