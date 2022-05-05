@@ -115,28 +115,40 @@ const VaultVesting = () => {
                     <div className="vesting-info-box text-center">
                         <img src={BTX} alt="BTX" />
                         <p className="mt-3 mb-2" style={{ fontSize: "22px", fontWeight: "700", color: "#D6D6D6" }}>BTX</p>
-                        <p className="text-address" style={{ color: '#05AB76' }}> 0xd5e950837Ad48D08baD2f87bFcF8eD7167bB44BC</p>
+                        <p className="text-address" style={{ color: '#05AB76' }}> {locker_address}</p>
 
-                        <ProgressBar style={{ marginTop: "35px" }} now={25} />
+                        {/* <ProgressBar style={{ marginTop: "35px" }} now={25} /> */}
 
                         <div className="d-flex justify-content-between mt-4">
-                            <span style={{ color: "#B5B5B5" }}>BTX Locked</span>
-                            <span style={{ color: "#05AB76" }}>128,000,000</span>
+                            <span style={{ color: "#B5B5B5" }}>Lock Name</span>
+                            <span style={{ color: "#05AB76" }}>Name</span>
                         </div>
                         <div className="d-flex justify-content-between mt-2">
-                            <span style={{ color: "#B5B5B5" }}>Total Supply</span>
+                            <span style={{ color: "#B5B5B5" }}>Lock Amount</span>
                             <span style={{ color: "#05AB76" }}>1,000,000,000</span>
                         </div>
                         <div className="d-flex justify-content-between mt-2">
-                            <span style={{ color: "#B5B5B5" }}>Total Value Locked</span>
-                            <span style={{ color: "#05AB76" }}>$ 234,567</span>
+                            <span style={{ color: "#B5B5B5" }}>Token Value</span>
+                            <span style={{ color: "#05AB76" }}>$ 2</span>
                         </div>
                         <div className="d-flex justify-content-between mt-2">
-                            <span style={{ color: "#B5B5B5" }}>Next Release</span>
-                            <span style={{ color: "#05AB76" }}>5 Days</span>
+                            <span style={{ color: "#B5B5B5" }}>Total Value</span>
+                            <span style={{ color: "#05AB76" }}>$ 1234</span>
+                        </div>
+                        <div className="d-flex justify-content-between mt-2">
+                            <span style={{ color: "#B5B5B5" }}>Token Fee</span>
+                            <span style={{ color: "#05AB76" }}>$ 12</span>
+                        </div>
+                        <div className="d-flex justify-content-between mt-2">
+                            <span style={{ color: "#B5B5B5" }}>Lock Count</span>
+                            <span style={{ color: "#05AB76" }}>3</span>
+                        </div>
+                        <div className="d-flex justify-content-between mt-2">
+                            <span style={{ color: "#B5B5B5" }}>Lock Purpose</span>
+                            <span style={{ color: "#05AB76" }}>Ecosystem</span>
                         </div>
 
-                        <div className="mt-4">
+                        {/* <div className="mt-4">
                             <span className={!switchViewType ? "text-primary-color" : "text-dark-color"}> View All Locks </span>
                             <GreenSwitch
                                 checked={switchViewType}
@@ -144,12 +156,16 @@ const VaultVesting = () => {
                                 inputProps={{ 'aria-label': 'controlled' }}
                             />
                             <span className={switchViewType ? "text-primary-color" : "text-dark-color"}> Track My Locks </span>
-                        </div>
+                        </div> */}
                     </div>
                 </Col>
 
                 <Col lg="8">
-                    <input className="bitx-input w-100" placeholder='Search a smart lock by purpose/wallet-address' onChange={(e) => setSearchText(e.target.value)} />
+                    <div className="receiver-address-box">
+                        <span>Reciever Address : </span>
+                        <span style={{ color: "#05AB76" }}>0xd5e950837Ad48D08baD2f87bFcF8eD7167bB44BC</span>
+                    </div>
+                    {/* <input className="bitx-input w-100" placeholder='Search a smart lock by purpose/wallet-address' onChange={(e) => setSearchText(e.target.value)} /> */}
 
                     <Row className="mt-4 mb-4">
                         {
@@ -159,21 +175,25 @@ const VaultVesting = () => {
                                         <div className="lock-box justify-content-between">
                                             <div className="d-flex flex-column">
                                                 <div>
-                                                    <span style={{ color: "#B5B5B5" }}>Locked BTX: </span>
+                                                    <span style={{ color: "#B5B5B5" }}>Percent </span>
+                                                    <span className="ml-2">33.33%</span>
+                                                </div>
+                                                <div className="mt-2">
+                                                    <span style={{ color: "#B5B5B5" }}>Amount: </span>
                                                     <span className="ml-2">{event.Locked}</span>
                                                 </div>
                                                 <div className="mt-2">
-                                                    <span style={{ color: "#B5B5B5" }}>Purpose: </span>
-                                                    <span className="ml-2">{event.Purpose}</span>
+                                                    <span style={{ color: "#B5B5B5" }}>Value: </span>
+                                                    <span className="ml-2">$1234</span>
                                                 </div>
                                                 <div className="mt-2">
-                                                    <span style={{ color: "#B5B5B5" }}>Period: </span>
-                                                    <span>{event.from + " ~ " + event.to}</span>
+                                                    <span style={{ color: "#B5B5B5" }}>Release: </span>
+                                                    <span>{event.to}</span>
                                                 </div>
                                             </div>
                                             <div className="d-flex flex-column justify-content-center align-items-center text-center">
                                                 <CircularProgressWithLabel value={event.progress} color={event.progress == 100 ? "success" : "secondary"} />
-                                                <span className="mt-1" style={{ color: "#B5B5B5", fontSize: "12px" }}>
+                                                <span className="mt-1" style={{ color: "#B5B5B5"}}>
                                                     {
                                                         event.progress == 100 ? "Token Unlocked" : "Remain : " + event.Remain
                                                     }
