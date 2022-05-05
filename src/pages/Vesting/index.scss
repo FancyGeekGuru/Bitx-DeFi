@@ -91,9 +91,9 @@
     cursor: pointer;
 }
 
-.css-dmmspl-MuiFormGroup-root {
-    flex-direction: row !important;
-}
+// .css-dmmspl-MuiFormGroup-root {
+//     flex-direction: row !important;
+// }
 
 .lock-mini-box {
     background: #1E2027;
@@ -539,8 +539,10 @@
     color: black;
     font-size: 12px;
     cursor: pointer;
-
+    transition: .3s all ease-in-out;
+    
     &:hover {
+        background: gray;
         transform: scale(1.05);
     }
 }

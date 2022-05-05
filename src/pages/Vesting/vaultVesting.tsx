@@ -330,6 +330,8 @@ const VaultVesting = () => {
                             <span style={{ color: "#05AB76" }}>{"2"}</span>
                         </div>
 
+                        {/** when claimable is false then use className as claim-but-disable */}
+                        <div className="mt-3 claim-but">Claim</div>
                         {/* <div className="mt-4">
                             <span className={!switchViewType ? "text-primary-color" : "text-dark-color"}> View All Locks </span>
                             <GreenSwitch
@@ -389,8 +391,7 @@ const VaultVesting = () => {
                                                     }
                                                 </span>
 
-                                                {/** when claimable is false then use className as claim-but-disable */}
-                                                <div className="mt-3 claim-but">Claim</div>
+
                                             </div>
                                         </div>
                                     </Col>
