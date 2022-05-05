@@ -34,7 +34,6 @@ import {
 import * as data from './data';
 import { TOKENS } from 'data';
 
-
 import {
     VESTING_CONTRACT_ADDRESS,
     VESTING_CONTRACT_ABI_URL,
@@ -285,6 +284,27 @@ const VaultVesting = () => {
         console.log(numberOfDays, remainDays);
         return (numberOfDays - remainDays) / numberOfDays * 100;
     };
+
+    async function claimLock() {
+        if (!address || !lock) return;
+
+        if (lock.lock_left_claimable_release_count == 0) {
+            alert('No claimable release.');
+            return;
+        }
+
+        const tx = {
+            receiver: VESTING_CONTRACT_ADDRESS,
+            gasLimit: new GasLimit(6000000),
+            data: 'claimLock',
+        };
+
+        await refreshAccount();
+        sendTransactions({
+            transactions: tx,
+        });
+    }
+
     return (
         <div className="home-container" style={{ marginTop: "20px" }}>
             <Link to={routeNames.bitlock}>
