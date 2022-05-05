@@ -223,8 +223,8 @@ const BitLock = () => {
 
     /** click view button (must navigate to bitlock/vault vesting/0x...) */
     const navigate = useNavigate();
-    const handleClickView = (locker_addr) => {
-        navigate(`/bitlock/vault-vesting/${locker_addr}`);
+    const handleClickView = (lock_id) => {
+        navigate(`/bitlock/vault-vesting/${lock_id}`);
     };
 
     /** filter vesting list (should filter by search text)*/
@@ -367,7 +367,7 @@ const BitLock = () => {
                                         <Td>$ {lock.unit_price_in_usd}</Td>
                                         <Td>$ {lock.total_value}</Td>
                                         <Td>{lock.next_release_timestamp > 0 ? convertTimestampToDateTime(lock.next_release_timestamp) : '-'}</Td>
-                                        <Td><div className="view-but" onClick={() => handleClickView(lock.locker_address)}>view</div></Td>
+                                        <Td><div className="view-but" onClick={() => handleClickView(lock.lock_id)}>view</div></Td>
                                     </Tr>
                                 );
                             })
