@@ -254,7 +254,6 @@ const VaultVesting = () => {
     useEffect(() => {
         if (!lock) return;
 
-        console.log(lock);
         const events = [];
         for (let i = 0; i < lock.lock_release_count; i++) {
             events.push({
