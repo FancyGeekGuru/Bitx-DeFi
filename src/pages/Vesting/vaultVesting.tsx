@@ -317,7 +317,7 @@ const VaultVesting = () => {
     return (
         <div className="home-container" style={{ marginTop: "20px" }}>
             <Link to={routeNames.bitlock}>
-                <p className="go-back"> {"< go to home"}</p>
+                <p className="go-back"> {"< go home"}</p>
             </Link>
             <p className='lock-process text-center'>Vault Explorer</p>
 
