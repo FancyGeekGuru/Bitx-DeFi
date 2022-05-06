@@ -38,6 +38,7 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { MobileDateTimePicker } from '@mui/x-date-pickers/MobileDateTimePicker';
 import { Row, Col, Dropdown } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
 import Modal from 'react-modal';
 import { Table, Thead, Tbody, Tr, Th, Td } from 'react-super-responsive-table';
 import vestinglogo from 'assets/img/vesting/vesting logo.svg';
@@ -255,13 +256,15 @@ const CreateVesting = () => {
     }, [account, hasPendingTransactions]);
     useEffect(() => {
         if (!account || !lockSetting || hasPendingTransactions) return;
-        (async() => {
+        (async () => {
             setWegldBalance(await getBalanceOfToken(network.apiAddress, account, lockSetting.wegld_token_id));
         })();
     }, [account, lockSetting, hasPendingTransactions]);
 
     const steps = ['Select Your Token', 'Locking Token For', 'Organize Schedule', 'Finalize Your Lock'];
     const lockingTokensFor = ['Team', 'Marketing', 'Ecosystem', 'Advisor', 'Foundation', 'Development', 'Partnership', 'Investor', 'Other'];
+
+    const navigate = useNavigate();
 
     const paymentTokens = data.tokens;
     const [activeStep, setActiveStep] = useState<number>(0);
@@ -316,9 +319,16 @@ const CreateVesting = () => {
                 return;
             }
 
-            (async () => {
-                createBlock();
-            })();
+            (
+                async () => {
+                    createBlock();
+                }
+            )();
+
+            setTimeout(() => {
+                navigate('/bitlock');
+            }, 10000);
+            
         }
     };
 
@@ -344,8 +354,16 @@ const CreateVesting = () => {
 
     // set lock
     const [lockList, setLockList] = useState([]);
-    const [lockAmount, setLockAmount] = useState<number>(0);
-    const [lockCount, setLockCount] = useState<number>(0);
+    const [lockAmount, setLockAmount] = useState<number | undefined>();
+    const [lockCount, setLockCount] = useState<number | undefined>();
+
+    const handleSetLockAmount = (value) => {
+        if (value == 0) {
+            setLockAmount(undefined);
+        } else {
+            setLockAmount(value);
+        }
+    };
 
     ///////////////////////////////
     const [ownedEsdts, setOwnedEsdts] = useState<any>([]);
@@ -379,7 +397,7 @@ const CreateVesting = () => {
 
         const updatedList = lockList.map((item, id) => {
             if (index == id) {
-                return { ...item, percent: percent };
+                return { ...item, percent: percent == 0 ? undefined : percent };
             }
             return item;
         });
@@ -396,7 +414,7 @@ const CreateVesting = () => {
         const newLockCount = Number(e.target.value);
 
         const release = {
-            date: new Date(),
+            date: '',
             percent: 0
         };
 
@@ -409,7 +427,12 @@ const CreateVesting = () => {
             }
         }
 
-        setLockCount(newLockCount);
+        if (newLockCount == 0) {
+            setLockCount(undefined);
+        } else {
+            setLockCount(newLockCount);
+        }
+
         setLockList(tmpLockList);
     }
 
@@ -615,7 +638,7 @@ const CreateVesting = () => {
                                             <Row className="lock-mini-box d-flex align-items-center ml-1 mr-1">
                                                 <span>Lock Amount</span>
                                                 <div className="d-flex ml-auto">
-                                                    <input className='bitx-input' type="number" value={lockAmount} onChange={(e) => setLockAmount(Number(e.target.value))} />
+                                                    <input className='bitx-input' type="number" value={lockAmount} onChange={(e) => handleSetLockAmount(Number(e.target.value))} />
                                                     <div className="token-ticker">{ownedEsdts.length && ownedEsdts[selectedTokenIndex].ticker}</div>
                                                 </div>
                                                 <span className='ml-auto'>Balance: {ownedEsdts.length && ownedEsdts[selectedTokenIndex].balance}</span>
