@@ -327,9 +327,9 @@ const CreateVesting = () => {
             )();
 
             // setTimeout(() => {
-                // navigate('/bitlock');
+            // navigate('/bitlock');
             // }, 10000);
-            
+
         }
     };
 
@@ -398,6 +398,8 @@ const CreateVesting = () => {
         setLockList(updatedList);
     };
 
+    const [lockName, setLockName] = useState<string>('');
+
     const [selectedReceiverAddress, setSelectedReceiverAddress] = useState<string>(address);
     useEffect(() => {
         setSelectedReceiverAddress(switchLockingTokensForchecked ? '' : address);
@@ -407,11 +409,11 @@ const CreateVesting = () => {
         let newLockCount = 0;
         try {
             newLockCount = Number(e.target.value);
-        } catch(e) {
+        } catch (e) {
             onShowAlertModal('Invalid number.');
             return;
         }
-        
+
         const oldLockCount = lockCount;
         const release = {
             date: '',
@@ -613,6 +615,12 @@ const CreateVesting = () => {
                                         </div>
                                     </div>
                                     <input className='bitlock-input w-100' value={selectedReceiverAddress} onChange={(e) => setSelectedReceiverAddress(e.target.value)} />
+
+                                    <div className="mt-3">
+                                        <p className="step-title">Lock Name</p>
+                                        <input className='bitlock-input w-100' value={lockName} onChange={(e) => setLockName(e.target.value)} />
+
+                                    </div>
                                     <div>{!isValidAddress(selectedReceiverAddress) && 'Invalid address.'}</div>
                                     <p className="step-title mt-3">Please select</p>
                                     <Row>
