@@ -284,6 +284,10 @@ const CreateVesting = () => {
                     onShowAlertModal('Invalid receiver address.');
                     return;
                 }
+                if (lockName.trim().length == 0) {
+                    onShowAlertModal('Invalid lock name.');
+                    return;
+                }
             }
 
             if (activeStep == 2 && stepNum == 3) {
@@ -457,7 +461,7 @@ const CreateVesting = () => {
             new BigUIntValue(convertEsdtToWei(calculateWegldFee())),
             BytesValue.fromUTF8('createLock'),
             new AddressValue(new Address(selectedReceiverAddress)),	// lock receiver address
-            BytesValue.fromUTF8('Lock #1'),
+            BytesValue.fromUTF8(lockName),
             BytesValue.fromUTF8(lockingTokensFor[selectedLockingTokensForID]),
             createListOfU64(releaseRimestamps),
             createListOfU64(releasePercentages),
