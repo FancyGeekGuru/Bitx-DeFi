@@ -23,6 +23,7 @@ import {
     BigUIntValue,
     TransactionPayload,
     Balance,
+    ChainSendContext,
 } from '@elrondnetwork/erdjs';
 
 import Box from '@mui/material/Box';
@@ -344,8 +345,8 @@ const CreateVesting = () => {
 
     // set lock
     const [lockList, setLockList] = useState([]);
-    const [lockAmount, setLockAmount] = useState<number>(0);
-    const [lockCount, setLockCount] = useState<number>(0);
+    const [lockAmount, setLockAmount] = useState<number | undefined>();
+    const [lockCount, setLockCount] = useState<number | undefined>();
 
     ///////////////////////////////
     const [ownedEsdts, setOwnedEsdts] = useState<any>([]);
@@ -393,8 +394,15 @@ const CreateVesting = () => {
     }, [switchLockingTokensForchecked]);
 
     function onChangeLockCount(e) {
-        const newLockCount = Number(e.target.value);
-
+        let newLockCount = 0;
+        try {
+            newLockCount = Number(e.target.value);
+        } catch(e) {
+            onShowAlertModal('Invalid number.');
+            return;
+        }
+        
+        const oldLockCount = lockCount;
         const release = {
             date: new Date(),
             percent: 0
@@ -402,7 +410,7 @@ const CreateVesting = () => {
 
         const tmpLockList = [];
         for (let i = 0; i < newLockCount; i++) {
-            if (i < lockCount) {
+            if (i < oldLockCount) {
                 tmpLockList.push(lockList[i]);
             } else {
                 tmpLockList.push(release);
@@ -615,7 +623,7 @@ const CreateVesting = () => {
                                             <Row className="lock-mini-box d-flex align-items-center ml-1 mr-1">
                                                 <span>Lock Amount</span>
                                                 <div className="d-flex ml-auto">
-                                                    <input className='bitx-input' type="number" value={lockAmount} onChange={(e) => setLockAmount(Number(e.target.value))} />
+                                                    <input className='bitx-input' type="text" defaultValue={lockAmount} onChange={(e) => setLockAmount(Number(e.target.value))} />
                                                     <div className="token-ticker">{ownedEsdts.length && ownedEsdts[selectedTokenIndex].ticker}</div>
                                                 </div>
                                                 <span className='ml-auto'>Balance: {ownedEsdts.length && ownedEsdts[selectedTokenIndex].balance}</span>
@@ -626,7 +634,7 @@ const CreateVesting = () => {
                                         <Col lg="6">
                                             <div className="lock-mini-box d-flex align-items-center ml-1 mr-1">
                                                 <span>Lock Count</span>
-                                                <input className='bitlock-input ml-3' type="number" style={{ borderRadius: "5px", width: "80%" }} onChange={onChangeLockCount} value={lockCount} />
+                                                <input className='bitlock-input ml-3' type="text" style={{ borderRadius: "5px", width: "80%" }} onChange={onChangeLockCount} defaultValue={lockCount} />
                                             </div>
                                         </Col>
 
