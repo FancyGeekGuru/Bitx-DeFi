@@ -39,6 +39,7 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { MobileDateTimePicker } from '@mui/x-date-pickers/MobileDateTimePicker';
 import { Row, Col, Dropdown } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
 import Modal from 'react-modal';
 import { Table, Thead, Tbody, Tr, Th, Td } from 'react-super-responsive-table';
 import vestinglogo from 'assets/img/vesting/vesting logo.svg';
@@ -256,13 +257,15 @@ const CreateVesting = () => {
     }, [account, hasPendingTransactions]);
     useEffect(() => {
         if (!account || !lockSetting || hasPendingTransactions) return;
-        (async() => {
+        (async () => {
             setWegldBalance(await getBalanceOfToken(network.apiAddress, account, lockSetting.wegld_token_id));
         })();
     }, [account, lockSetting, hasPendingTransactions]);
 
     const steps = ['Select Your Token', 'Locking Token For', 'Organize Schedule', 'Finalize Your Lock'];
     const lockingTokensFor = ['Team', 'Marketing', 'Ecosystem', 'Advisor', 'Foundation', 'Development', 'Partnership', 'Investor', 'Other'];
+
+    const navigate = useNavigate();
 
     const paymentTokens = data.tokens;
     const [activeStep, setActiveStep] = useState<number>(0);
@@ -317,9 +320,16 @@ const CreateVesting = () => {
                 return;
             }
 
-            (async () => {
-                createBlock();
-            })();
+            (
+                async () => {
+                    createBlock();
+                }
+            )();
+
+            setTimeout(() => {
+                navigate('/bitlock');
+            }, 10000);
+            
         }
     };
 
@@ -380,7 +390,7 @@ const CreateVesting = () => {
 
         const updatedList = lockList.map((item, id) => {
             if (index == id) {
-                return { ...item, percent: percent };
+                return { ...item, percent: percent == 0 ? undefined : percent };
             }
             return item;
         });
@@ -404,7 +414,7 @@ const CreateVesting = () => {
         
         const oldLockCount = lockCount;
         const release = {
-            date: new Date(),
+            date: '',
             percent: 0
         };
 
@@ -417,7 +427,12 @@ const CreateVesting = () => {
             }
         }
 
-        setLockCount(newLockCount);
+        if (newLockCount == 0) {
+            setLockCount(undefined);
+        } else {
+            setLockCount(newLockCount);
+        }
+
         setLockList(tmpLockList);
     }
 
