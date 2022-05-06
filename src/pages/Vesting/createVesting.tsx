@@ -326,9 +326,9 @@ const CreateVesting = () => {
                 }
             )();
 
-            setTimeout(() => {
+            // setTimeout(() => {
                 navigate('/bitlock');
-            }, 10000);
+            // }, 10000);
             
         }
     };
@@ -683,7 +683,7 @@ const CreateVesting = () => {
                                                                     <span>Relase Percent</span>
                                                                 </div>
                                                                 <div className="w-50">
-                                                                    <input className='bitlock-input w-100' type="number" onChange={(e) => handleChangePercent(index, Number(e.target.value))} value={row.percent} />
+                                                                    <input className='bitlock-input w-100' type="text" onChange={(e) => handleChangePercent(index, Number(e.target.value))} defaultValue={row.percent} />
                                                                 </div>
                                                             </div>
 
