@@ -32,7 +32,7 @@ import Symbol2 from 'assets/img/vesting/Symbol for Locked Tokens.png';
 import Symbol3 from 'assets/img/vesting/Symbol for Lockers.png';
 import { routeNames } from 'routes';
 import * as data from './data';
-import {TOKENS} from 'data';
+import { TOKENS } from 'data';
 
 import {
     VESTING_CONTRACT_ADDRESS,
@@ -109,7 +109,7 @@ const BitLock = () => {
 
             if (!res || !res.returnCode.isSuccess()) return;
             const value = res.firstValue.valueOf();
-            
+
             const total_locked_token_ids = value.total_locked_token_ids.map((v: any) => v.toString());
             const total_locked_token_amounts = value.total_locked_token_amounts;
             const total_locked_tokens = [];
@@ -126,7 +126,7 @@ const BitLock = () => {
                 total_locked_value += amount * TOKENS[token_id].unit_price_in_usd;
             }
             total_locked_value = precisionFloor(total_locked_value);
-            
+
             const total_lock_count = value.total_lock_count.toNumber();
             const wegld_token_id = value.wegld_token_id.toString();
             const wegld_min_fee = convertWeiToEsdt(value.wegld_min_fee);
@@ -362,7 +362,12 @@ const BitLock = () => {
                                 return (
                                     <Tr key={`home-list-${index}`}>
                                         <Td>{lock.lock_name}</Td>
-                                        <Td>{lock.lock_token_id}</Td>
+                                        <Td>
+                                            <img src={lock && TOKENS[lock.lock_token_id].logo} style={{ width: '2rem', marginRight:"10px" }} alt="BTX" />
+                                            {
+                                                lock.lock_token_id
+                                            }
+                                        </Td>
                                         <Td>{lock.lock_token_amount} {lock.lock_token_id.split('-')[0]}</Td>
                                         <Td>$ {lock.unit_price_in_usd}</Td>
                                         <Td>$ {lock.total_value}</Td>

@@ -277,6 +277,9 @@ const VaultVesting = () => {
 
     const calculateRemainDays = (to) => {
         const now: number = Date.now();
+        if (to <= now) {
+            return 0;
+        }
         return Math.round((to - now) / 1000 / 60 / 60 / 24);
     };
 

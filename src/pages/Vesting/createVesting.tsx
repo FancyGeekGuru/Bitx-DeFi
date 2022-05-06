@@ -324,10 +324,6 @@ const CreateVesting = () => {
                     createBlock();
                 }
             )();
-
-            setTimeout(() => {
-                navigate('/bitlock');
-            }, 10000);
             
         }
     };
@@ -470,9 +466,11 @@ const CreateVesting = () => {
         };
 
         await refreshAccount();
-        sendTransactions({
+        await sendTransactions({
             transactions: tx,
         });
+
+        navigate('/bitlock');
     }
 
     function calculateWegldFee() {
