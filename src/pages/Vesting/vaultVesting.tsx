@@ -360,8 +360,11 @@ const VaultVesting = () => {
                         </div>
 
                         {/** when claimable is false then use className as claim-but-disable */}
-                        <button className="mt-3 claim-but w-100" onClick={claimLock}>Claim</button>
-
+                        {
+                            address && lock && address == lock.receiver_address && (
+                                <button className="mt-3 claim-but w-100" onClick={claimLock}>Claim</button>
+                            )
+                        }
                         
                         {/* <div className="mt-4">
                             <span className={!switchViewType ? "text-primary-color" : "text-dark-color"}> View All Locks </span>
