@@ -656,7 +656,7 @@ const CreateVesting = () => {
                                                     <div className="token-ticker">{ownedEsdts.length && ownedEsdts[selectedTokenIndex].ticker}</div>
                                                 </div>
                                                 <span className='ml-auto'>Balance: {ownedEsdts.length && ownedEsdts[selectedTokenIndex].balance}</span>
-                                                <div className="max-but ml-auto" onClick={() => setLockAmount(100)}>max</div>
+                                                <div className="max-but ml-auto" onClick={() => setLockAmount(ownedEsdts.length && ownedEsdts[selectedTokenIndex].balance)}>max</div>
                                             </Row>
                                         </Col>
 
