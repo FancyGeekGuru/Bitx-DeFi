@@ -555,3 +555,39 @@
     font-size: 12px;
     cursor: not-allowed;
 }
+
+.final-lock-text-token {
+    font-size: 50px;
+    font-weight: 600;
+    color: #05AB76;
+    float: right;
+
+    @media (max-width: 576px) {
+        float: left;
+    }
+}
+
+.final-lock-text-locked {
+    font-size: 50px;
+    font-weight: 600;
+    color: #05AB76;
+    float: left;
+
+    @media (max-width: 576px) {
+        float: right;
+    }
+}
+
+.final-token-logo-animation {
+    -webkit-animation: leaves 1s ease-in-out infinite alternate;
+}
+
+@keyframes leaves {
+    0% {
+        transform: translatey(-8px);
+    }
+
+    100% {
+        transform: translatey(8px);
+    }
+}

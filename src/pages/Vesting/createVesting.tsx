@@ -5,6 +5,7 @@ import {
     useGetAccountInfo,
     useGetNetworkConfig,
     useGetPendingTransactions,
+    transactionServices
 } from '@elrondnetwork/dapp-core';
 import {
     Address,
@@ -42,6 +43,7 @@ import { Row, Col, Dropdown } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import Modal from 'react-modal';
 import { Table, Thead, Tbody, Tr, Th, Td } from 'react-super-responsive-table';
+import finalLockLogo from 'assets/img/vesting/finallock.svg';
 import vestinglogo from 'assets/img/vesting/vesting logo.svg';
 import * as data from './data';
 import { Divider } from '@mui/material';
@@ -272,6 +274,10 @@ const CreateVesting = () => {
     const handleChangeStep = (stepNum) => {
         if (!address || !lockSetting) return;
 
+        if (stepNum == -1) {
+            navigate('/bitlock');
+        }
+
         if (stepNum >= 0 && stepNum <= 3) {
             if (activeStep == 0 && stepNum == 1) {
                 if (ownedEsdts.length == 0) {
@@ -476,13 +482,33 @@ const CreateVesting = () => {
         };
 
         await refreshAccount();
-        await sendTransactions({
+        const result = await sendTransactions({
             transactions: tx,
         });
 
-        navigate('/bitlock');
+        console.log(result.sessionId);
+        setSessionId(result.sessionId);
     }
 
+    /** token lock success? */
+    const [sessionId, setSessionId] = useState<string>('');
+    const transactionStatus = transactionServices.useTrackTransactionStatus({
+        transactionId: sessionId,
+        // onSuccess: () => { console.log("success"); },
+        // onCompleted: () => { console.log("completed"); },
+        // onFail: () => { console.log("failed"); },
+        // onCancelled: () => { console.log("cancelled"); },
+        // onTimedOut: () => { console.log("time out"); }
+    });
+    useEffect(() => {
+        if (transactionStatus.isSuccessful) {
+            console.log("isSuccessful");
+            setTokenLockState(true);
+        }
+    }, [sessionId, hasPendingTransactions]);
+
+    const [tokenLockSuccess, setTokenLockState] = useState<boolean>(false);
+    /* ****************************************************************************** */
     function calculateWegldFee() {
         return Math.max(lockSetting.wegld_min_fee, lockSetting.wegld_base_fee * lockCount);
     }
@@ -739,7 +765,7 @@ const CreateVesting = () => {
                         }
 
                         {
-                            activeStep == 3 && (
+                            activeStep == 3 && !tokenLockSuccess && (
                                 <>
                                     <div className='d-flex justify-content-between'>
                                         <p className="step-title">{steps[3]}</p>
@@ -788,13 +814,38 @@ const CreateVesting = () => {
                             )
                         }
 
-                        <div className='mt-2 text-center justify-content-center align-items-center'>
+                        {
+                            activeStep == 3 && tokenLockSuccess && (
+                                <>
+                                    <Row className="align-items-center text-center">
+                                        <Col sm="4">
+                                            <span className="final-lock-text-token">Token</span>
+                                        </Col>
+                                        <Col sm="4">
+                                            <img className="final-token-logo-animation" src={finalLockLogo} alt="final bit lock" style={{ width: "60%" }} />
+                                        </Col>
+                                        <Col sm="4">
+                                            <span className="final-lock-text-locked">Locked</span>
+                                        </Col>
+                                    </Row>
+                                </>
+                            )
+                        }
 
-                            <div className="d-flex align-items-center justify-content-center" >
-                                <div className="step-but" onClick={() => handleChangeStep(activeStep - 1)}>Back</div>
-                                <img src={vestinglogo} alt="elrond vesting" />
-                                <div className="step-but" onClick={() => handleChangeStep(activeStep + 1)}>{activeStep == 3 ? 'Lock' : 'Next'}</div>
-                            </div>
+                        <div className='mt-2 text-center justify-content-center align-items-center'>
+                            {
+                                tokenLockSuccess ? (
+                                    <div className="d-flex align-items-center justify-content-center mt-5 mb-4" >
+                                        <div className="step-but" onClick={() => { navigate('/bitlock'); }}>go home</div>
+                                    </div>
+                                ) : (
+                                    <div className="d-flex align-items-center justify-content-center" >
+                                        <div className="step-but" onClick={() => handleChangeStep(activeStep - 1)}>Back</div>
+                                        <img src={vestinglogo} alt="elrond vesting" />
+                                        <div className="step-but" onClick={() => handleChangeStep(activeStep + 1)}>{activeStep == 3 ? 'Lock' : 'Next'}</div>
+                                    </div>
+                                )
+                            }
                         </div>
                     </div>
                 </Box>
