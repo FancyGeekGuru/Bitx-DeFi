@@ -302,10 +302,15 @@ const VaultVesting = () => {
             return;
         }
 
+        const args: TypedValue[] = [
+            new U32Value(lockId),	// number of tokens to send
+        ];
+        const { argumentsString } = new ArgSerializer().valuesToString(args);
+        const data = `claimLock@${argumentsString}`;
         const tx = {
             receiver: VESTING_CONTRACT_ADDRESS,
             gasLimit: new GasLimit(6000000),
-            data: 'claimLock',
+            data,
         };
 
         await refreshAccount();
