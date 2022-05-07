@@ -579,10 +579,10 @@
 }
 
 .final-token-logo-animation {
-    -webkit-animation: leaves 1s ease-in-out infinite alternate;
+    -webkit-animation: final-token-logo-leaves 1s ease-in-out infinite alternate;
 }
 
-@keyframes leaves {
+@keyframes final-token-logo-leaves {
     0% {
         transform: translatey(-8px);
     }
