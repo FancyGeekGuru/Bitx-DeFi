@@ -270,7 +270,7 @@ const BitLock = () => {
                     <div>
                         <div>
                             <p className="description-title">{"BitLock"}</p>
-                            <p className="description-body">{"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed eu nibh bibendum, dictum nibh eu, ultricies lectus. Nullam metus eros, lacinia quis condimentum at, sagittis eu sapien. Suspendisse suscipit orci nec eros elementum"}</p>
+                            <p className="description-body">{"BitX will be the first project on the Elrond Network to introduce a locking vesting mechanism called BitLock. BitLock will allow upcoming projects and established projects alike, the ability to lock their team or LP tokens. The tokens will be locked within a specially designed time elapsing smart contract. The locked tokens cannot be withdrawn until the token team’s designated period of locking is met."}</p>
                         </div>
 
                         <Row className="mt-5">
