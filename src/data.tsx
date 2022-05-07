@@ -39,4 +39,11 @@ export const TOKENS = {
         logo: "https://media.elrond.com/tokens/asset/USDC-c76f1f/logo.png",
         unit_price_in_usd: 1,
     },
+    "XSUPER-0ad9d6": {
+        identifier: "XSUPER-0ad9d6",
+        ticker: "XSUPER",
+        decimals: 18,
+        logo: "https://media.elrond.com/tokens/asset/SUPER-507aa6/logo.png",
+        unit_price_in_usd: 0.001,
+    },
 };
