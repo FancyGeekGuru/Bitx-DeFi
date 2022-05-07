@@ -591,3 +591,11 @@
         transform: translatey(8px);
     }
 }
+
+.token-identifier {
+    padding-left: 60px;
+
+    @media screen and (max-width: 52em) {
+        padding-left: 0px;
+    }
+}

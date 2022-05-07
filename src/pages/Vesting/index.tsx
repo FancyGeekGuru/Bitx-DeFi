@@ -272,11 +272,11 @@ const BitLock = () => {
                             <p className="description-title">{"BitLock"}</p>
                             <p className="description-body text-left">{"BitLock allows for token locking and vesting on the Elrond Network. The tokens will be locked within a specially designed time elapsing smart contract. The locked tokens cannot be withdrawn until the token team’s designated period of locking is met. BitLock allows for all ESDT tokens and LP tokens including EGLD to be locked or vested."}</p>
 
-                            <p className="text-left" style={{color: "#707070"}}>
-                                    We would like to highlight that the BitX team will not be able to withdraw tokens locked within our own platform, this is due to the manner of the smart contract locking mechanism that we have designed. The only way the locked tokens can be withdrawn are as follows: <br/>
-                                    1. By the wallet address owner who locked the tokens in the SC. <br/>
-                                    2. Unlocking is only possible once the elapsed timing mechanism reaches the agreed locking period set by the team or authorized wallet holder. <br/>
-                                    3. Only once both criteria have been met can the tokens be withdrawn.
+                            <p className="text-left" style={{ color: "#707070" }}>
+                                We would like to highlight that the BitX team will not be able to withdraw tokens locked within our own platform, this is due to the manner of the smart contract locking mechanism that we have designed. The only way the locked tokens can be withdrawn are as follows: <br />
+                                1. By the wallet address owner who locked the tokens in the SC. <br />
+                                2. Unlocking is only possible once the elapsed timing mechanism reaches the agreed locking period set by the team or authorized wallet holder. <br />
+                                3. Only once both criteria have been met can the tokens be withdrawn.
                             </p>
                         </div>
 
@@ -369,11 +369,18 @@ const BitLock = () => {
                                 return (
                                     <Tr key={`home-list-${index}`}>
                                         <Td>{lock.lock_name}</Td>
-                                        <Td>
-                                            <img src={lock && TOKENS[lock.lock_token_id].logo} style={{ width: '2rem', marginRight:"10px" }} alt="BTX" />
-                                            {
-                                                lock.lock_token_id
-                                            }
+                                        <Td className="d-flex text-left align-items-center">
+                                            <div style={{ width: "30%", textAlign: "right" }}>
+                                                <img src={lock && TOKENS[lock.lock_token_id].logo} style={{
+                                                    width: '2rem',
+                                                    marginRight:"10px"
+                                                }} alt="BTX" />
+                                            </div>
+                                            <div style={{ width: "70%" }}>
+                                                {
+                                                    lock.lock_token_id
+                                                }
+                                            </div>
                                         </Td>
                                         <Td>{lock.lock_token_amount} {lock.lock_token_id.split('-')[0]}</Td>
                                         <Td>$ {lock.unit_price_in_usd}</Td>
