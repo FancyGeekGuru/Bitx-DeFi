@@ -32,7 +32,7 @@ export const TOKENS = {
         ticker: "WEGLD",
         decimals: 18,
         logo: "https://media.elrond.com/tokens/asset/WEGLD-bd4d79/logo.svg",
-        unit_price_in_usd: 0,
+        unit_price_in_usd: 120,
     },
     "SUPER-507aa6": {
         identifier: "SUPER-507aa6",
