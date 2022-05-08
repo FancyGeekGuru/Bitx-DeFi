@@ -368,7 +368,7 @@ const BitLock = () => {
                             filteredLocks && filteredLocks.map((lock, index) => {
                                 return (
                                     <Tr key={`home-list-${index}`}>
-                                        <Td>{lock.lock_name}</Td>
+                                        {/* <Td>{lock.lock_name}</Td> */}
                                         <Td className="d-flex text-left align-items-center">
                                             <div style={{ width: "30%", textAlign: "right" }}>
                                                 <img src={lock && TOKENS[lock.lock_token_id].logo} style={{

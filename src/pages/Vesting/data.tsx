@@ -1,5 +1,5 @@
 export const vestingListHeader = [
-    "Name",
+    // "Name",
     "Token Identifier",
     "Token Amount",
     "Token Value",
