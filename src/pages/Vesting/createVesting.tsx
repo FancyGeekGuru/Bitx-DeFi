@@ -408,6 +408,10 @@ const CreateVesting = () => {
         setLockList(updatedList);
     };
 
+    function onChangeLockAmount(v: any) {
+        const newLockAmount = Number(v);
+    }
+
     const [lockName, setLockName] = useState<string>('');
 
     const [selectedReceiverAddress, setSelectedReceiverAddress] = useState<string>(address);
@@ -678,7 +682,7 @@ const CreateVesting = () => {
                                             <Row className="lock-mini-box d-flex align-items-center ml-1 mr-1">
                                                 <span>Lock Amount</span>
                                                 <div className="d-flex ml-auto">
-                                                    <input className='bitx-input' type="text" defaultValue={lockAmount} onChange={(e) => setLockAmount(Number(e.target.value))} />
+                                                    <input className='bitx-input' type="text" value={lockAmount} onChange={(e) => setLockAmount(Number(e.target.value))} />
                                                     <div className="token-ticker">{ownedEsdts.length && ownedEsdts[selectedTokenIndex].ticker}</div>
                                                 </div>
                                                 <span className='ml-auto'>Balance: {ownedEsdts.length && ownedEsdts[selectedTokenIndex].balance}</span>
