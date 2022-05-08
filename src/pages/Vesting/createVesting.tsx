@@ -290,10 +290,10 @@ const CreateVesting = () => {
                     onShowAlertModal('Invalid receiver address.');
                     return;
                 }
-                if (lockName.trim().length == 0) {
-                    onShowAlertModal('Invalid lock name.');
-                    return;
-                }
+                // if (lockName.trim().length == 0) {
+                //     onShowAlertModal('Invalid lock name.');
+                //     return;
+                // }
             }
 
             if (activeStep == 2 && stepNum == 3) {
@@ -412,7 +412,7 @@ const CreateVesting = () => {
         const newLockAmount = Number(v);
     }
 
-    const [lockName, setLockName] = useState<string>('');
+    // const [lockName, setLockName] = useState<string>('');
 
     const [selectedReceiverAddress, setSelectedReceiverAddress] = useState<string>(address);
     useEffect(() => {
@@ -472,7 +472,7 @@ const CreateVesting = () => {
             new BigUIntValue(convertEsdtToWei(calculateWegldFee())),
             BytesValue.fromUTF8('createLock'),
             new AddressValue(new Address(selectedReceiverAddress)),	// lock receiver address
-            BytesValue.fromUTF8(lockName),
+            BytesValue.fromUTF8(''),
             BytesValue.fromUTF8(lockingTokensFor[selectedLockingTokensForID]),
             createListOfU64(releaseRimestamps),
             createListOfU64(releasePercentages),
@@ -651,11 +651,10 @@ const CreateVesting = () => {
                                     </div>
                                     <input className='bitlock-input w-100' value={selectedReceiverAddress} onChange={(e) => setSelectedReceiverAddress(e.target.value)} />
 
-                                    <div className="mt-3">
+                                    {/* <div className="mt-3">
                                         <p className="step-title">Lock Name</p>
                                         <input className='bitlock-input w-100' value={lockName} onChange={(e) => setLockName(e.target.value)} />
-
-                                    </div>
+                                    </div> */}
                                     <div>{!isValidAddress(selectedReceiverAddress) && 'Invalid address.'}</div>
                                     <p className="step-title mt-3">Please select</p>
                                     <Row>

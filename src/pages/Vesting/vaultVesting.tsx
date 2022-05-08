@@ -335,10 +335,10 @@ const VaultVesting = () => {
 
                         {/* <ProgressBar style={{ marginTop: "35px" }} now={25} /> */}
 
-                        <div className="d-flex justify-content-between mt-4">
+                        {/* <div className="d-flex justify-content-between mt-4">
                             <span style={{ color: "#B5B5B5" }}>Lock Name</span>
                             <span style={{ color: "#05AB76" }}>{lock ? lock.lock_name : '-'}</span>
-                        </div>
+                        </div> */}
                         <div className="d-flex justify-content-between mt-2">
                             <span style={{ color: "#B5B5B5" }}>Lock Amount</span>
                             <span style={{ color: "#05AB76" }}>{lock ? lock.lock_token_amount : '-'}</span>
