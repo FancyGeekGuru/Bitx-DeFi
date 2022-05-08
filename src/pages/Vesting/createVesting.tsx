@@ -254,11 +254,11 @@ const CreateVesting = () => {
     const [egldBalance, setEgldBalance] = useState(0);
     const [wegldBalance, setWegldBalance] = useState(0);
     useEffect(() => {
-        if (!account || hasPendingTransactions) return;
+        if (!account) return;
         setEgldBalance(convertWeiToEgld(account.balance));
     }, [account, hasPendingTransactions]);
     useEffect(() => {
-        if (!account || !lockSetting || hasPendingTransactions) return;
+        if (!account || !lockSetting) return;
         (async () => {
             setWegldBalance(await getBalanceOfToken(network.apiAddress, account, lockSetting.wegld_token_id));
         })();
@@ -372,7 +372,7 @@ const CreateVesting = () => {
     const [ownedEsdts, setOwnedEsdts] = useState<any>([]);
     useEffect(() => {
         (async () => {
-            if (!address || hasPendingTransactions) return;
+            if (!address) return;
             let ownedEsdts = await getEsdtsOfAddress(network.apiAddress, account);
             ownedEsdts = ownedEsdts.filter(v => !!TOKENS[v.identifier]);
             console.log('ownedEsdts', ownedEsdts);
