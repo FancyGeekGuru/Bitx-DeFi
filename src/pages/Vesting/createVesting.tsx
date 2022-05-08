@@ -429,8 +429,9 @@ const CreateVesting = () => {
         }
 
         const oldLockCount = lockCount;
+        const now = new Date();
         const release = {
-            date: '',
+            date: new Date(now.setMonth(now.getMonth() + 1)),
             percent: 0
         };
 
