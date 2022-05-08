@@ -154,7 +154,7 @@ const Mare2Mare = () => {
 
   React.useEffect(() => {
     (async () => {
-      if (!stakeContractInteractor || !account.address || hasPendingTransactions) return;
+      if (!stakeContractInteractor || !account.address) return;
       // const args = [new AddressValue(new Address(account.address))];
       // const interaction: Interaction = stakingContract.methods.getCurrentStakeAccount(args);
       // const queryResponse = await stakingContract.runQuery(proxy, interaction.buildQuery());
@@ -196,7 +196,7 @@ const Mare2Mare = () => {
 
 
   React.useEffect(() => {
-    if (account.address && !hasPendingTransactions) {
+    if (account.address) {
       axios.get(`${network.apiAddress}/accounts/${account.address}/tokens?search=${MARE_TOKEN_TICKER}`).then((res: any) => {
         let _balance = 0;
         if (res.data?.length > 0) {
