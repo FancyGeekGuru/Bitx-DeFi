@@ -270,7 +270,7 @@ const BitLock = () => {
                     <div>
                         <div>
                             <p className="description-title">{"BitLock"}</p>
-                            <p className="description-body text-left">{"BitLock allows for token locking and vesting on the Elrond Network. The tokens will be locked within a specially designed time elapsing smart contract. The locked tokens cannot be withdrawn until the token team’s designated period of locking is met. BitLock allows for all ESDT tokens and LP tokens including EGLD to be locked or vested."}</p>
+                            <p className="description-body text-left">{"BitLock allows for token locking and vesting on the Elrond Network. The tokens will be locked within a specially designed time elapsing smart contract. The locked tokens cannot be withdrawn until the token team's designated period of locking is met. BitLock allows for all ESDT tokens and LP tokens including EGLD to be locked or vested."}</p>
 
                             <p className="text-left" style={{ color: "#707070" }}>
                                 We would like to highlight that the BitX team will not be able to withdraw tokens locked within our own platform, this is due to the manner of the smart contract locking mechanism that we have designed. The only way the locked tokens can be withdrawn are as follows: <br />
