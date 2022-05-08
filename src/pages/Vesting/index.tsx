@@ -143,7 +143,7 @@ const BitLock = () => {
                 total_locked_value,
             };
 
-            console.log('lockSetting', lockSetting);
+            // console.log('lockSetting', lockSetting);
             setLockSetting(lockSetting);
         })();
     }, [contractInteractor]);
@@ -207,7 +207,7 @@ const BitLock = () => {
                 });
             }
 
-            console.log('locks', locks);
+            // console.log('locks', locks);
             setLocks(locks);
         })();
     }, [contractInteractor]);
