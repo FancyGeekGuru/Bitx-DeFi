@@ -253,8 +253,8 @@ const Btx2BtxStakingCard = () => {
         _modalInfoMesssage = 'Cannot unstake more than staked amount.';
       } else if (value <= 0) {
         _modalInfoMesssage = 'Invalid amount.';
-      } else if (currentTimestamp < stakeAccount.lock_end_timestamp * SECOND_IN_MILLI) {
-        _modalInfoMesssage = `Cannot unstake before ${convertTimestampToDateTime(stakeAccount.lock_end_timestamp * SECOND_IN_MILLI)}`;
+      // } else if (currentTimestamp < stakeAccount.lock_end_timestamp * SECOND_IN_MILLI) {
+      //   _modalInfoMesssage = `Cannot unstake before ${convertTimestampToDateTime(stakeAccount.lock_end_timestamp * SECOND_IN_MILLI)}`;
       } else {
         _modalButtonDisabled = false;
       }
