@@ -146,14 +146,14 @@ const Presale = () => {
                 <div className='custom-buy-card-amount'>
                   <div className='custom-buy-card-amount-header'>Amount Of Old Token</div>
                   <div className='custom-buy-card-amount-container'>
-                    <input className='custom-buy-card-amount-input' type='number' disabled={true} value={buyAmountInEgld} />
+                    <input className='custom-buy-card-amount-input' type='number' value={buyAmountInEgld} />
                     <span className='custom-buy-card-amount-unit color-white'>BTX-48d004</span>
                   </div>
                 </div>
                 <div className='custom-buy-card-amount'>
                   <div className='custom-buy-card-amount-header'>Amount Of New Token</div>
                   <div className='custom-buy-card-amount-container'>
-                    <input className='custom-buy-card-amount-input' type='number' disabled={true} value={buyAmountInEsdt} />
+                    <input className='custom-buy-card-amount-input' type='number' disabled={true} value={buyAmountInEgld / 10} />
                     <span className='custom-buy-card-amount-unit color-white'>BTX-0f676d</span>
                   </div>
                 </div>
