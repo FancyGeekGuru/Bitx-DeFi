@@ -89,6 +89,12 @@ export const VESTING_CONTRACT_NAME = 'BtxVesting';
 
 export const EGLD_WRAPPER_SC_ADDRESS = 'erd1qqqqqqqqqqqqqpgqmuk0q2saj0mgutxm4teywre6dl8wqf58xamqdrukln';
 
+// convert
+export const CONVERT_CONTRACT_ADDRESS = 'erd1qqqqqqqqqqqqqpgq3stq2jcmg5tevukenzs0tw6ujrhrak6uh5ascxelng';
+export const CONVERT_CONTRACT_ABI_URL = 'abi/btx-convert.abi.json';
+export const CONVERT_CONTRACT_NAME = 'BtxConvert';
+
+
 // ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 // export const ENVIRONMENT = 'devnet';
 
