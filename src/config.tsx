@@ -87,7 +87,7 @@ export const VESTING_CONTRACT_ADDRESS = 'erd1qqqqqqqqqqqqqpgqxqnap2d90f0sj0v34a0
 export const VESTING_CONTRACT_ABI_URL = 'abi/btx-vesting.abi.json';
 export const VESTING_CONTRACT_NAME = 'BtxVesting';
 
-export const EGLD_WRAPPER_SC_ADDRESS = 'erd1qqqqqqqqqqqqqpgqhe8t5jewej70zupmh44jurgn29psua5l2jps3ntjj3';
+export const EGLD_WRAPPER_SC_ADDRESS = 'erd1qqqqqqqqqqqqqpgqmuk0q2saj0mgutxm4teywre6dl8wqf58xamqdrukln';
 
 // ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 // export const ENVIRONMENT = 'devnet';
