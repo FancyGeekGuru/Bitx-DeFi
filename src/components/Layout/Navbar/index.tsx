@@ -53,6 +53,12 @@ const Navbar = () => {
               <NavDropdown.Item onClick={() => { navigate(routeNames.hetostaking); }}>
                 Heto Pool
               </NavDropdown.Item>
+              <NavDropdown.Item onClick={() => { navigate(routeNames.cpastaking); }}>
+                Cpa Pool
+              </NavDropdown.Item>
+              <NavDropdown.Item onClick={() => { navigate(routeNames.lpadstaking); }}>
+                Lpad Pool
+              </NavDropdown.Item>
             </NavDropdown>
 
             <Link to={routeNames.presale} className='custom-navbar-button custom-navbar-normal-button'>

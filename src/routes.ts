@@ -1,17 +1,20 @@
 import { dAppName } from 'config';
+import VaultVesting from 'pages/Vesting/vaultVesting';
 import withPageTitle from './components/PageTitle';
 import BTXFinanceHome from './pages';
 import NFTMint from './pages/NFTMint';
 import PreSale from './pages/Presale';
+
 import StakingHome from './pages/Staking';
 import BitXStaking from './pages/Staking/BitXStaking';
+import CpaStaking from './pages/Staking/CpaStaking';
 import DiceStaking from './pages/Staking/DiceStaking';
 import HetoStaking from './pages/Staking/HetoStaking';
+import LpadStaking from './pages/Staking/LpadStaking';
 import MareStaking from './pages/Staking/MareStaking';
 
 import BitLock from './pages/Vesting';
 import CreateVesting from './pages/Vesting/createVesting';
-import VaultVesting from 'pages/Vesting/vaultVesting';
 
 export const routeNames = {
   home: '/',
@@ -25,6 +28,8 @@ export const routeNames = {
   dicestaking: '/dice-pool',
   marestaking: '/mare-pool',
   hetostaking: '/heto-pool',
+  cpastaking: '/cpa-pool',
+  lpadstaking: '/lpad-pool',
 
   presale: '/presale',
   nftmint: '/nft-mint',
@@ -81,6 +86,18 @@ const routes: Array<any> = [
     path: routeNames.hetostaking,
     title: 'Heto Pool',
     component: HetoStaking
+  },
+
+  {
+    path: routeNames.cpastaking,
+    title: 'Cpa Pool',
+    component: CpaStaking
+  },
+
+  {
+    path: routeNames.lpadstaking,
+    title: 'Lpad Pool',
+    component: LpadStaking
   },
 
   {
