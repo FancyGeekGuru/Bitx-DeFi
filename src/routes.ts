@@ -27,7 +27,7 @@ export const routeNames = {
   marestaking: '/mare-pool',
   hetostaking: '/heto-pool',
 
-  presale: '/presale',
+  // presale: '/presale',
   convert: '/convert',
   nftmint: '/nft-mint',
 
@@ -43,11 +43,11 @@ const routes: Array<any> = [
     component: StakingHome
   },
 
-  {
-    path: routeNames.presale,
-    title: 'PreSale',
-    component: PreSale
-  },
+  // {
+  //   path: routeNames.presale,
+  //   title: 'PreSale',
+  //   component: PreSale
+  // },
   {
     path: routeNames.convert,
     title: 'Convert',
