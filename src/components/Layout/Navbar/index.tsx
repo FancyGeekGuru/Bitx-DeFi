@@ -58,9 +58,9 @@ const Navbar = () => {
             {/* <Link to={routeNames.presale} className='custom-navbar-button custom-navbar-normal-button'>
               Presale
             </Link> */}
-            <Link to={routeNames.convert} className='custom-navbar-button custom-navbar-normal-button'>
+            {/* <Link to={routeNames.convert} className='custom-navbar-button custom-navbar-normal-button'>
               Convert
-            </Link>
+            </Link> */}
             <Link to={routeNames.nftmint} className='custom-navbar-button custom-navbar-normal-button'>
               NFT Mint
             </Link>
