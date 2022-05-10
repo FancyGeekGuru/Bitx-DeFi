@@ -4,7 +4,7 @@ import withPageTitle from './components/PageTitle';
 import BTXFinanceHome from './pages';
 import NFTMint from './pages/NFTMint';
 import PreSale from './pages/Presale';
-
+import Convert from './pages/Convert';
 import StakingHome from './pages/Staking';
 import BitXStaking from './pages/Staking/BitXStaking';
 import CpaStaking from './pages/Staking/CpaStaking';
@@ -32,6 +32,7 @@ export const routeNames = {
   lpadstaking: '/lpad-pool',
 
   presale: '/presale',
+  convert: '/convert',
   nftmint: '/nft-mint',
 
   bitlock: '/bitlock',
@@ -50,6 +51,11 @@ const routes: Array<any> = [
     path: routeNames.presale,
     title: 'PreSale',
     component: PreSale
+  },
+  {
+    path: routeNames.convert,
+    title: 'Convert',
+    component: Convert
   },
 
   {

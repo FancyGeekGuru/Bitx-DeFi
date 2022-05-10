@@ -246,7 +246,7 @@ const CreateVesting = () => {
                 total_locked_value,
             };
 
-            console.log('lockSetting', lockSetting);
+            // console.log('lockSetting', lockSetting);
             setLockSetting(lockSetting);
         })();
     }, [contractInteractor]);
@@ -375,7 +375,7 @@ const CreateVesting = () => {
             if (!address) return;
             let ownedEsdts = await getEsdtsOfAddress(network.apiAddress, account);
             ownedEsdts = ownedEsdts.filter(v => !!TOKENS[v.identifier]);
-            console.log('ownedEsdts', ownedEsdts);
+            // console.log('ownedEsdts', ownedEsdts);
             setOwnedEsdts(ownedEsdts);
         })();
     }, [address, hasPendingTransactions]);
@@ -458,8 +458,8 @@ const CreateVesting = () => {
 
         const releaseRimestamps = lockList.map(v => Math.floor(v.date.getTime() / 1000));
         const releasePercentages = lockList.map(v => v.percent * 100);
-        console.log('releaseRimestamps', releaseRimestamps);
-        console.log('releasePercentages', releasePercentages);
+        // console.log('releaseRimestamps', releaseRimestamps);
+        // console.log('releasePercentages', releasePercentages);
 
         const args: TypedValue[] = [
             new AddressValue(new Address(VESTING_CONTRACT_ADDRESS)),	// tx receiver address
@@ -491,7 +491,7 @@ const CreateVesting = () => {
             transactions: tx,
         });
 
-        console.log(result.sessionId);
+        // console.log(result.sessionId);
         setSessionId(result.sessionId);
     }
 
@@ -507,7 +507,7 @@ const CreateVesting = () => {
     });
     useEffect(() => {
         if (transactionStatus.isSuccessful) {
-            console.log("isSuccessful");
+            // console.log("isSuccessful");
             setTokenLockState(true);
         }
     }, [sessionId, hasPendingTransactions]);
@@ -699,7 +699,7 @@ const CreateVesting = () => {
 
                                         {
                                             lockList.map((row, index) => {
-                                                console.log(row);
+                                                // console.log(row);
                                                 return (
                                                     <Col md="4" key={index}>
                                                         <div className="lock-state-box">
@@ -792,7 +792,7 @@ const CreateVesting = () => {
 
                                             {
                                                 lockList.map((row, index) => {
-                                                    console.log(row);
+                                                    // console.log(row);
                                                     return (
                                                         <Tr key={index}>
                                                             <Td>

@@ -171,7 +171,7 @@ const VaultVesting = () => {
                 total_locked_value,
             };
 
-            console.log('lockSetting', lockSetting);
+            // console.log('lockSetting', lockSetting);
             setLockSetting(lockSetting);
         })();
     }, [contractInteractor]);
@@ -246,7 +246,7 @@ const VaultVesting = () => {
             };
 
 
-            console.log('lock', lock);
+            // console.log('lock', lock);
             setLock(lock);
         })();
     }, [contractInteractor, lockId]);
@@ -290,7 +290,7 @@ const VaultVesting = () => {
         }
 
         const numberOfDays = Math.round((to - from) / 1000 / 60 / 60 / 24);
-        console.log(numberOfDays, remainDays);
+        // console.log(numberOfDays, remainDays);
         return (numberOfDays - remainDays) / numberOfDays * 100;
     };
 
