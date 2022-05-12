@@ -2,6 +2,7 @@ import BTX from 'assets/img/token logos/BTX.png';
 import CPA from 'assets/img/token logos/CPA.png';
 import DICE from 'assets/img/token logos/DICE.png';
 import HETO from 'assets/img/token logos/HETO.png';
+import LPAD from 'assets/img/token logos/LPAD.png';
 import MARE from 'assets/img/token logos/MARE.png';
 import MEX from 'assets/img/token logos/MEX.png';
 
@@ -14,7 +15,7 @@ export const logo = {
     "MARE": MARE,
     "HETO": HETO,
     "CPA": CPA,
-    "LPAD": CPA,
+    "LPAD": LPAD,
 };
 
 export const contractABI = {

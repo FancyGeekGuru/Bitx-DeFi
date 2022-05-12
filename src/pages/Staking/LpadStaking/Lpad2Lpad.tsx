@@ -29,7 +29,7 @@ import Modal from 'react-modal';
 import arrow from 'assets/img/arrow.png';
 import coin from 'assets/img/coin.png';
 import elrondLogo from 'assets/img/Elrond logo.png';
-import HetoLogo from 'assets/img/token logos/HETO.png';
+import LpadLogo from 'assets/img/token logos/LPAD.png';
 import AlertModal from '../../../components/AlertModal';
 
 import {
@@ -375,12 +375,12 @@ const LPAD2LPAD = () => {
     <div className='card'>
       <div className='stake_earn'>
         <div>
-          <img src={HetoLogo} />
+          <img src={LpadLogo} />
           <p>Stake $LPAD</p>
         </div>
         <img src={arrow} />
         <div>
-          <img src={HetoLogo} />
+          <img src={LpadLogo} />
           <p>Earn $LPAD</p>
         </div>
       </div>

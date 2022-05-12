@@ -30,7 +30,7 @@ import arrow from 'assets/img/arrow.png';
 import btxLogo from 'assets/img/BTX logo.png';
 import coin from 'assets/img/coin.png';
 import elrondLogo from 'assets/img/Elrond logo.png';
-import HetoLogo from 'assets/img/token logos/HETO.png';
+import LpadLogo from 'assets/img/token logos/LPAD.png';
 
 
 
@@ -386,7 +386,7 @@ const Bitx2Lpad = () => {
         </div>
         <img src={arrow} />
         <div className='stake-log-card stake-log-card-mex'>
-          <img src={HetoLogo} />
+          <img src={LpadLogo} />
           <p>Earn $LPAD</p>
         </div>
       </div>
