@@ -4,11 +4,11 @@ export const dAppName = 'BitX Platform';
 export const SOCIAL_WEBSITE_URL = 'https://bitxfinance.online/';
 
 // BTX Pool
-export const BTX2BTX_CONTRACT_ADDRESS = 'erd1qqqqqqqqqqqqqpgqdydrqza459y8qppzj3mz22sd3ak9u5z43qmqek9z57';
-export const BTX2BTX_CONTRACT_ABI = 'abi/btx2btx.abi.json';
-export const BTX2BTX_CONTRACT_NAME = 'BitxStake';
+export const BTX2BTX_CONTRACT_ADDRESS = 'erd1qqqqqqqqqqqqqpgq2meg8p43f7jchh2mm4un8dm05urynflaj9qsplmcqa';
+export const BTX2BTX_CONTRACT_ABI = 'abi/btx-stake-v2.abi.json';
+export const BTX2BTX_CONTRACT_NAME = 'BitxStakeV2';
 export const BTX_TOKEN_TICKER = 'BTX';
-export const BTX_TOKEN_ID = 'BTX-48d004';
+export const BTX_TOKEN_ID = 'BTX-0f676d';
 export const BTX_TOKEN_DECIMALS = 18;
 
 export const BTX2MEX_CONTRACT_ADDRESS = 'erd1qqqqqqqqqqqqqpgqlfmj246rxrnl9sxx5fvxrxh2jpefa27r3qmqt76ey7';
