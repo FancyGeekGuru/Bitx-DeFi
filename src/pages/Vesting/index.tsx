@@ -186,6 +186,8 @@ const BitLock = () => {
 
                 const next_release_timestamp = lock_left_release_count > 0 ? lock_release_timestamps[lock_release_count - lock_left_release_count - 1] : 0;
 
+                if (lock_token_id == 'BTX-48d004') continue;
+
                 locks.push({
                     lock_id,
                     locker_address,

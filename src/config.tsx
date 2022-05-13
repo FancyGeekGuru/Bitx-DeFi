@@ -26,9 +26,9 @@ export const DICE_TOKEN_TICKER = 'DICE';
 export const DICE_TOKEN_ID = 'DICE-9749cc';
 export const DICE_TOKEN_DECIMALS = 6;
 
-export const BTX2DICE_CONTRACT_ADDRESS = 'erd1qqqqqqqqqqqqqpgqzu589zvpeymkyjzs9l7cz7drk8tafzcl3qmqu5e0fe';
-export const BTX2DICE_CONTRACT_ABI = 'abi/btx2dice.abi.json';
-export const BTX2DICE_CONTRACT_NAME = 'BitxStake';
+export const BTX2DICE_CONTRACT_ADDRESS = 'erd1qqqqqqqqqqqqqpgqvsgcmp98yhp4npr2pcvaex66rwncpclv3qmq3h0a05';
+export const BTX2DICE_CONTRACT_ABI = 'abi/btx-stake-v3.abi.json';
+export const BTX2DICE_CONTRACT_NAME = 'BtxStakeV3';
 
 // Pre Sale
 export const PRESALE_CONTRACT_ADDRESS = 'erd1qqqqqqqqqqqqqpgqguy27dwjmghs90vwanm0y054s5yaf0u03qmqasfjjy';
@@ -66,9 +66,9 @@ export const MARE_TOKEN_TICKER = 'MARE';
 export const MARE_TOKEN_ID = 'MARE-63e515';
 export const MARE_TOKEN_DECIMALS = 6;
 
-export const BTX2MARE_CONTRACT_ADDRESS = 'erd1qqqqqqqqqqqqqpgqqf6kaqkwj80na206rgqzrtpz5e896cj93qmq6q0gn4';
-export const BTX2MARE_CONTRACT_ABI = 'abi/btx2dice.abi.json';
-export const BTX2MARE_CONTRACT_NAME = 'BitxStake';
+export const BTX2MARE_CONTRACT_ADDRESS = 'erd1qqqqqqqqqqqqqpgqzfz3acnl4uz5k47jaz8k9t5680n0225x3qmqns0f4e';
+export const BTX2MARE_CONTRACT_ABI = 'abi/btx-stake-v3.abi.json';
+export const BTX2MARE_CONTRACT_NAME = 'BtxStakeV3';
 
 // Heto Pool
 export const HETO2HETO_CONTRACT_ADDRESS = 'erd1qqqqqqqqqqqqqpgqkvh7v0vna24ejt4rfvgt2vg546l2rper3qmqjwl8p9';
@@ -79,9 +79,9 @@ export const HETO_TOKEN_ID = 'HETO-663cf8';
 export const HETO_TOKEN_DECIMALS = 0;
 export const HETO_CLAIM_PERIOD_IN_DAYS = 7;
 
-export const BTX2HETO_CONTRACT_ADDRESS = 'erd1qqqqqqqqqqqqqpgqryddrff3qxgneyqpe9n4ny675zzu9qnz3qmqryx9tp';
-export const BTX2HETO_CONTRACT_ABI = 'abi/btx2dice.abi.json';
-export const BTX2HETO_CONTRACT_NAME = 'BitxStake';
+export const BTX2HETO_CONTRACT_ADDRESS = 'erd1qqqqqqqqqqqqqpgq0l8wl5dcnltjwqlw4ne4nqmcd3ddvfwq3qmqkqa9dq';
+export const BTX2HETO_CONTRACT_ABI = 'abi/btx-stake-v3.abi.json';
+export const BTX2HETO_CONTRACT_NAME = 'BtxStakeV3';
 
 // Vesting
 export const VESTING_CONTRACT_ADDRESS = 'erd1qqqqqqqqqqqqqpgqxqnap2d90f0sj0v34a0duaqq78x3q2pr3qmq9gadg4';
