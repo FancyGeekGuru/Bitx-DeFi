@@ -11,11 +11,12 @@ export const BTX_TOKEN_TICKER = 'BTX';
 export const BTX_TOKEN_ID = 'BTX-0f676d';
 export const BTX_TOKEN_DECIMALS = 18;
 
-export const BTX2MEX_CONTRACT_ADDRESS = 'erd1qqqqqqqqqqqqqpgqlfmj246rxrnl9sxx5fvxrxh2jpefa27r3qmqt76ey7';
-export const BTX2MEX_CONTRACT_ABI = 'abi/btx2mex.abi.json';
-export const BTX2MEX_CONTRACT_NAME = 'BitxStake';
+export const BTX2MEX_CONTRACT_ADDRESS = 'erd1qqqqqqqqqqqqqpgqhekah048nzcaelafxt8usj3hyhvypn3y3qmqqee04w';
+export const BTX2MEX_CONTRACT_ABI = 'abi/btx-stake-v3.abi.json';
+export const BTX2MEX_CONTRACT_NAME = 'BtxStakeV3';
 export const MEX_TOKEN_TICKER = 'MEX';
 export const MEX_TOKEN_ID = 'MEX-455c57';
+export const MEX_TOKEN_DECIMALS = 18;
 
 // DICE Pool
 export const DICE2DICE_CONTRACT_ADDRESS = 'erd1qqqqqqqqqqqqqpgqutcvq6qjfsg95n27pyskkdl98072ct5l3qmqmycd6e';

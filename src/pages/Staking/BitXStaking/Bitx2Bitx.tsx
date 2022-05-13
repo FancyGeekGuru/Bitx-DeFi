@@ -330,7 +330,7 @@ const Btx2BtxStakingCard = () => {
 
     const tx = {
       receiver: BTX2BTX_CONTRACT_ADDRESS,
-      data: 'reinvest',
+      data: 'restake',
       gasLimit: new GasLimit(6000000),
     };
     await refreshAccount();
@@ -462,11 +462,11 @@ const Btx2BtxStakingCard = () => {
           <span>&nbsp;{BTX_TOKEN_TICKER}</span>
         </div>
         <h6 className='modal-info-1'>
-          {isStakeModal ? 'Amount to Stake' : 'Amount to Unstake'}
+          {isStakeModal ? 'Amount to Stake' : 'Percentage to Unstake'}
         </h6>
         <div className='modal-div-1'>
           <input className='modal-input-1'
-            placeholder='Amount'
+            placeholder={isStakeModal ? 'Amount' : 'Percentage'}
             type='number'
             step={0.01}
             value={modalInputAmount}
