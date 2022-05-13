@@ -425,8 +425,8 @@ const Bitx2Heto = () => {
         <p className='modal-description'>
           {
             showModal && stakeSetting && (isStakeModal ?
-              `Your tokens will be locked for ${convertSecondsToDays(stakeSetting.lock_period)} days after deposit (even the tokens that are already staked)`
-              : `Your tokens will be undelegated for ${convertSecondsToDays(stakeSetting.undelegation_period)} days after unstake (even the tokens that are already unstaked)`)
+              `Your tokens will be locked for ${convertTimestampToDays(stakeSetting.lock_period)} days after deposit (even the tokens that are already staked)`
+              : `Your tokens will be undelegated for ${convertTimestampToDays(stakeSetting.undelegation_period)} days after unstake (even the tokens that are already unstaked)`)
           }
         </p>
         <div className='modal-divider'></div>
