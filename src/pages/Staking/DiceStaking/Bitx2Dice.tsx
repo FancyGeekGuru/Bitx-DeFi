@@ -127,7 +127,7 @@ const Bitx2Dice = () => {
         number_of_stakers,
       };
 
-      console.log('BTX2DICE viewStakeSetting', result);
+      // console.log('BTX2DICE viewStakeSetting', result);
 
       setStakeSetting(result);
     })();
@@ -164,7 +164,7 @@ const Bitx2Dice = () => {
         last_claim_timestamp,
       };
 
-      console.log('BTX2DICE viewStakeAccount', result);
+      // console.log('BTX2DICE viewStakeAccount', result);
       setStakeAccount(result);
     })();
   }, [account, stakeContractInteractor, hasPendingTransactions]);

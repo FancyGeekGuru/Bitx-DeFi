@@ -122,7 +122,7 @@ const Btx2BtxStakingCard = () => {
         number_of_stakers,
       };
 
-      console.log('BTX viewStakeSetting', result);
+      // console.log('BTX viewStakeSetting', result);
 
       setStakeSetting(result);
     })();
@@ -159,7 +159,7 @@ const Btx2BtxStakingCard = () => {
         last_claim_timestamp,
       };
 
-      console.log('BTX viewStakeAccount', result);
+      // console.log('BTX viewStakeAccount', result);
       setStakeAccount(result);
     })();
   }, [account, stakeContractInteractor, hasPendingTransactions]);

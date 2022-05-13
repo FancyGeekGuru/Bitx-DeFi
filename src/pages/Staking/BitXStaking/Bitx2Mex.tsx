@@ -127,7 +127,7 @@ const Bitx2Mex = () => {
         number_of_stakers,
       };
 
-      console.log('BTX2MEX viewStakeSetting', result);
+      // console.log('BTX2MEX viewStakeSetting', result);
 
       setStakeSetting(result);
     })();
@@ -164,7 +164,7 @@ const Bitx2Mex = () => {
         last_claim_timestamp,
       };
 
-      console.log('BTX2MEX viewStakeAccount', result);
+      // console.log('BTX2MEX viewStakeAccount', result);
       setStakeAccount(result);
     })();
   }, [account, stakeContractInteractor, hasPendingTransactions]);

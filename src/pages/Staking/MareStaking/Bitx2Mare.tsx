@@ -127,7 +127,7 @@ const Btx2Mare = () => {
         number_of_stakers,
       };
 
-      console.log('BTX2MARE viewStakeSetting', result);
+      // console.log('BTX2MARE viewStakeSetting', result);
 
       setStakeSetting(result);
     })();
@@ -164,7 +164,7 @@ const Btx2Mare = () => {
         last_claim_timestamp,
       };
 
-      console.log('BTX2MARE viewStakeAccount', result);
+      // console.log('BTX2MARE viewStakeAccount', result);
       setStakeAccount(result);
     })();
   }, [account, stakeContractInteractor, hasPendingTransactions]);

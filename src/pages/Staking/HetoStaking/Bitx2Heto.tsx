@@ -127,7 +127,7 @@ const Bitx2Heto = () => {
         number_of_stakers,
       };
 
-      console.log('BTX2HETO viewStakeSetting', result);
+      // console.log('BTX2HETO viewStakeSetting', result);
 
       setStakeSetting(result);
     })();
@@ -164,7 +164,7 @@ const Bitx2Heto = () => {
         last_claim_timestamp,
       };
 
-      console.log('BTX2HETO viewStakeAccount', result);
+      // console.log('BTX2HETO viewStakeAccount', result);
       setStakeAccount(result);
     })();
   }, [account, stakeContractInteractor, hasPendingTransactions]);
