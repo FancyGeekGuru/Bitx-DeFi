@@ -69,6 +69,14 @@ export const TOKENS = {
         logo: "https://media.elrond.com/tokens/asset/ODIN-4d429b/logo.svg",
         unit_price_in_usd: 0.0018,
     },
+
+    "MARE-63e515": {
+        identifier: "MARE-63e515",
+        ticker: "MARE",
+        decimals: 6,
+        logo: "https://media.elrond.com/tokens/asset/MARE-63e515/logo.svg",
+        unit_price_in_usd: 0.000063, // ?
+    },
 };
 
 // // devnet
