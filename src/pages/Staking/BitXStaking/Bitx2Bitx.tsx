@@ -212,7 +212,7 @@ const Btx2BtxStakingCard = () => {
       } else if (value < stakeSetting.min_stake_limit) {
         _modalInfoMesssage = `Cannot stake less than ${stakeSetting.min_stake_limit} ${BTX_TOKEN_TICKER}.`;
       } else if (stakeSetting.max_stake_limit > 0 && stakeAccount.staked_amount + value > stakeSetting.max_stake_limit) {
-        _modalInfoMesssage = `Cannot stake more than ${stakeSetting.max_stake_limit - stakeAccount.staked_amount} ${BTX_TOKEN_TICKER}.`;
+        _modalInfoMesssage = `Cannot stake more than ${Math.max(stakeSetting.max_stake_limit - stakeAccount.staked_amount, 0)} ${BTX_TOKEN_TICKER}.`;
       } else {
         _modalButtonDisabled = false;
       }
