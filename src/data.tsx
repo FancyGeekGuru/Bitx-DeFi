@@ -10,9 +10,19 @@ export const TOKENS = {
         identifier: "BTX-0f676d",
         ticker: "BTX",
         decimals: 18,
-        logo: "https://media.elrond.com/tokens/asset/BTX-48d004/logo.png",
+        logo: "https://media.elrond.com/tokens/asset/BTX-0f676d/logo.png",
         unit_price_in_usd: 0.11,
     },
+
+    // old btx
+    "BTX-48d004": {
+        identifier: "BTX-48d004",
+        ticker: "BTX",
+        decimals: 18,
+        logo: "https://media.elrond.com/tokens/asset/BTX-48d004/logo.png",
+        unit_price_in_usd: 0.0,
+    },
+
     "LUCKY-2cb58b": {
         identifier: "LUCKY-2cb58b",
         ticker: "LUCKY",
