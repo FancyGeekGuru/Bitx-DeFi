@@ -7,8 +7,8 @@ const LpadStaking = () => {
     return (
         <div className='bitxwrapper'>
             <div className='container'>
-                <BTX2LPAD />
                 <LPAD2LPAD />
+                <BTX2LPAD />
             </div>
         </div>
     );

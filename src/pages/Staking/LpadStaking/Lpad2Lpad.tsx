@@ -1,6 +1,5 @@
 
 import React, { useState } from 'react';
-
 import {
   refreshAccount,
   sendTransactions,
@@ -17,20 +16,20 @@ import {
   ProxyProvider,
   TypedValue,
   BytesValue,
-  // Egld,
+  Egld,
   BigUIntValue,
   ArgSerializer,
   GasLimit,
   DefaultSmartContractController,
+  U64Value,
 } from '@elrondnetwork/erdjs';
-
 import axios from 'axios';
 import Modal from 'react-modal';
 import arrow from 'assets/img/arrow.png';
+import lpadLogo from 'assets/img/token logos/LPAD.png';
 import coin from 'assets/img/coin.png';
 import elrondLogo from 'assets/img/Elrond logo.png';
-import LpadLogo from 'assets/img/token logos/LPAD.png';
-import AlertModal from '../../../components/AlertModal';
+import AlertModal from 'components/AlertModal';
 
 import {
   LPAD2LPAD_CONTRACT_ADDRESS,
@@ -39,24 +38,21 @@ import {
   LPAD_TOKEN_TICKER,
   LPAD_TOKEN_ID,
   LPAD_TOKEN_DECIMALS,
-  LPAD_CLAIM_PERIOD_IN_DAYS,
 } from 'config';
-
 import {
   SECOND_IN_MILLI,
   TIMEOUT,
   convertWeiToEsdt,
   convertTimestampToDateTime,
-  convertSecondsToDays,
+  convertTimestampToDays,
   convertAPR2APY,
   IContractInteractor,
-  IBtx2BtxStakeSetting,
-  IStakeAccount,
-  convertEsdtToWei,
+  getBalanceOfToken,
 } from 'utils';
+import { version } from 'react-dom';
 
-const LPAD2LPAD = () => {
-  const { account } = useGetAccountInfo();
+const Lpad2LpadStakingCard = () => {
+  const { account, address } = useGetAccountInfo();
   const { network } = useGetNetworkConfig();
   const { hasPendingTransactions } = useGetPendingTransactions();
   const provider = new ProxyProvider(network.apiAddress, { timeout: TIMEOUT });
@@ -67,8 +63,8 @@ const LPAD2LPAD = () => {
 
 
   const [stakeContractInteractor, setStakeContractInteractor] = React.useState<IContractInteractor | undefined>();
-  const [stakeSetting, setStakeSetting] = React.useState<IBtx2BtxStakeSetting | undefined>();
-  const [stakeAccount, setStakeAccount] = React.useState<IStakeAccount | undefined>();
+  const [stakeSetting, setStakeSetting] = React.useState<any>();
+  const [stakeAccount, setStakeAccount] = React.useState<any>();
 
   const [balance, setBalance] = React.useState<any>(undefined);
 
@@ -81,24 +77,10 @@ const LPAD2LPAD = () => {
   // load smart contract abi and parse it to SmartContract object for tx
   React.useEffect(() => {
     (async () => {
-      // const abiRegistry = await AbiRegistry.load({
-      //     urls: [LPAD2LPAD_CONTRACT_ABI],
-      // });
-      // const contract = new SmartContract({
-      //     address: new Address(LPAD2LPAD_CONTRACT_ADDRESS),
-      //     abi: new SmartContractAbi(abiRegistry, [LPAD2LPAD_CONTRACT_NAME]),
-      // });
-      // setStakingContract(contract);
-
       const registry = await AbiRegistry.load({ urls: [LPAD2LPAD_CONTRACT_ABI] });
       const abi = new SmartContractAbi(registry, [LPAD2LPAD_CONTRACT_NAME]);
       const contract = new SmartContract({ address: new Address(LPAD2LPAD_CONTRACT_ADDRESS), abi: abi });
       const controller = new DefaultSmartContractController(abi, provider);
-
-      // console.log('stakeContractInteractor', {
-      //   contract,
-      //   controller,
-      // });
 
       setStakeContractInteractor({
         contract,
@@ -111,32 +93,27 @@ const LPAD2LPAD = () => {
   React.useEffect(() => {
     (async () => {
       if (!stakeContractInteractor) return;
-      // const interaction: Interaction = stakingContract.methods.getCurrentStakeSetting();
-      // const queryResponse = await stakingContract.runQuery(proxy, interaction.buildQuery());
-      // const res = interaction.interpretQueryResponse(queryResponse);
 
-      const interaction = stakeContractInteractor.contract.methods.getCurrentStakeSetting();
+      const interaction = stakeContractInteractor.contract.methods.viewStakeSetting();
       const res = await stakeContractInteractor.controller.query(interaction);
 
       if (!res || !res.returnCode.isSuccess()) return;
       const value = res.firstValue.valueOf();
 
-      // console.log('getCurrentStakeSetting', value);
-
-      const stake_token = value.stake_token.toString();
-      const reward_token = value.reward_token.toString();
+      const token_id = value.token_id.toString();
       const min_stake_limit = convertWeiToEsdt(value.min_stake_limit, LPAD_TOKEN_DECIMALS);
-      const lock_period = value.lock_period.toNumber();
-      const undelegation_period = value.undelegation_period.toNumber();
-      const claim_lock_period = value.claim_lock_period.toNumber();
+      const max_stake_limit = convertWeiToEsdt(value.max_stake_limit, LPAD_TOKEN_DECIMALS);
+      const lock_period = value.lock_period.toNumber() * SECOND_IN_MILLI;
+      const undelegation_period = value.undelegation_period.toNumber() * SECOND_IN_MILLI;
+      const claim_lock_period = value.claim_lock_period.toNumber() * SECOND_IN_MILLI;
       const apr = value.apr.toNumber() / 100;
       const total_staked_amount = convertWeiToEsdt(value.total_staked_amount, LPAD_TOKEN_DECIMALS);
       const number_of_stakers = value.number_of_stakers.toNumber();
 
       const result = {
-        stake_token,
-        reward_token,
+        token_id,
         min_stake_limit,
+        max_stake_limit,
         lock_period,
         undelegation_period,
         claim_lock_period,
@@ -145,7 +122,7 @@ const LPAD2LPAD = () => {
         number_of_stakers,
       };
 
-      // console.log('getCurrentStakeSetting', result);
+      // console.log('LPAD viewStakeSetting', result);
 
       setStakeSetting(result);
     })();
@@ -155,65 +132,43 @@ const LPAD2LPAD = () => {
   React.useEffect(() => {
     (async () => {
       if (!stakeContractInteractor || !account.address) return;
-      // const args = [new AddressValue(new Address(account.address))];
-      // const interaction: Interaction = stakingContract.methods.getCurrentStakeAccount(args);
-      // const queryResponse = await stakingContract.runQuery(proxy, interaction.buildQuery());
-      // const res = interaction.interpretQueryResponse(queryResponse);
-
       const args = [new AddressValue(new Address(account.address))];
-      const interaction = stakeContractInteractor.contract.methods.getCurrentStakeAccount(args);
+      const interaction = stakeContractInteractor.contract.methods.viewStakeAccount(args);
       const res = await stakeContractInteractor.controller.query(interaction);
 
       if (!res || !res.returnCode.isSuccess()) return;
       const value = res.firstValue.valueOf();
 
-      // console.log('getCurrentStakeAccount', value);
-
       const address = value.address.toString();
       const staked_amount = convertWeiToEsdt(value.staked_amount, LPAD_TOKEN_DECIMALS);
-      const lock_end_timestamp = value.lock_end_timestamp.toNumber();
+      const last_stake_timestamp = value.last_stake_timestamp.toNumber() * SECOND_IN_MILLI;
       const unstaked_amount = convertWeiToEsdt(value.unstaked_amount, LPAD_TOKEN_DECIMALS);
-      const undelegation_end_timestamp = value.undelegation_end_timestamp.toNumber();
+      const last_unstake_timestamp = value.last_unstake_timestamp.toNumber() * SECOND_IN_MILLI;
       const collectable_amount = convertWeiToEsdt(value.collectable_amount, LPAD_TOKEN_DECIMALS);
       const reward_amount = convertWeiToEsdt(value.reward_amount, LPAD_TOKEN_DECIMALS);
-      const last_claim_timestamp = value.last_claim_timestamp.toNumber();
+      const last_claim_timestamp = value.last_claim_timestamp.toNumber() * SECOND_IN_MILLI;
 
       const result = {
         address,
         staked_amount,
-        lock_end_timestamp,
+        last_stake_timestamp,
         unstaked_amount,
-        undelegation_end_timestamp,
+        last_unstake_timestamp,
         collectable_amount,
         reward_amount,
         last_claim_timestamp,
       };
 
-      // console.log('getCurrentStakeAccount', result);
+      // console.log('LPAD viewStakeAccount', result);
       setStakeAccount(result);
     })();
   }, [account, stakeContractInteractor, hasPendingTransactions]);
 
 
   React.useEffect(() => {
-    if (account.address) {
-      axios.get(`${network.apiAddress}/accounts/${account.address}/tokens?search=${LPAD_TOKEN_TICKER}`).then((res: any) => {
-        let _balance = 0;
-        if (res.data?.length > 0) {
-          const tokens = res.data.filter(
-            (a: any) => a?.identifier === LPAD_TOKEN_ID
-          );
-
-          if (tokens.length > 0) {
-            // console.log('tokens[0]', tokens[0]);
-            _balance = convertWeiToEsdt(tokens[0].balance, LPAD_TOKEN_DECIMALS);
-          }
-        }
-        // console.log('_balance', _balance);
-        setBalance(_balance);
-      });
-    }
-  }, [account, hasPendingTransactions]);
+    if (!address) return;
+    getBalanceOfToken(network.apiAddress, account, LPAD_TOKEN_ID).then((v) => setBalance(v));
+  }, [address, hasPendingTransactions]);
 
   function onShowStakeModal() {
     if (!account.address) {
@@ -241,28 +196,31 @@ const LPAD2LPAD = () => {
     setShowModal(true);
   }
 
-  function onModalInputAmountChange(value: any) {
-    if (!account.address || !stakeAccount) return;
+  function onModalInputAmountChange(v: any) {
+    if (!account.address || !stakeSetting || !stakeAccount) return;
 
+    const value = Number(v);
     let _modalInfoMesssage = '';
     let _modalButtonDisabled = true;
     const currentTimestamp = (new Date()).getTime();
 
     if (isStakeModal) { // stake
-      if (value > balance) {
+      if (value <= 0) {
+        _modalInfoMesssage = 'Invalid amount.';
+      } else if (value > balance) {
         _modalInfoMesssage = 'Not enough tokens in your wallet.';
       } else if (value < stakeSetting.min_stake_limit) {
         _modalInfoMesssage = `Cannot stake less than ${stakeSetting.min_stake_limit} ${LPAD_TOKEN_TICKER}.`;
+      } else if (stakeSetting.max_stake_limit > 0 && stakeAccount.staked_amount + value > stakeSetting.max_stake_limit) {
+        _modalInfoMesssage = `Cannot stake more than ${Math.max(stakeSetting.max_stake_limit - stakeAccount.staked_amount, 0)} ${LPAD_TOKEN_TICKER}.`;
       } else {
         _modalButtonDisabled = false;
       }
     } else {  // unstake
-      if (value > stakeAccount.staked_amount) {
-        _modalInfoMesssage = 'Cannot unstake more than staked amount.';
-      } else if (value <= 0) {
+      if (value <= 0 || value > 100) {
         _modalInfoMesssage = 'Invalid amount.';
-      } else if (currentTimestamp < stakeAccount.lock_end_timestamp * SECOND_IN_MILLI) {
-        _modalInfoMesssage = `Cannot unstake before ${convertTimestampToDateTime(stakeAccount.lock_end_timestamp * SECOND_IN_MILLI)}`;
+      } else if (currentTimestamp < stakeAccount.last_stake_timestamp + stakeSetting.lock_period) {
+        _modalInfoMesssage = `Cannot unstake before ${convertTimestampToDateTime(stakeAccount.last_stake_timestamp + stakeSetting.lock_period)}`;
       } else {
         _modalButtonDisabled = false;
       }
@@ -270,11 +228,11 @@ const LPAD2LPAD = () => {
 
     setModalInfoMesssage(_modalInfoMesssage);
     setModalButtonDisabled(_modalButtonDisabled);
-    setModalInputAmount(value);
+    setModalInputAmount(v);
   }
 
   function onModalMaximize() {
-    const value = isStakeModal ? balance : stakeAccount.staked_amount;
+    const value = isStakeModal ? balance : 100;
     onModalInputAmountChange(value);
   }
 
@@ -282,17 +240,10 @@ const LPAD2LPAD = () => {
     setAlertModalText(text);
     setAlertModalShow(true);
   }
-  async function stake(e: any) {
-    e.preventDefault();
-
-    if (balance == 0) {
-      onShowAlertModal(`You don\'t have ${LPAD_TOKEN_TICKER} in your wallet.`);
-      return;
-    }
-
+  async function stake() {
     const args: TypedValue[] = [
       BytesValue.fromUTF8(LPAD_TOKEN_ID),
-      new BigUIntValue(convertEsdtToWei(modalInputAmount, LPAD_TOKEN_DECIMALS)),
+      new BigUIntValue(Egld(modalInputAmount).valueOf()),
       BytesValue.fromUTF8('stake'),
     ];
     const { argumentsString } = new ArgSerializer().valuesToString(args);
@@ -312,16 +263,9 @@ const LPAD2LPAD = () => {
     setShowModal(false);
   }
 
-  async function unstake(e: any) {
-    e.preventDefault();
-
-    if (stakeAccount.staked_amount == 0) {
-      onShowAlertModal('You don\'t have staked tokens.');
-      return;
-    }
-
+  async function unstake() {
     const args: TypedValue[] = [
-      new BigUIntValue(convertEsdtToWei(modalInputAmount, LPAD_TOKEN_DECIMALS)),
+      new U64Value(Math.floor(modalInputAmount * 100)),
     ];
     const { argumentsString } = new ArgSerializer().valuesToString(args);
     const data = `unstake@${argumentsString}`;
@@ -339,9 +283,7 @@ const LPAD2LPAD = () => {
     setShowModal(false);
   }
 
-  async function claim(e: any) {
-    e.preventDefault();
-
+  async function claim() {
     if (!account.address) {
       onShowAlertModal('You should connect your wallet first!');
       return;
@@ -353,10 +295,8 @@ const LPAD2LPAD = () => {
     }
 
     const currentTimestamp = (new Date()).getTime();
-    const claimLockEndTimestamp = (stakeAccount.last_claim_timestamp + stakeSetting.claim_lock_period) * SECOND_IN_MILLI;
-    // console.log(`currentTimestamp: ${currentTimestamp} ----- claimLockEndTimestamp: ${claimLockEndTimestamp}`);
-    if (currentTimestamp < claimLockEndTimestamp) {
-      onShowAlertModal(`Cannot claim before ${convertTimestampToDateTime(claimLockEndTimestamp)}`);
+    if (currentTimestamp < stakeAccount.last_claim_timestamp + stakeSetting.claim_lock_period) {
+      onShowAlertModal(`Cannot claim before ${convertTimestampToDateTime(stakeAccount.last_claim_timestamp + stakeSetting.claim_lock_period)}`);
       return;
     }
 
@@ -371,16 +311,44 @@ const LPAD2LPAD = () => {
     });
   }
 
+  async function reinvest() {
+    if (!account.address) {
+      onShowAlertModal('You should connect your wallet first!');
+      return;
+    }
+
+    if (stakeAccount.reward_amount == 0) {
+      onShowAlertModal('You don\'t have rewards for reinvest.');
+      return;
+    }
+
+    const currentTimestamp = (new Date()).getTime();
+    if (currentTimestamp < stakeAccount.last_claim_timestamp + stakeSetting.claim_lock_period) {
+      onShowAlertModal(`Cannot reinvest before ${convertTimestampToDateTime(stakeAccount.last_claim_timestamp + stakeSetting.claim_lock_period)}`);
+      return;
+    }
+
+    const tx = {
+      receiver: LPAD2LPAD_CONTRACT_ADDRESS,
+      data: 'restake',
+      gasLimit: new GasLimit(6000000),
+    };
+    await refreshAccount();
+    await sendTransactions({
+      transactions: tx,
+    });
+  }
+
   return (
     <div className='card'>
       <div className='stake_earn'>
         <div>
-          <img src={LpadLogo} />
+          <img src={lpadLogo} />
           <p>Stake $LPAD</p>
         </div>
         <img src={arrow} />
         <div>
-          <img src={LpadLogo} />
+          <img src={lpadLogo} />
           <p>Earn $LPAD</p>
         </div>
       </div>
@@ -396,7 +364,7 @@ const LPAD2LPAD = () => {
         </div>
         <div>
           <p className='heading'>APY</p>
-          <p className='data'>{stakeSetting ? convertAPR2APY(stakeSetting.apr, LPAD_CLAIM_PERIOD_IN_DAYS) : '-'} %</p>
+          <p className='data'>{stakeSetting ? convertAPR2APY(stakeSetting.apr) : '-'} %</p>
         </div>
         <div>
           <p className='heading'>Total Staked</p>
@@ -412,11 +380,11 @@ const LPAD2LPAD = () => {
         <div className='info'>
           <div>
             <p className='heading'>Lock</p>
-            <p className='data'>{"5 Days"}</p>
+            <p className='data'>{stakeSetting && convertTimestampToDays(stakeSetting.lock_period)}{" Days"}</p>
           </div>
           <div>
             <p className='heading'>Undelegation</p>
-            <p className='data'>{"5 Days"}</p>
+            <p className='data'>{stakeSetting && convertTimestampToDays(stakeSetting.undelegation_period)}{" Days"}</p>
           </div>
         </div>
       </div>
@@ -450,7 +418,10 @@ const LPAD2LPAD = () => {
       </div>
 
       <img className="elrond" src={elrondLogo} />
-      <div style={{ textAlign: "center", display: "flex", justifyContent: "center" }}>
+      <div style={{ textAlign: "center", display: "flex", justifyContent: "center", gap: '20px' }}>
+        <button className='claimReward_button' onClick={reinvest}>
+          <p>Reinvest</p>
+        </button>
         <button className='claimReward_button' onClick={claim}>
           <p>Claim</p>
         </button>
@@ -473,8 +444,8 @@ const LPAD2LPAD = () => {
         <p className='modal-description'>
           {
             showModal && stakeSetting && (isStakeModal ?
-              `Your tokens will be locked for ${convertSecondsToDays(stakeSetting.lock_period)} days after deposit (even the tokens that are already staked)`
-              : `Your tokens will be undelegated for ${convertSecondsToDays(stakeSetting.undelegation_period)} days after unstake (even the tokens that are already unstaked)`)
+              `Your tokens will be locked for ${convertTimestampToDays(stakeSetting.lock_period)} days after deposit (even the tokens that are already staked)`
+              : `Your tokens will be undelegated for ${convertTimestampToDays(stakeSetting.undelegation_period)} days after unstake (even the tokens that are already unstaked)`)
           }
         </p>
         <div className='modal-divider'></div>
@@ -491,16 +462,19 @@ const LPAD2LPAD = () => {
           <span>&nbsp;{LPAD_TOKEN_TICKER}</span>
         </div>
         <h6 className='modal-info-1'>
-          {isStakeModal ? 'Amount to Stake' : 'Amount to Unstake'}
+          {isStakeModal ? 'Amount to Stake' : 'Percentage to Unstake'}
         </h6>
         <div className='modal-div-1'>
           <input className='modal-input-1'
-            placeholder='Amount'
+            placeholder={isStakeModal ? 'Amount' : 'Percentage'}
             type='number'
-            min='0'
+            step={0.01}
             value={modalInputAmount}
             onChange={(e) => onModalInputAmountChange(e.target.value)}
           />
+          {
+            !isStakeModal && (<span className='stake-modal-input-percentage'>%</span>)
+          }
           <button className='maximize-button'
             onClick={onModalMaximize}
           >
@@ -540,4 +514,4 @@ const LPAD2LPAD = () => {
   );
 };
 
-export default LPAD2LPAD;
+export default Lpad2LpadStakingCard;

@@ -7,7 +7,7 @@ import PreSale from './pages/Presale';
 import Convert from './pages/Convert';
 import StakingHome from './pages/Staking';
 import BitXStaking from './pages/Staking/BitXStaking';
-import CpaStaking from './pages/Staking/CpaStaking';
+// import CpaStaking from './pages/Staking/CpaStaking';
 import DiceStaking from './pages/Staking/DiceStaking';
 import HetoStaking from './pages/Staking/HetoStaking';
 import LpadStaking from './pages/Staking/LpadStaking';
@@ -94,11 +94,11 @@ const routes: Array<any> = [
     component: HetoStaking
   },
 
-  {
-    path: routeNames.cpastaking,
-    title: 'Cpa Pool',
-    component: CpaStaking
-  },
+  // {
+  //   path: routeNames.cpastaking,
+  //   title: 'Cpa Pool',
+  //   component: CpaStaking
+  // },
 
   {
     path: routeNames.lpadstaking,

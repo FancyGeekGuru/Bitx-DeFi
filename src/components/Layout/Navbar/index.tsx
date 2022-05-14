@@ -53,9 +53,9 @@ const Navbar = () => {
               <NavDropdown.Item onClick={() => { navigate(routeNames.hetostaking); }}>
                 Heto Pool
               </NavDropdown.Item>
-              <NavDropdown.Item onClick={() => { navigate(routeNames.cpastaking); }}>
+              {/* <NavDropdown.Item onClick={() => { navigate(routeNames.cpastaking); }}>
                 Cpa Pool
-              </NavDropdown.Item>
+              </NavDropdown.Item> */}
               <NavDropdown.Item onClick={() => { navigate(routeNames.lpadstaking); }}>
                 Lpad Pool
               </NavDropdown.Item>

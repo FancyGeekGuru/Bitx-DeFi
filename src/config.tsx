@@ -85,29 +85,29 @@ export const BTX2HETO_CONTRACT_NAME = 'BtxStakeV3';
 
 // CPA Pool
 export const CPA2CPA_CONTRACT_ADDRESS = 'erd1qqqqqqqqqqqqqpgqltgyu0kcwkfth9vyquv9s4dgmrx550rjj9qs258v5r';
-export const CPA2CPA_CONTRACT_ABI = 'abi/dice2dice.abi.json';
-export const CPA2CPA_CONTRACT_NAME = 'BitxStake';
+export const CPA2CPA_CONTRACT_ABI = 'abi/btx-stake-v2.abi.json';
+export const CPA2CPA_CONTRACT_NAME = 'BitxStakeV2';
 export const CPA_TOKEN_TICKER = 'CPA';
 export const CPA_TOKEN_ID = 'CPA-97530a';
 export const CPA_TOKEN_DECIMALS = 6;
-export const CPA_CLAIM_PERIOD_IN_DAYS = 7;
+
 
 export const BTX2CPA_CONTRACT_ADDRESS = 'erd1qqqqqqqqqqqqqpgq7r9n9u389xr23vqyye8maaetcg2r886vj9qsj7sl4k';
-export const BTX2CPA_CONTRACT_ABI = 'abi/btx2dice.abi.json';
-export const BTX2CPA_CONTRACT_NAME = 'BitxStake';
+export const BTX2CPA_CONTRACT_ABI = 'abi/btx-stake-v3.abi.json';
+export const BTX2CPA_CONTRACT_NAME = 'BtxStakeV3';
 
 // LPAD Pool
-export const LPAD2LPAD_CONTRACT_ADDRESS = 'erd1qqqqqqqqqqqqqpgqltgyu0kcwkfth9vyquv9s4dgmrx550rjj9qs258v5r';
-export const LPAD2LPAD_CONTRACT_ABI = 'abi/dice2dice.abi.json';
-export const LPAD2LPAD_CONTRACT_NAME = 'BitxStake';
+export const LPAD2LPAD_CONTRACT_ADDRESS = 'erd1qqqqqqqqqqqqqpgq2ajedgq5e9lg9prkgkg3yxamqwss2vgv3qmqyzym8j';
+export const LPAD2LPAD_CONTRACT_ABI = 'abi/btx-stake-v2.abi.json';
+export const LPAD2LPAD_CONTRACT_NAME = 'BitxStakeV2';
 export const LPAD_TOKEN_TICKER = 'LPAD';
 export const LPAD_TOKEN_ID = 'LPAD-84628f';
 export const LPAD_TOKEN_DECIMALS = 18;
-export const LPAD_CLAIM_PERIOD_IN_DAYS = 7;
 
-export const BTX2LPAD_CONTRACT_ADDRESS = 'erd1qqqqqqqqqqqqqpgq7r9n9u389xr23vqyye8maaetcg2r886vj9qsj7sl4k';
-export const BTX2LPAD_CONTRACT_ABI = 'abi/btx2dice.abi.json';
-export const BTX2LPAD_CONTRACT_NAME = 'BitxStake';
+
+export const BTX2LPAD_CONTRACT_ADDRESS = 'erd1qqqqqqqqqqqqqpgqcyvq5dgcupw6nwynsxzda8acwctrdkll3qmqncr2y8';
+export const BTX2LPAD_CONTRACT_ABI = 'abi/btx-stake-v3.abi.json';
+export const BTX2LPAD_CONTRACT_NAME = 'BtxStakeV3';
 
 // Vesting
 export const VESTING_CONTRACT_ADDRESS = 'erd1qqqqqqqqqqqqqpgqxqnap2d90f0sj0v34a0duaqq78x3q2pr3qmq9gadg4';
