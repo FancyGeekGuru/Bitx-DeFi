@@ -31,7 +31,7 @@ export const routeNames = {
   cpastaking: '/cpa-pool',
   lpadstaking: '/lpad-pool',
 
-  presale: '/presale',
+  // presale: '/presale',
   convert: '/convert',
   nftmint: '/nft-mint',
 
@@ -47,11 +47,11 @@ const routes: Array<any> = [
     component: StakingHome
   },
 
-  {
-    path: routeNames.presale,
-    title: 'PreSale',
-    component: PreSale
-  },
+  // {
+  //   path: routeNames.presale,
+  //   title: 'PreSale',
+  //   component: PreSale
+  // },
   {
     path: routeNames.convert,
     title: 'Convert',

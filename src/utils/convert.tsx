@@ -31,6 +31,10 @@ export const convertSecondsToDays = (ts: number) => {
     return (ts / 86400);
 };
 
+export const convertTimestampToDays = (ts: number) => {
+    return precisionRound(ts / 86400000, 2);
+};
+
 export const convertUndefinedToZero = (v: any) => {
     return v ? v : 0;
 };

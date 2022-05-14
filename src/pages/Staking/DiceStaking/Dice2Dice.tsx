@@ -349,6 +349,35 @@ const Dice2Dice = () => {
     });
   }
 
+  async function reinvest() {
+    if (!account.address) {
+      onShowAlertModal('You should connect your wallet first!');
+      return;
+    }
+
+    if (stakeAccount.reward_amount == 0) {
+      onShowAlertModal('You don\'t have rewards for reinvest.');
+      return;
+    }
+
+    const currentTimestamp = (new Date()).getTime();
+    const claimLockEndTimestamp = (stakeAccount.last_claim_timestamp + stakeSetting.claim_lock_period) * SECOND_IN_MILLI;
+    if (currentTimestamp < claimLockEndTimestamp) {
+      onShowAlertModal(`Cannot reinvest before ${convertTimestampToDateTime(claimLockEndTimestamp)}`);
+      return;
+    }
+
+    const tx = {
+      receiver: DICE2DICE_CONTRACT_ADDRESS,
+      data: 'restake',
+      gasLimit: new GasLimit(6000000),
+    };
+    await refreshAccount();
+    await sendTransactions({
+      transactions: tx,
+    });
+  }
+
   return (
     <div className='card'>
       <div className='stake_earn'>
@@ -429,10 +458,12 @@ const Dice2Dice = () => {
         </div>
       </div>
       <img className="elrond" src={elrondLogo} />
-      <div style={{ textAlign: "center", display: "flex", justifyContent: "center" }}>
+      <div style={{ textAlign: "center", display: "flex", justifyContent: "center", gap: '20px' }}>
+        <button className='claimReward_button' onClick={reinvest}>
+          <p>Reinvest</p>
+        </button>
         <button className='claimReward_button' onClick={claim}>
           <p>Claim</p>
-          {/* <img src={dollarPot}/> */}
         </button>
       </div>
 
