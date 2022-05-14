@@ -6,8 +6,8 @@ export const TOKENS = {
         decimals: 6,
         logo: "https://media.elrond.com/tokens/asset/USDC-c76f1f/logo.svg"
     },
-    "BTX-48d004": {
-        identifier: "BTX-48d004",
+    "BTX-0f676d": {
+        identifier: "BTX-0f676d",
         ticker: "BTX",
         decimals: 18,
         logo: "https://media.elrond.com/tokens/asset/BTX-48d004/logo.png",
