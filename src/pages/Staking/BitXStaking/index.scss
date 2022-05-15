@@ -314,7 +314,7 @@
   border-radius: 3px;
   border: none !important;
 
-  z-index: 1001;
+  z-index: 0;
 
   p {
     margin: 0px;
@@ -353,6 +353,7 @@
   color: #D9D9D9;
   font-family: 'Segoe UI';
   z-index: 9999 !important;
+  // position: relative;
 }
 
 @media (max-width: 576px) {
@@ -527,7 +528,7 @@ input::-webkit-inner-spin-button {
   }
 
   // height: 100%;
-  // z-index: -1;
+  // z-index: 0;
 }
 
 ////////////
