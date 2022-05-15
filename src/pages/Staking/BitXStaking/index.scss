@@ -310,9 +310,11 @@
   gap: 20px;
   justify-content: center;
   padding: 1rem 0px;
-  background-color: #141414;
+  background-color: rgba(0, 0, 0, 0.6);
   border-radius: 3px;
   border: none !important;
+
+  z-index: 1001;
 
   p {
     margin: 0px;
@@ -328,7 +330,7 @@
   transition: background-color .4s ease-in;
 
   &:hover {
-    background-color: #2b2b2bcc;
+    background-color: gray;
   }
 }
 
