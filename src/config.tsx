@@ -84,15 +84,15 @@ export const BTX2HETO_CONTRACT_ABI = 'abi/btx-stake-v3.abi.json';
 export const BTX2HETO_CONTRACT_NAME = 'BtxStakeV3';
 
 // CPA Pool
-export const CPA2CPA_CONTRACT_ADDRESS = 'erd1qqqqqqqqqqqqqpgqltgyu0kcwkfth9vyquv9s4dgmrx550rjj9qs258v5r';
-export const CPA2CPA_CONTRACT_ABI = 'abi/btx-stake-v2.abi.json';
-export const CPA2CPA_CONTRACT_NAME = 'BitxStakeV2';
+export const CPA2CPA_CONTRACT_ADDRESS = 'erd1qqqqqqqqqqqqqpgqk92uwekrhylqtyljgh00h7hm9ayyf90j3qmq6rg2nw';
+export const CPA2CPA_CONTRACT_ABI = 'abi/btx-stake-v2.1.abi.json';
+export const CPA2CPA_CONTRACT_NAME = 'BitxStakeV21';
 export const CPA_TOKEN_TICKER = 'CPA';
 export const CPA_TOKEN_ID = 'CPA-97530a';
 export const CPA_TOKEN_DECIMALS = 6;
 
 
-export const BTX2CPA_CONTRACT_ADDRESS = 'erd1qqqqqqqqqqqqqpgq7r9n9u389xr23vqyye8maaetcg2r886vj9qsj7sl4k';
+export const BTX2CPA_CONTRACT_ADDRESS = 'erd1qqqqqqqqqqqqqpgqf8jk4mluspd3p7p3qxcp8te0fpx4n5xc3qmqkge9t6';
 export const BTX2CPA_CONTRACT_ABI = 'abi/btx-stake-v3.abi.json';
 export const BTX2CPA_CONTRACT_NAME = 'BtxStakeV3';
 
