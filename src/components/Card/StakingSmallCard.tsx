@@ -20,6 +20,7 @@ import {
 import {
     BTX2BTX_CONTRACT_NAME,
     BTX2MEX_CONTRACT_NAME,
+    CPA2CPA_CONTRACT_NAME,
 } from 'config';
 import { logo, contractABI, contractAddress, contractName, tokenDecimal } from './data';
 
@@ -55,7 +56,7 @@ const StakingSmallCard = (props: IStakingProps) => {
                 return;
 
             let interaction;
-            if (contractName[stakeKey] == BTX2BTX_CONTRACT_NAME || contractName[stakeKey] == BTX2MEX_CONTRACT_NAME) {
+            if (contractName[stakeKey] == BTX2BTX_CONTRACT_NAME || contractName[stakeKey] == BTX2MEX_CONTRACT_NAME || contractName[stakeKey] == CPA2CPA_CONTRACT_NAME) {
                 interaction = stakeContractInteractor.contract.methods.viewStakeSetting();
             } else {
                 interaction = stakeContractInteractor.contract.methods.getCurrentStakeSetting();
