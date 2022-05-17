@@ -48,6 +48,7 @@ import {
   convertAPR2APY,
   IContractInteractor,
   getBalanceOfToken,
+  convertEsdtToWei,
 } from 'utils';
 import { version } from 'react-dom';
 
@@ -246,7 +247,7 @@ const Cpa2CpaStakingCard = () => {
   async function stake() {
     const args: TypedValue[] = [
       BytesValue.fromUTF8(CPA_TOKEN_ID),
-      new BigUIntValue(Egld(modalInputAmount).valueOf()),
+      new BigUIntValue(convertEsdtToWei(modalInputAmount, CPA_TOKEN_DECIMALS)),
       BytesValue.fromUTF8('stake'),
     ];
     const { argumentsString } = new ArgSerializer().valuesToString(args);

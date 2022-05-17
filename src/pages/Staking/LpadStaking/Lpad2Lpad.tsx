@@ -48,6 +48,7 @@ import {
   convertAPR2APY,
   IContractInteractor,
   getBalanceOfToken,
+  convertEsdtToWei,
 } from 'utils';
 import { version } from 'react-dom';
 
@@ -243,7 +244,7 @@ const Lpad2LpadStakingCard = () => {
   async function stake() {
     const args: TypedValue[] = [
       BytesValue.fromUTF8(LPAD_TOKEN_ID),
-      new BigUIntValue(Egld(modalInputAmount).valueOf()),
+      new BigUIntValue(convertEsdtToWei(modalInputAmount, LPAD_TOKEN_DECIMALS)),
       BytesValue.fromUTF8('stake'),
     ];
     const { argumentsString } = new ArgSerializer().valuesToString(args);
