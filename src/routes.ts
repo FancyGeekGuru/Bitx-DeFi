@@ -2,6 +2,7 @@ import { dAppName } from 'config';
 import VaultVesting from 'pages/Vesting/vaultVesting';
 import withPageTitle from './components/PageTitle';
 import BTXFinanceHome from './pages';
+import NFTStaking from './pages/NFTStaking';
 import NFTMint from './pages/NFTMint';
 import PreSale from './pages/Presale';
 import Convert from './pages/Convert';
@@ -34,6 +35,7 @@ export const routeNames = {
   // presale: '/presale',
   convert: '/convert',
   nftmint: '/nft-mint',
+  nftstaking: '/nft-staking',
 
   bitlock: '/bitlock',
   createvesting: '/bitlock/create-vesting',
@@ -123,6 +125,12 @@ const routes: Array<any> = [
     path: routeNames.vaultvesting,
     title: 'Vault Explorer',
     component: VaultVesting
+  },
+
+  {
+    path: routeNames.nftstaking,
+    title: 'NFT Staking',
+    component: NFTStaking
   },
 ];
 
