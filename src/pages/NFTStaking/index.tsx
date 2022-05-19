@@ -1,7 +1,7 @@
 import React from 'react';
 import { Row, Col } from 'react-bootstrap';
 
-import NFTPng from 'assets/img/NFT.png';
+import NFTPng from 'assets/img/NFT staking.png';
 import './index.scss';
 import { NFT_collections } from './data';
 

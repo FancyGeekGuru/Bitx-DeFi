@@ -4,6 +4,7 @@ import './index.scss';
 import { Link } from 'react-router-dom';
 import BitlockImg from 'assets/img/bitlock.png';
 import BTXFinanceHomeLogo from 'assets/img/BTXFinance Logo.png';
+import NFTStakingImg from 'assets/img/NFT staking.png';
 import NFTImg from 'assets/img/NFT.png';
 import PresaleImg from 'assets/img/presale.png';
 import StakingImg from 'assets/img/staking.png';
@@ -18,7 +19,7 @@ const BTXFinanceHome = () => {
             <div className="button-group-bar">
                 <div className="button-group-container">
                     <Row>
-                        <Col xs="6" sm="4">
+                        <Col xs="6" sm="3">
                             <Link to={routeNames.staking}>
                                 <div className="BTX-home-but">
                                     <img src={StakingImg} />
@@ -34,15 +35,23 @@ const BTXFinanceHome = () => {
                                 </div>
                             </Link>
                         </Col> */}
-                        <Col xs="6" sm="4">
+                        <Col xs="6" sm="3">
                             <Link to={routeNames.nftmint}>
                                 <div className="BTX-home-but">
                                     <img src={NFTImg} />
-                                    <p>MINT</p>
+                                    <p>NFT MINT</p>
                                 </div>
                             </Link>
                         </Col>
-                        <Col xs="6" sm="4">
+                        <Col xs="6" sm="3">
+                            <Link to={routeNames.nftstaking}>
+                                <div className="BTX-home-but">
+                                    <img src={NFTStakingImg} />
+                                    <p>NFT STAKING</p>
+                                </div>
+                            </Link>
+                        </Col>
+                        <Col xs="6" sm="3">
                             <Link to={routeNames.bitlock}>
                                 <div className="BTX-home-but">
                                     <img src={BitlockImg} />
