@@ -1,12 +1,145 @@
 import React from 'react';
 import { Row, Col } from 'react-bootstrap';
 
+import {
+    refreshAccount,
+    sendTransactions,
+    useGetAccountInfo,
+    useGetNetworkConfig,
+    useGetPendingTransactions,
+} from '@elrondnetwork/dapp-core';
+import {
+    Address,
+    AddressValue,
+    AbiRegistry,
+    SmartContractAbi,
+    SmartContract,
+    ProxyProvider,
+    TypedValue,
+    ArgSerializer,
+    GasLimit,
+    DefaultSmartContractController,
+    U32Value,
+} from '@elrondnetwork/erdjs';
+
 import NFTPng from 'assets/img/NFT staking.png';
 import './index.scss';
 import { NFT_collections } from './data';
 
-const NFTStaking = () => {
+import {
+    NFT_STAKING_CONTRACT_ABI_URL,
+    NFT_STAKING_CONTRACT_NAME,
+    NFT_STAKING_CONTRACT_ADDRESS,
+    LKMEX_TOKEN_DECIMALS,
+} from 'config';
+import {
+    IContractInteractor,
+    convertWeiToEsdt,
+    TIMEOUT,
+    SECOND_IN_MILLI,
+} from 'utils';
 
+const NFTStaking = () => {
+    const { address } = useGetAccountInfo();
+    const { network } = useGetNetworkConfig();
+    const { hasPendingTransactions } = useGetPendingTransactions();
+    const provider = new ProxyProvider(network.apiAddress, { timeout: TIMEOUT });
+
+    const [contractInteractor, setContractInteractor] = React.useState<IContractInteractor | undefined>();
+    // load smart contract abi and parse it to SmartContract object for tx
+    React.useEffect(() => {
+        (async () => {
+            const registry = await AbiRegistry.load({ urls: [NFT_STAKING_CONTRACT_ABI_URL] });
+            const abi = new SmartContractAbi(registry, [NFT_STAKING_CONTRACT_NAME]);
+            const contract = new SmartContract({ address: new Address(NFT_STAKING_CONTRACT_ADDRESS), abi: abi });
+            const controller = new DefaultSmartContractController(abi, provider);
+
+            // console.log('contractInteractor', {
+            //     contract,
+            //     controller,
+            // });
+
+            setContractInteractor({
+                contract,
+                controller,
+            });
+        })();
+    }, []); // [] makes useEffect run once
+
+    const [stakeSetting, setStakeSetting] = React.useState<any>();
+    React.useEffect(() => {
+        (async () => {
+            if (!contractInteractor) return;
+            const interaction = contractInteractor.contract.methods.viewStakeSetting();
+            const res = await contractInteractor.controller.query(interaction);
+
+            if (!res || !res.returnCode.isSuccess()) return;
+            const value = res.firstValue.valueOf();
+
+            const lkmex_collection_id = value.lkmex_collection_id.toString();
+            const lkmex_total_amount = convertWeiToEsdt(value.lkmex_total_amount, LKMEX_TOKEN_DECIMALS);
+            const lkmex_tokens = value.lkmex_tokens.map(v => {
+                return {
+                    token_identifier: v.token_identifier.toString(),
+                    token_nonce: v.token_nonce.toNumber(),
+                    amount: convertWeiToEsdt(v.amount, LKMEX_TOKEN_DECIMALS),
+                };
+            });
+            const nft_collections = value.nft_collections.map(v => {
+                return {
+                    collection_id: v.collection_id.toString(),
+                    reward_rate: convertWeiToEsdt(v.reward_rate, LKMEX_TOKEN_DECIMALS),
+                    staked_amount: v.staked_amount.toNumber(),
+                };
+            });
+            const total_staked_amount = value.total_staked_amount.toNumber();
+            const number_of_stakers = value.number_of_stakers.toNumber();
+
+            const stakeSetting = {
+                lkmex_collection_id,
+                lkmex_total_amount,
+                lkmex_tokens,
+                nft_collections,
+                total_staked_amount,
+                number_of_stakers,
+            };
+
+            console.log('stakeSetting', stakeSetting);
+            setStakeSetting(stakeSetting);
+        })();
+    }, [contractInteractor]);
+
+    const [stakeAccount, setStakeAccount] = React.useState<any>();
+    React.useEffect(() => {
+        (async () => {
+          if (!contractInteractor || !address) return;
+          const args = [new AddressValue(new Address(address))];
+          const interaction = contractInteractor.contract.methods.viewStakeAccount(args);
+          const res = await contractInteractor.controller.query(interaction);
+    
+          if (!res || !res.returnCode.isSuccess()) return;
+          const value = res.firstValue.valueOf();
+    
+          const nfts = value.nfts.map(v => {
+              return {
+                nft_id: v.nft_id.toNumber(),
+                collection_id: v.collection_id.toString(),
+                nft_nonce: v.nft_nonce.toNumber(),
+                reward_amount: convertWeiToEsdt(v.reward_amount, LKMEX_TOKEN_DECIMALS),
+                last_claimed_timestamp: v.last_claimed_timestamp.toNumber() * SECOND_IN_MILLI,
+              };
+          });
+
+          const result = {
+            nfts,
+          };
+    
+          console.log('BTX viewStakeAccount', result);
+          setStakeAccount(result);
+        })();
+      }, [address, contractInteractor, hasPendingTransactions]);    
+
+    //////////////////////////////////////////////////////////////////////
     const handleClaimButClicked = (index) => {
         console.log(NFT_collections[index]);
     };
