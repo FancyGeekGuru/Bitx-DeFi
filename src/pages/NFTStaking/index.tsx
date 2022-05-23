@@ -49,7 +49,7 @@ import GoldPng from 'assets/img/nft mint/new/GOLD PIC.png';
 
 function getUrlOfNft(collection: string) {
     if (collection.search('GOLD') >= 0) return GoldPng;
-    else if (collection.search('GOLD') >= 0) return SilverPng;
+    else if (collection.search('SILVER') >= 0) return SilverPng;
     else return BronzePng;
 }
 
