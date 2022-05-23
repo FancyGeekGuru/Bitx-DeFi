@@ -20,6 +20,8 @@ import {
     GasLimit,
     DefaultSmartContractController,
     U32Value,
+    U64Value,
+    BytesValue,
 } from '@elrondnetwork/erdjs';
 
 import NFTPng from 'assets/img/NFT staking.png';
@@ -37,10 +39,11 @@ import {
     convertWeiToEsdt,
     TIMEOUT,
     SECOND_IN_MILLI,
+    getBtxNfts,
 } from 'utils';
 
 const NFTStaking = () => {
-    const { address } = useGetAccountInfo();
+    const { account, address } = useGetAccountInfo();
     const { network } = useGetNetworkConfig();
     const { hasPendingTransactions } = useGetPendingTransactions();
     const provider = new ProxyProvider(network.apiAddress, { timeout: TIMEOUT });
@@ -137,16 +140,48 @@ const NFTStaking = () => {
           console.log('BTX viewStakeAccount', result);
           setStakeAccount(result);
         })();
-      }, [address, contractInteractor, hasPendingTransactions]);    
+      }, [address, contractInteractor, hasPendingTransactions]);
+
+    const [nftsInWallet, setNftsInWallet] = React.useState<any>();
+    React.useEffect(() => {
+        if (!address || !stakeSetting) return;
+
+        (async() => {
+            const nfts = await getBtxNfts(network.apiAddress, account, stakeSetting.nft_collections);
+            // console.log('nftsInWallet', nfts);
+            setNftsInWallet(nfts);
+        })();
+    }, [address, stakeSetting, hasPendingTransactions]);
 
     //////////////////////////////////////////////////////////////////////
     const handleClaimButClicked = (index) => {
         console.log(NFT_collections[index]);
     };
 
-    const handleStakeButClicked = (index) => {
-        console.log(NFT_collections[index]);
-    };
+    async function handleStakeButClicked(nft) {
+        console.log('nft', nft);
+
+        const args: TypedValue[] = [
+            BytesValue.fromUTF8(nft.collection),
+            new U64Value(nft.nonce),
+            new U64Value(1),
+            new AddressValue(new Address(NFT_STAKING_CONTRACT_ADDRESS)),
+            BytesValue.fromUTF8('stake'),
+        ];
+        const { argumentsString } = new ArgSerializer().valuesToString(args);
+        const data = `ESDTNFTTransfer@${argumentsString}`;
+    
+        const tx = {
+            receiver: address,
+            gasLimit: new GasLimit(10000000),
+            data: data,
+        };
+    
+        await refreshAccount();
+        sendTransactions({
+            transactions: tx,
+        });
+    }
 
     const handleUnStakeButClicked = (index) => {
         console.log(NFT_collections[index]);
@@ -227,29 +262,27 @@ const NFTStaking = () => {
                 }
             </Row>
 
-            <p className="mt-5 text-center" style={{ fontSize: "15px", fontWeight: '600', background: 'rgba(0,0,0,0.15)', padding: '8px', borderRadius: '10px' }}>UnStaked</p>
+            <p className="mt-5 text-center" style={{ fontSize: "15px", fontWeight: '600', background: 'rgba(0,0,0,0.15)', padding: '8px', borderRadius: '10px' }}>In My Wallet</p>
             <Row className="mt-4">
                 {
-                    NFT_collections.map((NFT, index) => {
-                        if (!NFT.staked) {
-                            return (
-                                <Col sm="6" md="4" lg="3" key={index}>
-                                    <div className='staking-card'>
-                                        <img src={NFT.img_url} width='100%' />
-                                        <div style={{ padding: '8px 15px' }}>
-                                            <div className='d-flex justify-content-between' >
-                                                <span>{NFT.name + ' #' + NFT.number}</span>
-                                                <span>{NFT.cost + ' EGLD'}</span>
-                                            </div>
+                    nftsInWallet && nftsInWallet.length > 0 && nftsInWallet.map((NFT, index) => {
+                        return (
+                            <Col sm="6" md="4" lg="3" key={index}>
+                                <div className='staking-card'>
+                                    <img src={NFT.url} width='100%' />
+                                    <div style={{ padding: '8px 15px' }}>
+                                        <div className='d-flex justify-content-between' >
+                                            <span>{NFT.name}</span>
+                                            <span>{NFT.reward_rate + ' LKMEX'}</span>
+                                        </div>
 
-                                            <div className='mt-3 d-flex justify-content-center'>
-                                                <button className='claim-but' onClick={() => handleStakeButClicked(index)}> STAKE </button>
-                                            </div>
+                                        <div className='mt-3 d-flex justify-content-center'>
+                                            <button className='claim-but' onClick={() => handleStakeButClicked(nftsInWallet[index])}> STAKE </button>
                                         </div>
                                     </div>
-                                </Col>
-                            );
-                        }
+                                </div>
+                            </Col>
+                        );
                     })
                 }
             </Row>
