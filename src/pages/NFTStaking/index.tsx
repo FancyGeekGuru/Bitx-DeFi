@@ -40,7 +40,18 @@ import {
     TIMEOUT,
     SECOND_IN_MILLI,
     getBtxNfts,
+    getCurrentTimestamp,
 } from 'utils';
+
+import SilverPng from 'assets/img/nft mint/new/SILVER PIC.png';
+import BronzePng from 'assets/img/nft mint/new/BRONZE PIC.png';
+import GoldPng from 'assets/img/nft mint/new/GOLD PIC.png';
+
+function getUrlOfNft(collection: string) {
+    if (collection.search('GOLD') >= 0) return GoldPng;
+    else if (collection.search('GOLD') >= 0) return SilverPng;
+    else return BronzePng;
+}
 
 const NFTStaking = () => {
     const { account, address } = useGetAccountInfo();
@@ -123,18 +134,25 @@ const NFTStaking = () => {
           if (!res || !res.returnCode.isSuccess()) return;
           const value = res.firstValue.valueOf();
     
+          let total_reward_amount = 0;
           const nfts = value.nfts.map(v => {
+              const collection = v.collection_id.toString();
+              const reward_amount = convertWeiToEsdt(v.reward_amount, LKMEX_TOKEN_DECIMALS);
+              total_reward_amount += reward_amount;
               return {
                 nft_id: v.nft_id.toNumber(),
-                collection_id: v.collection_id.toString(),
-                nft_nonce: v.nft_nonce.toNumber(),
-                reward_amount: convertWeiToEsdt(v.reward_amount, LKMEX_TOKEN_DECIMALS),
+                identifier: v.nft_id.toNumber(),
+                collection,
+                nonce: v.nft_nonce.toNumber(),
+                url: getUrlOfNft(collection),
+                reward_amount,
                 last_claimed_timestamp: v.last_claimed_timestamp.toNumber() * SECOND_IN_MILLI,
               };
           });
 
           const result = {
             nfts,
+            total_reward_amount,
           };
     
           console.log('BTX viewStakeAccount', result);
@@ -154,8 +172,23 @@ const NFTStaking = () => {
     }, [address, stakeSetting, hasPendingTransactions]);
 
     //////////////////////////////////////////////////////////////////////
-    const handleClaimButClicked = (index) => {
-        console.log(NFT_collections[index]);
+    const handleClaimButClicked = async (nft) => {
+        const args: TypedValue[] = [
+            new U64Value(nft.nft_id),
+        ];
+        const { argumentsString } = new ArgSerializer().valuesToString(args);
+        const data = `claim@${argumentsString}`;
+    
+        const tx = {
+            receiver: NFT_STAKING_CONTRACT_ADDRESS,
+            gasLimit: new GasLimit(10000000),
+            data: data,
+        };
+    
+        await refreshAccount();
+        sendTransactions({
+            transactions: tx,
+        });
     };
 
     async function handleStakeButClicked(nft) {
@@ -183,12 +216,23 @@ const NFTStaking = () => {
         });
     }
 
-    const handleUnStakeButClicked = (index) => {
-        console.log(NFT_collections[index]);
-    };
-
-    const handleClaimAll = () => {
-        console.log('Claim All clicked.');
+    const handleUnStakeButClicked = async (nft) => {
+        const args: TypedValue[] = [
+            new U64Value(nft.nft_id),
+        ];
+        const { argumentsString } = new ArgSerializer().valuesToString(args);
+        const data = `unstake@${argumentsString}`;
+    
+        const tx = {
+            receiver: NFT_STAKING_CONTRACT_ADDRESS,
+            gasLimit: new GasLimit(10000000),
+            data: data,
+        };
+    
+        await refreshAccount();
+        sendTransactions({
+            transactions: tx,
+        });
     };
 
     return (
@@ -196,12 +240,12 @@ const NFTStaking = () => {
             <Row className="d-flex justify-content-center align-items-center text-center">
                 <div className='d-flex justify-content-center align-items-center text-center'>
                     <div className="state-box">
-                        <span>My Balance</span>
-                        <span>125 EGLD</span>
+                        <span>My Staked NFTs</span>
+                        <span>{stakeAccount ? stakeAccount.nfts.length : '-'}</span>
                     </div>
                     <div className="state-box ml-5">
-                        <span>UnClaimed</span>
-                        <span>100 EGLD</span>
+                        <span>Total Reward</span>
+                        <span>{stakeAccount ? stakeAccount.total_reward_amount : '-'} LKMEX</span>
                     </div>
                 </div>
                 <div>
@@ -209,12 +253,12 @@ const NFTStaking = () => {
                 </div>
                 <div className='d-flex justify-content-center align-items-center text-center'>
                     <div className="state-box">
-                        <span>EGLD Per Day</span>
-                        <span>25 EGLD</span>
+                        <span>Total Staked NFTs</span>
+                        <span>{stakeSetting ? stakeSetting.total_staked_amount : '-'}</span>
                     </div>
                     <div className="state-box  ml-5">
-                        <span>Staked NFTs</span>
-                        <span>125</span>
+                        <span>Number of Stakers</span>
+                        <span>{stakeSetting ? stakeSetting.number_of_stakers : '-'}</span>
                     </div>
                 </div>
             </Row>
@@ -228,36 +272,33 @@ const NFTStaking = () => {
 
             <p className="mt-5 text-center" style={{ fontSize: "15px", fontWeight: '600', background: 'rgba(0,0,0,0.15)', padding: '8px', borderRadius: '10px' }}>Staked</p>
             <div className='d-flex justify-content-between'>
-                <span className='claim-all' onClick={handleClaimAll}>Claim All</span>
-                <span>8 items staked</span>
+                {/* <span className='claim-all' onClick={handleClaimAll}>Claim All</span> */}
+                <span>{stakeAccount ? stakeAccount.nfts.length : '-'} items staked</span>
             </div>
 
             <Row className="mt-4">
                 {
-                    NFT_collections.map((NFT, index) => {
-                        if (NFT.staked) {
-                            return (
-                                <Col sm="6" md="4" lg="3" key={index}>
-                                    <div className='staking-card'>
-                                        <img src={NFT.img_url} width='100%' />
-                                        <div style={{ padding: '8px 15px' }}>
-                                            <div className='d-flex justify-content-between' >
-                                                <span>{NFT.name + ' #' + NFT.number}</span>
-                                                <span>{NFT.cost + ' EGLD'}</span>
-                                            </div>
-                                            <div className='mt-2'>
-                                                <span>{'RATE: ' + NFT.rate + '%'}</span>
-                                            </div>
+                    stakeAccount && stakeAccount.nfts.map((NFT, index) => {
+                        return (
+                            <Col sm="6" md="4" lg="3" key={index}>
+                                <div className='staking-card'>
+                                    <img src={NFT.url} width='100%' />
+                                    <div style={{ padding: '8px 15px' }}>
+                                        <div className='d-flex justify-content-between' >
+                                            <span>{NFT.name}</span>
+                                        </div>
+                                        <div className='mt-2'>
+                                            <span>{'Reward: ' + NFT.reward_amount + ' LKMEX'}</span>
+                                        </div>
 
-                                            <div className='mt-2 d-flex justify-content-center'>
-                                                <button className='unstake-but' onClick={() => handleUnStakeButClicked(index)}> unstake </button>
-                                                <button className='claim-but ml-2' onClick={() => handleClaimButClicked(index)}> CLAIM </button>
-                                            </div>
+                                        <div className='mt-2 d-flex justify-content-center'>
+                                            <button className='unstake-but' onClick={() => handleUnStakeButClicked(NFT)}> Unstake </button>
+                                            <button className='claim-but ml-2' onClick={() => handleClaimButClicked(NFT)}> Claim </button>
                                         </div>
                                     </div>
-                                </Col>
-                            );
-                        }
+                                </div>
+                            </Col>
+                        );
                     })
                 }
             </Row>
