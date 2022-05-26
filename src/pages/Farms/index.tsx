@@ -44,7 +44,7 @@ const Farms = () => {
                             </div>
 
                             <div className='d-flex flex-column' style={{ marginLeft: '30px', gap: '5px' }}>
-                                <span style={{ fontWeight: '700', fontSize: '16px' }}> Stake BTX </span>
+                                <span style={{ fontWeight: '600', fontSize: '16px' }}> Stake BTX / LKMEX</span>
                                 <span> $ 381,826,657 </span>
                             </div>
                         </div>
@@ -70,7 +70,7 @@ const Farms = () => {
 
                     <Col md='4' lg='2'>
                         <div className='d-flex flex-column' style={{ gap: '5px' }}>
-                            <span style={{ fontSize: '14px', color: '#B5B5B5' }}> My Earned BTX </span>
+                            <span style={{ fontSize: '14px', color: '#B5B5B5' }}> My Earned MEX </span>
                             <span> 0 </span>
                         </div>
                     </Col>
@@ -103,7 +103,7 @@ const Farms = () => {
 
                             <div className='d-flex flex-column' style={{ marginLeft: '30px', gap: '5px' }}>
                                 <div className='d-flex align-items-center'>
-                                    <span style={{ fontWeight: '700', fontSize: '16px' }}> EGLD - BTX </span>
+                                    <span style={{ fontWeight: '600', fontSize: '16px' }}> EGLD - BTX </span>
                                     <div className='d-flex align-items-center lock-badge ml-2'>
                                         <AiFillLock/>
                                         <span> 1.1x</span>
@@ -134,7 +134,7 @@ const Farms = () => {
 
                     <Col md='4' lg='2'>
                         <div className='d-flex flex-column' style={{ gap: '5px' }}>
-                            <span style={{ fontSize: '14px', color: '#B5B5B5' }}> My Earned BTX </span>
+                            <span style={{ fontSize: '14px', color: '#B5B5B5' }}> My Earned MEX </span>
                             <span> 0 </span>
                         </div>
                     </Col>
