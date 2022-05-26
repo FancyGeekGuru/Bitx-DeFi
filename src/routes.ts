@@ -16,6 +16,7 @@ import MareStaking from './pages/Staking/MareStaking';
 
 import BitLock from './pages/Vesting';
 import CreateVesting from './pages/Vesting/createVesting';
+import Farms from './pages/Farms';
 
 export const routeNames = {
   home: '/',
@@ -39,7 +40,8 @@ export const routeNames = {
 
   bitlock: '/bitlock',
   createvesting: '/bitlock/create-vesting',
-  vaultvesting: '/bitlock/vault-vesting/*'
+  vaultvesting: '/bitlock/vault-vesting/*',
+  farms: '/farms'
 };
 
 const routes: Array<any> = [
@@ -131,6 +133,12 @@ const routes: Array<any> = [
     path: routeNames.nftstaking,
     title: 'NFT Staking',
     component: NFTStaking
+  },
+
+  {
+    path: routeNames.farms,
+    title: 'Farms',
+    component: Farms
   },
 ];
 

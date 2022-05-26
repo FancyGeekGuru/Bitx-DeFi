@@ -77,6 +77,9 @@ const Navbar = () => {
             <Link to={routeNames.bitlock} className='custom-navbar-button custom-navbar-normal-button'>
               Bitlock
             </Link>
+            <Link to={routeNames.farms} className='custom-navbar-button custom-navbar-normal-button'>
+              Farms
+            </Link>
 
             {isLoggedIn ? (
               <NavItem className='custom-navbar-button auth-button' onClick={handleLogout}>

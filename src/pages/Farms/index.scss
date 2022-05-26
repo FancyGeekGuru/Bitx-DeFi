@@ -1,0 +1,44 @@
+.farms-info-card {
+    background: #262626;
+    border: 1px solid #707070;
+    border-radius: 5px;
+    padding: 20px 32px;
+    width: 640px;
+}
+
+.farm-card {
+    background: #2B2D2E;
+    padding: 20px 30px;
+    border-radius: 5px;
+}
+
+.farm-but {
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    background: #12A366;
+    color: white;
+    transition: .2s ease-in-out;
+
+    &:hover {
+        background: #12a36749;
+    }
+}
+
+.stake-but {
+    background: #1E2027;
+    border: 1px solid #05AB76;
+    color: #05AB76;
+
+    &:hover {
+        background: #12a3677c;
+        color: white;
+    }
+}
+
+.lock-badge {
+    background: #12A366;
+    border-radius: 5px;
+    // padding: 5px;
+    padding: 0 5px;
+}
