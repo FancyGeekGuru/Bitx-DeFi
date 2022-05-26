@@ -77,9 +77,8 @@ const Farms = () => {
 
                     <Col lg='3'>
                         <div className='d-flex justify-content-center'>
-                            <button className='farm-but'> Reinvest all </button>
                             <button className='farm-but ml-3'> Harvest all </button>
-                            <button className='farm-but stake-but ml-3'> Stake </button>
+                            <button className='farm-but stake-but ml-4'> Stake </button>
                         </div>
                     </Col>
                 </Row>
@@ -102,13 +101,7 @@ const Farms = () => {
                             </div>
 
                             <div className='d-flex flex-column' style={{ marginLeft: '30px', gap: '5px' }}>
-                                <div className='d-flex align-items-center'>
-                                    <span style={{ fontWeight: '600', fontSize: '16px' }}> EGLD - BTX </span>
-                                    <div className='d-flex align-items-center lock-badge ml-2'>
-                                        <AiFillLock/>
-                                        <span> 1.1x</span>
-                                    </div>
-                                </div>
+                                <span style={{ fontWeight: '600', fontSize: '16px' }}> EGLD - BTX </span>
                                 <span> $ 381,826,657 </span>
                             </div>
                         </div>
