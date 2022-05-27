@@ -29,16 +29,16 @@ export const PoolList = [
         earn: "MARE",
         url: "/mare-pool"
     },
-    {
-        stake: "HETO",
-        earn: "HETO",
-        url: "/heto-pool"
-    },
-    {
-        stake: "BTX",
-        earn: "HETO",
-        url: "/heto-pool"
-    },
+    // {
+    //     stake: "HETO",
+    //     earn: "HETO",
+    //     url: "/heto-pool"
+    // },
+    // {
+    //     stake: "BTX",
+    //     earn: "HETO",
+    //     url: "/heto-pool"
+    // },
     {
         stake: "LPAD",
         earn: "LPAD",

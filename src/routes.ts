@@ -27,7 +27,7 @@ export const routeNames = {
   bitxstaking: '/btx-pool',
   dicestaking: '/dice-pool',
   marestaking: '/mare-pool',
-  hetostaking: '/heto-pool',
+  // hetostaking: '/heto-pool',
   cpastaking: '/cpa-pool',
   lpadstaking: '/lpad-pool',
 
@@ -88,11 +88,11 @@ const routes: Array<any> = [
     component: MareStaking
   },
 
-  {
-    path: routeNames.hetostaking,
-    title: 'Heto Pool',
-    component: HetoStaking
-  },
+  // {
+  //   path: routeNames.hetostaking,
+  //   title: 'Heto Pool',
+  //   component: HetoStaking
+  // },
 
   {
     path: routeNames.cpastaking,
