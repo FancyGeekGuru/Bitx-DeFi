@@ -1,11 +1,91 @@
 import React, { useState } from 'react';
+import Checkbox from '@mui/material/Checkbox';
+import Slider, { SliderThumb } from '@mui/material/Slider';
+import { styled } from '@mui/material/styles';
 import { Row, Col } from 'react-bootstrap';
-import { AiFillLock } from "react-icons/ai";
+import { AiFillLock, AiOutlineInfoCircle } from "react-icons/ai";
+import Modal from 'react-modal';
 import BTXLogo from 'assets/img/token logos/BTX.png';
 import EGLDLogo from 'assets/img/token logos/EGLD.png';
 import './index.scss';
 
+const AirbnbSlider = styled(Slider)(({ theme }) => ({
+    color: '#F9D85E',
+    height: 3,
+    padding: '13px 0',
+    '& .MuiSlider-thumb': {
+        height: 20,
+        width: 20,
+        backgroundColor: '#F9D85E',
+        border: '1px solid currentColor',
+        boxShadow: 'none',
+        '&:hover': {
+            boxShadow: '0 0 0 8px rgba(249, 216, 94, 0.16)',
+        },
+        '& .airbnb-bar': {
+            height: 9,
+            width: 1,
+            backgroundColor: 'currentColor',
+            marginLeft: 1,
+            marginRight: 1,
+        },
+    },
+    '& .MuiSlider-track': {
+        height: 6,
+    },
+    '& .MuiSlider-rail': {
+        color: theme.palette.mode === 'dark' ? '#1E1F20' : '#1E1F20',
+        // opacity: theme.palette.mode === 'dark' ? undefined : 1,
+        opacity: 1,
+        height: 6,
+    },
+    '& .MuiSlider-markLabel': {
+        color: '#AEAEAE'
+    },
+    '& .MuiSlider-markActive': {
+        backgroundColor: '#000'
+    }
+}));
+
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+interface AirbnbThumbComponentProps extends React.HTMLAttributes<unknown> { }
+
+function AirbnbThumbComponent(props: AirbnbThumbComponentProps) {
+    const { children, ...other } = props;
+    return (
+        <SliderThumb {...other}>
+            {children}
+        </SliderThumb>
+    );
+}
+
 const Farms = () => {
+    const [showModal, setShowModal] = useState(false);
+
+    const marks = [
+        {
+            value: 0,
+            label: '0',
+        },
+        {
+            value: 25,
+            label: '25%',
+        },
+        {
+            value: 50,
+            label: '50%',
+        },
+        {
+            value: 75,
+            label: '75%',
+        },
+        {
+            value: 100,
+            label: '100%',
+        },
+    ];
+    const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
+
     return (
         <div className="home-container mb-5" style={{ fontFamily: 'Segoe UI', color: 'white' }}>
             <div className='text-center d-flex flex-column'>
@@ -49,7 +129,6 @@ const Farms = () => {
                             </div>
                         </div>
                     </Col>
-
                     <Col md='4' lg='2'>
                         <div className='d-flex flex-column' style={{ gap: '5px' }}>
                             <span style={{ fontSize: '14px', color: '#B5B5B5' }}> APR </span>
@@ -60,25 +139,22 @@ const Farms = () => {
                             </div>
                         </div>
                     </Col>
-
                     <Col md='4' lg='2'>
                         <div className='d-flex flex-column' style={{ gap: '5px' }}>
                             <span style={{ fontSize: '14px', color: '#B5B5B5' }}> My Staked BTX </span>
                             <span> 0 </span>
                         </div>
                     </Col>
-
                     <Col md='4' lg='2'>
                         <div className='d-flex flex-column' style={{ gap: '5px' }}>
                             <span style={{ fontSize: '14px', color: '#B5B5B5' }}> My Earned MEX </span>
                             <span> 0 </span>
                         </div>
                     </Col>
-
                     <Col lg='3'>
                         <div className='d-flex justify-content-center'>
                             <button className='farm-but ml-3'> Harvest all </button>
-                            <button className='farm-but stake-but ml-4'> Stake </button>
+                            <button className='farm-but stake-but ml-4' onClick={() => setShowModal(true)}> Stake </button>
                         </div>
                     </Col>
                 </Row>
@@ -106,7 +182,6 @@ const Farms = () => {
                             </div>
                         </div>
                     </Col>
-
                     <Col md='4' lg='2'>
                         <div className='d-flex flex-column' style={{ gap: '5px' }}>
                             <span style={{ fontSize: '14px', color: '#B5B5B5' }}> APR </span>
@@ -117,21 +192,18 @@ const Farms = () => {
                             </div>
                         </div>
                     </Col>
-
                     <Col md='4' lg='2'>
                         <div className='d-flex flex-column' style={{ gap: '5px' }}>
                             <span style={{ fontSize: '14px', color: '#B5B5B5' }}> My Staked LP </span>
                             <span> 0 </span>
                         </div>
                     </Col>
-
                     <Col md='4' lg='2'>
                         <div className='d-flex flex-column' style={{ gap: '5px' }}>
                             <span style={{ fontSize: '14px', color: '#B5B5B5' }}> My Earned MEX </span>
                             <span> 0 </span>
                         </div>
                     </Col>
-
                     <Col lg='3'>
                         <div className='d-flex justify-content-center'>
                             <button className='farm-but'> Harvest all </button>
@@ -140,6 +212,75 @@ const Farms = () => {
                     </Col>
                 </Row>
             </div>
+
+            <Modal
+                isOpen={showModal}
+                onRequestClose={() => {
+                    setShowModal(false);
+                }}
+                ariaHideApp={false}
+                className='farm-modalcard box-shadow'
+                closeTimeoutMS={500}
+            >
+                <div className='d-flex align-items-center'>
+                    <img src={BTXLogo} alt='btx logo' width={'36px'} />
+                    <span style={{ fontSize: '20px', fontWeight: '600', marginLeft: '10px' }}>Stake in BTX farm</span>
+                </div>
+
+                <div style={{ marginTop: '30px' }}>
+                    <input className='stake-input' placeholder='Amount to Stake' />
+                </div>
+
+                <div className='d-flex mt-1' style={{ justifyContent: 'right', color: '#AEAEAE' }}>
+                    <span>Balance:</span>
+                    <span>-.-</span>
+                </div>
+
+                <div className='modal-divider mt-3' />
+                <div className='mt-2'>
+                    <AirbnbSlider
+                        components={{ Thumb: AirbnbThumbComponent }}
+                        getAriaLabel={(index) => (index === 0 ? 'Minimum price' : 'Maximum price')}
+                        defaultValue={0}
+                        marks={marks}
+                        step={25}
+                    // valueLabelDisplay="on"
+                    />
+                </div>
+
+                <div className='d-flex align-items-center' style={{ marginLeft: '-15px', marginTop: '15px' }}>
+                    <Checkbox
+                        {...label}
+                        id='lockRewards'
+                        sx={{
+                            color: 'gray',
+                            marginTop: '-6px',
+                            '&.Mui-checked': {
+                                color: '#FEE277',
+                            },
+                        }}
+                    />
+                    <label htmlFor='lockRewards' style={{ cursor: 'pointer' }}>
+                        <div className='d-flex align-items-center'>
+                            <AiFillLock className='mr-1' />
+                            <span>Lock rewards for: <span style={{ color: '#00C4A7' }}>78% LKMEX</span> vs <span style={{ color: '#FEE277' }}>21% BTX</span></span>
+                        </div>
+                    </label>
+                </div>
+
+                <div className='farm-stake-info mt-2 d-flex align-items-center'>
+                    <div>
+                        <AiOutlineInfoCircle />
+                    </div>
+                    <span className='ml-3'>{"1% fee for withdrawing in the next 48h - 72h. Depositing or reinvesting resets the timer."}</span>
+                </div>
+
+                <div className='modal-divider mt-3' />
+                <div className='d-flex justify-content-center mt-3'>
+                    <button className='stake-modal-cancel-but'>Cancel</button>
+                    <button className='ml-3 stake-modal-ok-but'>Stake</button>
+                </div>
+            </Modal>
         </div>
     );
 };
