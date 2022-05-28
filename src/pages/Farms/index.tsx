@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Checkbox from '@mui/material/Checkbox';
 import Slider, { SliderThumb } from '@mui/material/Slider';
 import { styled } from '@mui/material/styles';
@@ -60,8 +60,6 @@ function AirbnbThumbComponent(props: AirbnbThumbComponentProps) {
 }
 
 const Farms = () => {
-    const [showModal, setShowModal] = useState(false);
-
     const marks = [
         {
             value: 0,
@@ -85,6 +83,50 @@ const Farms = () => {
         },
     ];
     const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
+
+    const BTXTotalBalance = 3000; // Current Balance of BTX
+
+    /** =============================== staking Farm modal (Stake BTX / LKMEX) ================================== */
+    const [showStakingFarmModal, setShowStakingFarmModal] = useState(false);
+    const [stakingFarmStakeAmount, setStakingFarmStakeAmount] = useState<number | undefined>();
+    const [stakingFarmRelockState, setStakingFarmRelockState] = useState(false);
+
+    const handleStakingFarmSliderChange = (num: any) => {
+        setStakingFarmStakeAmount(BTXTotalBalance / 100 * num);
+    };
+
+    const handleStakingFarmStakeClicked = () => {
+        const amount = stakingFarmStakeAmount;
+        const relock = stakingFarmRelockState;
+        console.log(amount, relock, "Stake BTX / LKMEX");
+        setShowStakingFarmModal(false);
+    };
+
+    /** =============================== LP Farm modal (Stake BTX - EGLD) ================================== */
+    const [showLPFarmModal, setShowLPFarmModal] = useState(false);
+    const [LPFarmStakeAmount, setLPFarmStakeAmount] = useState<number | undefined>();
+    const [LPFarmRelockState, setLPFarmRelockState] = useState(false);
+
+    const handleLPFarmSliderChange = (num: any) => {
+        setLPFarmStakeAmount(BTXTotalBalance / 100 * num);
+    };
+
+    const handleLPFarmStakeClicked = () => {
+        const amount = LPFarmStakeAmount;
+        const relock = LPFarmRelockState;
+        console.log(amount, relock, "Stake BTX - EGLD");
+        setShowLPFarmModal(false);
+    };
+
+
+    /** ============================= harvest all ============================================================ */
+    const handleStakingFarmHarvestAll = () => {
+        console.log("staking farm harvest all");
+    };
+
+    const handleLPFarmHarvestAll = () => {
+        console.log("LP Farm harvest all");
+    };
 
     return (
         <div className="home-container mb-5" style={{ fontFamily: 'Segoe UI', color: 'white' }}>
@@ -153,8 +195,8 @@ const Farms = () => {
                     </Col>
                     <Col lg='3'>
                         <div className='d-flex justify-content-center'>
-                            <button className='farm-but ml-3'> Harvest all </button>
-                            <button className='farm-but stake-but ml-4' onClick={() => setShowModal(true)}> Stake </button>
+                            <button className='farm-but ml-3' onClick={handleStakingFarmHarvestAll}> Harvest all </button>
+                            <button className='farm-but stake-but ml-4' onClick={() => setShowStakingFarmModal(true)}> Stake </button>
                         </div>
                     </Col>
                 </Row>
@@ -168,16 +210,16 @@ const Farms = () => {
                         <div className='d-flex align-items-center'>
                             <div className='d-flex'>
                                 <div>
-                                    <img src={EGLDLogo} alt='EGLD logo' width={'38px'} />
+                                    <img src={BTXLogo} alt='BTX logo' width={'38px'} />
                                 </div>
 
                                 <div style={{ marginLeft: '-15px', marginTop: '20px' }}>
-                                    <img src={BTXLogo} alt='BTX logo' width={'38px'} />
+                                    <img src={EGLDLogo} alt='EGLD logo' width={'38px'} />
                                 </div>
                             </div>
 
                             <div className='d-flex flex-column' style={{ marginLeft: '30px', gap: '5px' }}>
-                                <span style={{ fontWeight: '600', fontSize: '16px' }}> EGLD - BTX </span>
+                                <span style={{ fontWeight: '600', fontSize: '16px' }}> BTX - EGLD </span>
                                 <span> $ 381,826,657 </span>
                             </div>
                         </div>
@@ -206,17 +248,17 @@ const Farms = () => {
                     </Col>
                     <Col lg='3'>
                         <div className='d-flex justify-content-center'>
-                            <button className='farm-but'> Harvest all </button>
-                            <button className='farm-but stake-but ml-4'> Stake LP </button>
+                            <button className='farm-but' onClick={handleLPFarmHarvestAll}> Harvest all </button>
+                            <button className='farm-but stake-but ml-4' onClick={() => setShowLPFarmModal(true)}> Stake LP </button>
                         </div>
                     </Col>
                 </Row>
             </div>
 
             <Modal
-                isOpen={showModal}
+                isOpen={showStakingFarmModal}
                 onRequestClose={() => {
-                    setShowModal(false);
+                    setShowStakingFarmModal(false);
                 }}
                 ariaHideApp={false}
                 className='farm-modalcard box-shadow'
@@ -228,12 +270,12 @@ const Farms = () => {
                 </div>
 
                 <div style={{ marginTop: '30px' }}>
-                    <input className='stake-input' placeholder='Amount to Stake' />
+                    <input className='stake-input' placeholder='Amount to Stake' type='number' onChange={(e) => setStakingFarmStakeAmount(Number(e.target.value))} value={stakingFarmStakeAmount} />
                 </div>
 
                 <div className='d-flex mt-1' style={{ justifyContent: 'right', color: '#AEAEAE' }}>
                     <span>Balance:</span>
-                    <span>-.-</span>
+                    <span className='ml-2'>{BTXTotalBalance + ' BTX'}</span>
                 </div>
 
                 <div className='modal-divider mt-3' />
@@ -243,7 +285,9 @@ const Farms = () => {
                         getAriaLabel={(index) => (index === 0 ? 'Minimum price' : 'Maximum price')}
                         defaultValue={0}
                         marks={marks}
-                        step={25}
+                        // step={25}
+                        value={stakingFarmStakeAmount / BTXTotalBalance * 100}
+                        onChange={(e, num) => handleStakingFarmSliderChange(num)}
                     // valueLabelDisplay="on"
                     />
                 </div>
@@ -259,6 +303,7 @@ const Farms = () => {
                                 color: '#FEE277',
                             },
                         }}
+                        onChange={(e) => setStakingFarmRelockState(e.target.checked)}
                     />
                     <label htmlFor='lockRewards' style={{ cursor: 'pointer' }}>
                         <div className='d-flex align-items-center'>
@@ -277,8 +322,88 @@ const Farms = () => {
 
                 <div className='modal-divider mt-3' />
                 <div className='d-flex justify-content-center mt-3'>
-                    <button className='stake-modal-cancel-but'>Cancel</button>
-                    <button className='ml-3 stake-modal-ok-but'>Stake</button>
+                    <button className='stake-modal-cancel-but' onClick={() => setShowStakingFarmModal(false)}>Cancel</button>
+                    <button className='ml-3 stake-modal-ok-but' onClick={handleStakingFarmStakeClicked}>Stake</button>
+                </div>
+            </Modal>
+
+            <Modal
+                isOpen={showLPFarmModal}
+                onRequestClose={() => {
+                    setShowLPFarmModal(false);
+                }}
+                ariaHideApp={false}
+                className='farm-modalcard box-shadow'
+                closeTimeoutMS={500}
+            >
+                <div className='d-flex align-items-center'>
+                    <div className='d-flex'>
+                        <div>
+                            <img src={BTXLogo} alt='BTX logo' width={'38px'} />
+                        </div>
+
+                        <div style={{ marginLeft: '-15px', marginTop: '20px' }}>
+                            <img src={EGLDLogo} alt='EGLD logo' width={'38px'} />
+                        </div>
+                    </div>
+                    <span style={{ fontSize: '20px', fontWeight: '600', marginLeft: '10px' }}>Stake in BTX-EGLD farm</span>
+                </div>
+
+                <div style={{ marginTop: '30px' }}>
+                    <input className='stake-input' placeholder='Amount to Stake' type='number' onChange={(e) => setLPFarmStakeAmount(Number(e.target.value))} value={LPFarmStakeAmount} />
+                </div>
+
+                <div className='d-flex mt-1' style={{ justifyContent: 'right', color: '#AEAEAE' }}>
+                    <span>Balance:</span>
+                    <span className='ml-2'>{BTXTotalBalance + ' BTX'}</span>
+                </div>
+
+                <div className='modal-divider mt-3' />
+                <div className='mt-2'>
+                    <AirbnbSlider
+                        components={{ Thumb: AirbnbThumbComponent }}
+                        getAriaLabel={(index) => (index === 0 ? 'Minimum price' : 'Maximum price')}
+                        defaultValue={0}
+                        marks={marks}
+                        value={LPFarmStakeAmount / BTXTotalBalance * 100}
+                        onChange={(e, num) => handleLPFarmSliderChange(num)}
+                    // step={25}
+                    // valueLabelDisplay="on"
+                    />
+                </div>
+
+                <div className='d-flex align-items-center' style={{ marginLeft: '-15px', marginTop: '15px' }}>
+                    <Checkbox
+                        {...label}
+                        id='lockRewards'
+                        sx={{
+                            color: 'gray',
+                            marginTop: '-6px',
+                            '&.Mui-checked': {
+                                color: '#FEE277',
+                            },
+                        }}
+                        onChange={(e) => setLPFarmRelockState(e.target.checked)}
+                    />
+                    <label htmlFor='lockRewards' style={{ cursor: 'pointer' }}>
+                        <div className='d-flex align-items-center'>
+                            <AiFillLock className='mr-1' />
+                            <span>Lock rewards for: <span style={{ color: '#00C4A7' }}>78% LKMEX</span> vs <span style={{ color: '#FEE277' }}>21% BTX</span></span>
+                        </div>
+                    </label>
+                </div>
+
+                <div className='farm-stake-info mt-2 d-flex align-items-center'>
+                    <div>
+                        <AiOutlineInfoCircle />
+                    </div>
+                    <span className='ml-3'>{"1% fee for withdrawing in the next 48h - 72h. Depositing or reinvesting resets the timer."}</span>
+                </div>
+
+                <div className='modal-divider mt-3' />
+                <div className='d-flex justify-content-center mt-3'>
+                    <button className='stake-modal-cancel-but' onClick={() => setShowLPFarmModal(false)}>Cancel</button>
+                    <button className='ml-3 stake-modal-ok-but' onClick={handleLPFarmStakeClicked}>Stake</button>
                 </div>
             </Modal>
         </div>
