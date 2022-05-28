@@ -8,7 +8,7 @@ import NFTStakingImg from 'assets/img/NFT staking.png';
 import NFTImg from 'assets/img/NFT.png';
 import PresaleImg from 'assets/img/presale.png';
 import StakingImg from 'assets/img/staking.png';
-
+import FarmImg from 'assets/img/LP Farm.png';
 
 import { routeNames } from 'routes';
 
@@ -56,6 +56,14 @@ const BTXFinanceHome = () => {
                                 <div className="BTX-home-but">
                                     <img src={BitlockImg} />
                                     <p>BITLOCK</p>
+                                </div>
+                            </Link>
+                        </Col>
+                        <Col xs="6" sm="3">
+                            <Link to={routeNames.farms}>
+                                <div className="BTX-home-but">
+                                    <img src={FarmImg} />
+                                    <p>FARMS</p>
                                 </div>
                             </Link>
                         </Col>
