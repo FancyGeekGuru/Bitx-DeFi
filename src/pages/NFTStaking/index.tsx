@@ -120,7 +120,7 @@ const NFTStaking = () => {
                 number_of_stakers,
             };
 
-            console.log('stakeSetting', stakeSetting);
+            // console.log('stakeSetting', stakeSetting);
             setStakeSetting(stakeSetting);
         })();
     }, [contractInteractor]);
@@ -157,7 +157,7 @@ const NFTStaking = () => {
                 total_reward_amount,
             };
 
-            console.log('BTX viewStakeAccount', result);
+            // console.log('BTX viewStakeAccount', result);
             setStakeAccount(result);
         })();
     }, [address, contractInteractor, hasPendingTransactions]);
@@ -306,7 +306,7 @@ const NFTStaking = () => {
                                 <Th> NFT Collection </Th>
                                 <Th> Rewards Per Day </Th>
                                 <Th> Staked </Th>
-                                <Th> Percentage </Th>
+                                {/* <Th> Percentage </Th> */}
                             </Tr>
                         </Thead>
                         <Tbody>
@@ -317,18 +317,51 @@ const NFTStaking = () => {
                                             <img src={GoldPng} width='45px' />
                                         </div>
                                         <div className='ml-3'>
-                                            BTX VIP Cards
+                                            BTX GOLD VIP
                                         </div>
                                     </div>
                                 </Td>
                                 <Td>
-                                    - LKMEX
+                                    {stakeSetting ? stakeSetting.nft_collections[0].reward_rate * 3600 * 24 : '-'} LKMEX
                                 </Td>
                                 <Td>
-                                    {stakeSetting ? stakeSetting.total_staked_amount : '-'} / {total_minted_nft}
+                                    {stakeSetting ? stakeSetting.nft_collections[0].staked_amount : '-'}
+                                </Td>
+                            </Tr>
+                            <Tr>
+                                <Td>
+                                    <div className='d-flex justify-content-center'>
+                                        <div>
+                                            <img src={SilverPng} width='45px' />
+                                        </div>
+                                        <div className='ml-3'>
+                                            BTX SILVER VIP
+                                        </div>
+                                    </div>
                                 </Td>
                                 <Td>
-                                    {stakeSetting ? Math.floor(stakeSetting.total_staked_amount / total_minted_nft * 100) : '-'}%
+                                    {stakeSetting ? stakeSetting.nft_collections[1].reward_rate * 3600 * 24 : '-'} LKMEX
+                                </Td>
+                                <Td>
+                                    {stakeSetting ? stakeSetting.nft_collections[1].staked_amount : '-'}
+                                </Td>
+                            </Tr>
+                            <Tr>
+                                <Td>
+                                    <div className='d-flex justify-content-center'>
+                                        <div>
+                                            <img src={BronzePng} width='45px' />
+                                        </div>
+                                        <div className='ml-3'>
+                                            BTX BRONZE VIP
+                                        </div>
+                                    </div>
+                                </Td>
+                                <Td>
+                                    {stakeSetting ? stakeSetting.nft_collections[2].reward_rate * 3600 * 24 : '-'} LKMEX
+                                </Td>
+                                <Td>
+                                    {stakeSetting ? stakeSetting.nft_collections[2].staked_amount : '-'}
                                 </Td>
                             </Tr>
                         </Tbody>
