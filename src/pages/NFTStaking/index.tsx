@@ -303,7 +303,7 @@ const NFTStaking = () => {
                     <Table className="text-center" style={{ color: "#ACACAC" }}>
                         <Thead>
                             <Tr>
-                                <Th> NFT Collection </Th>
+                                <Th width="35%"> NFT Collection </Th>
                                 <Th> Rewards Per Day </Th>
                                 <Th> Staked </Th>
                                 {/* <Th> Percentage </Th> */}
@@ -312,11 +312,11 @@ const NFTStaking = () => {
                         <Tbody>
                             <Tr>
                                 <Td>
-                                    <div className='d-flex justify-content-center'>
-                                        <div>
+                                    <div className='d-flex text-left align-items-center'>
+                                        <div style={{ width: "30%", textAlign: "right" }}>
                                             <img src={GoldPng} width='45px' />
                                         </div>
-                                        <div className='ml-3'>
+                                        <div className='ml-3' style={{ width: "70%" }}>
                                             BTX GOLD VIP
                                         </div>
                                     </div>
@@ -330,11 +330,11 @@ const NFTStaking = () => {
                             </Tr>
                             <Tr>
                                 <Td>
-                                    <div className='d-flex justify-content-center'>
-                                        <div>
+                                    <div className='d-flex text-left align-items-center'>
+                                        <div style={{ width: "30%", textAlign: "right" }}>
                                             <img src={SilverPng} width='45px' />
                                         </div>
-                                        <div className='ml-3'>
+                                        <div className='ml-3' style={{ width: "70%" }}>
                                             BTX SILVER VIP
                                         </div>
                                     </div>
@@ -348,11 +348,11 @@ const NFTStaking = () => {
                             </Tr>
                             <Tr>
                                 <Td>
-                                    <div className='d-flex justify-content-center'>
-                                        <div>
+                                    <div className='d-flex text-left align-items-center'>
+                                        <div style={{ width: "30%", textAlign: "right" }}>
                                             <img src={BronzePng} width='45px' />
                                         </div>
-                                        <div className='ml-3'>
+                                        <div className='ml-3' style={{ width: "70%" }}>
                                             BTX BRONZE VIP
                                         </div>
                                     </div>
