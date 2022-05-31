@@ -46,3 +46,39 @@ export async function getEsdtsOfAddress(apiAddress, account) {
 
     return 0;
 }
+
+export async function getBtxNfts(apiAddress, account, nft_collections) {
+    try {
+        const res = await axios.get(`${apiAddress}/accounts/${account.address}/nfts?name=BTX`);
+        // console.log('res', res);
+        if (res.data?.length > 0) {
+            const collection_ids = nft_collections.map(v => v.collection_id);
+            // console.log('collection_ids', collection_ids);
+
+            const nfts = [];
+            for (let i = 0; i < res.data.length; i++) {
+                const nft = res.data[i];
+                let j = 0;
+                for (j = 0; j < nft_collections.length; j++) {
+                    if (nft.collection == nft_collections[j].collection_id) {
+                        nfts.push({
+                            identifier: nft.identifier,
+                            collection: nft.collection,
+                            nonce: nft.nonce,
+                            name: nft.name,
+                            url: nft.url,
+                            reward_rate: nft_collections[j].reward_rate,
+                        });
+
+                        break;
+                    }
+                }
+            }
+            return nfts;
+        }
+    } catch(e) {
+        console.log('getBalanceOfToken error', e);
+    }
+
+    return [];
+}
