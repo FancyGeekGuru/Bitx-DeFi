@@ -126,45 +126,45 @@ const NFTStaking = () => {
     const [stakeAccount, setStakeAccount] = React.useState<any>();
     React.useEffect(() => {
         (async () => {
-          if (!contractInteractor || !address) return;
-          const args = [new AddressValue(new Address(address))];
-          const interaction = contractInteractor.contract.methods.viewStakeAccount(args);
-          const res = await contractInteractor.controller.query(interaction);
-    
-          if (!res || !res.returnCode.isSuccess()) return;
-          const value = res.firstValue.valueOf();
-    
-          let total_reward_amount = 0;
-          const nfts = value.nfts.map(v => {
-              const collection = v.collection_id.toString();
-              const reward_amount = convertWeiToEsdt(v.reward_amount, LKMEX_TOKEN_DECIMALS);
-              total_reward_amount += reward_amount;
-              return {
-                nft_id: v.nft_id.toNumber(),
-                identifier: v.nft_id.toNumber(),
-                collection,
-                nonce: v.nft_nonce.toNumber(),
-                url: getUrlOfNft(collection),
-                reward_amount,
-                last_claimed_timestamp: v.last_claimed_timestamp.toNumber() * SECOND_IN_MILLI,
-              };
-          });
+            if (!contractInteractor || !address) return;
+            const args = [new AddressValue(new Address(address))];
+            const interaction = contractInteractor.contract.methods.viewStakeAccount(args);
+            const res = await contractInteractor.controller.query(interaction);
 
-          const result = {
-            nfts,
-            total_reward_amount,
-          };
-    
-          console.log('BTX viewStakeAccount', result);
-          setStakeAccount(result);
+            if (!res || !res.returnCode.isSuccess()) return;
+            const value = res.firstValue.valueOf();
+
+            let total_reward_amount = 0;
+            const nfts = value.nfts.map(v => {
+                const collection = v.collection_id.toString();
+                const reward_amount = convertWeiToEsdt(v.reward_amount, LKMEX_TOKEN_DECIMALS);
+                total_reward_amount += reward_amount;
+                return {
+                    nft_id: v.nft_id.toNumber(),
+                    identifier: v.nft_id.toNumber(),
+                    collection,
+                    nonce: v.nft_nonce.toNumber(),
+                    url: getUrlOfNft(collection),
+                    reward_amount,
+                    last_claimed_timestamp: v.last_claimed_timestamp.toNumber() * SECOND_IN_MILLI,
+                };
+            });
+
+            const result = {
+                nfts,
+                total_reward_amount,
+            };
+
+            console.log('BTX viewStakeAccount', result);
+            setStakeAccount(result);
         })();
-      }, [address, contractInteractor, hasPendingTransactions]);
+    }, [address, contractInteractor, hasPendingTransactions]);
 
     const [nftsInWallet, setNftsInWallet] = React.useState<any>();
     React.useEffect(() => {
         if (!address || !stakeSetting) return;
 
-        (async() => {
+        (async () => {
             const nfts = await getBtxNfts(network.apiAddress, account, stakeSetting.nft_collections);
             // console.log('nftsInWallet', nfts);
             setNftsInWallet(nfts);
@@ -178,13 +178,13 @@ const NFTStaking = () => {
         ];
         const { argumentsString } = new ArgSerializer().valuesToString(args);
         const data = `claim@${argumentsString}`;
-    
+
         const tx = {
             receiver: NFT_STAKING_CONTRACT_ADDRESS,
             gasLimit: new GasLimit(10000000),
             data: data,
         };
-    
+
         await refreshAccount();
         sendTransactions({
             transactions: tx,
@@ -203,13 +203,13 @@ const NFTStaking = () => {
         ];
         const { argumentsString } = new ArgSerializer().valuesToString(args);
         const data = `ESDTNFTTransfer@${argumentsString}`;
-    
+
         const tx = {
             receiver: address,
             gasLimit: new GasLimit(10000000),
             data: data,
         };
-    
+
         await refreshAccount();
         sendTransactions({
             transactions: tx,
@@ -222,13 +222,13 @@ const NFTStaking = () => {
         ];
         const { argumentsString } = new ArgSerializer().valuesToString(args);
         const data = `unstake@${argumentsString}`;
-    
+
         const tx = {
             receiver: NFT_STAKING_CONTRACT_ADDRESS,
             gasLimit: new GasLimit(10000000),
             data: data,
         };
-    
+
         await refreshAccount();
         sendTransactions({
             transactions: tx,
@@ -237,7 +237,33 @@ const NFTStaking = () => {
 
     return (
         <div className="home-container mb-5" style={{ fontFamily: 'Segoe UI', color: '#D9D9D9' }}>
-            <Row className="d-flex justify-content-center align-items-center text-center">
+            <Row className="d-flex align-items-center text-center">
+                <Col md='5' className='d-flex justify-content-center'>
+                    <div className="state-box">
+                        <span>My Staked NFTs</span>
+                        <span>{stakeAccount ? stakeAccount.nfts.length : '-'}</span>
+                    </div>
+                    <div className="state-box ml-5">
+                        <span>Total Reward</span>
+                        <span>{stakeAccount ? stakeAccount.total_reward_amount : '-'} LKMEX</span>
+                    </div>
+                </Col>
+                <Col md='2'>
+                    <img src={NFTPng} alt="NFT Staking"  className="NFT-staking-logo" width={"100%"} />
+                </Col>
+                <Col md='5' className='d-flex justify-content-center'>
+                    <div className="state-box">
+                        <span>Total Staked NFTs</span>
+                        <span>{stakeSetting ? stakeSetting.total_staked_amount : '-'}</span>
+                    </div>
+                    <div className="state-box ml-5">
+                        <span>Number of Stakers</span>
+                        <span>{stakeSetting ? stakeSetting.number_of_stakers : '-'}</span>
+                    </div>
+                </Col>
+            </Row>
+
+            {/* <Row className="d-flex justify-content-center align-items-center text-center">
                 <div className='d-flex justify-content-center align-items-center text-center'>
                     <div className="state-box">
                         <span>My Staked NFTs</span>
@@ -261,7 +287,7 @@ const NFTStaking = () => {
                         <span>{stakeSetting ? stakeSetting.number_of_stakers : '-'}</span>
                     </div>
                 </div>
-            </Row>
+            </Row> */}
 
             <div className='mt-4 d-flex justify-content-center flex-column align-items-center text-center'>
                 <p style={{ fontSize: '16px', fontWeight: '500' }}>$BTX Staking</p>

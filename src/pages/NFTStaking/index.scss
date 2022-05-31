@@ -5,6 +5,7 @@
     border-radius: 15px;
     display: flex;
     flex-direction: column;
+    width: 180px;
 }
 
 .staking-description {
@@ -54,5 +55,13 @@
 
     &:hover {
         color: #05ab76;
+    }
+}
+
+.NFT-staking-logo {
+    width: 100%;
+
+    @media (max-width:768px) {
+        width: 60%;
     }
 }
