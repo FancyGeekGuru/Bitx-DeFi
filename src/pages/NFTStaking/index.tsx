@@ -291,8 +291,8 @@ const NFTStaking = () => {
                 </div>
             </Row> */}
 
-            <div className='mt-4 d-flex justify-content-center flex-column align-items-center text-center'>
-                <p style={{ fontSize: '16px', fontWeight: '500' }}>$BTX Staking</p>
+            <div className='mt-5 d-flex justify-content-center flex-column align-items-center text-center'>
+                {/* <p style={{ fontSize: '16px', fontWeight: '500' }}>$BTX Staking</p> */}
                 <div className='staking-description'>
                     <span>{"BitX NFT platform allows holders to stake their NFT's to gain rewards through our NFT staking pools. BitX NFT platform will be adding a variety of NFT projects that will have their own staking pools giving their holders a place to stake and gain rewards making our platform available to the Elrond Network and it's upcoming NFT projects"}</span>
                 </div>
