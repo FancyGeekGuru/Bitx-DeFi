@@ -1,5 +1,6 @@
 import React from 'react';
 import { Row, Col } from 'react-bootstrap';
+import { Table, Thead, Tbody, Tr, Th, Td } from 'react-super-responsive-table';
 
 import {
     refreshAccount,
@@ -54,6 +55,7 @@ function getUrlOfNft(collection: string) {
 }
 
 const NFTStaking = () => {
+    const total_minted_nft = 100;
     const { account, address } = useGetAccountInfo();
     const { network } = useGetNetworkConfig();
     const { hasPendingTransactions } = useGetPendingTransactions();
@@ -249,7 +251,7 @@ const NFTStaking = () => {
                     </div>
                 </Col>
                 <Col md='2'>
-                    <img src={NFTPng} alt="NFT Staking"  className="NFT-staking-logo" width={"100%"} />
+                    <img src={NFTPng} alt="NFT Staking" className="NFT-staking-logo" width={"100%"} />
                 </Col>
                 <Col md='5' className='d-flex justify-content-center'>
                     <div className="state-box">
@@ -293,6 +295,44 @@ const NFTStaking = () => {
                 <p style={{ fontSize: '16px', fontWeight: '500' }}>$BTX Staking</p>
                 <div className='staking-description'>
                     <span>{"BitX NFT platform allows holders to stake their NFT's to gain rewards through our NFT staking pools. BitX NFT platform will be adding a variety of NFT projects that will have their own staking pools giving their holders a place to stake and gain rewards making our platform available to the Elrond Network and it's upcoming NFT projects"}</span>
+                </div>
+            </div>
+
+            <div className='d-flex justify-content-center mt-5'>
+                <div className='farms-info-card NFT-collection-table' style={{ width: '800px' }}>
+                    <Table className="text-center" style={{ color: "#ACACAC" }}>
+                        <Thead>
+                            <Tr>
+                                <Th> NFT Collection </Th>
+                                <Th> Rewards Per Day </Th>
+                                <Th> Staked </Th>
+                                <Th> Percentage </Th>
+                            </Tr>
+                        </Thead>
+                        <Tbody>
+                            <Tr>
+                                <Td>
+                                    <div className='d-flex justify-content-center'>
+                                        <div>
+                                            <img src={GoldPng} width='45px' />
+                                        </div>
+                                        <div className='ml-3'>
+                                            BTX VIP Cards
+                                        </div>
+                                    </div>
+                                </Td>
+                                <Td>
+                                    - LKMEX
+                                </Td>
+                                <Td>
+                                    {stakeSetting ? stakeSetting.total_staked_amount : '-'} / {total_minted_nft}
+                                </Td>
+                                <Td>
+                                    {stakeSetting ? Math.floor(stakeSetting.total_staked_amount / total_minted_nft * 100) : '-'}%
+                                </Td>
+                            </Tr>
+                        </Tbody>
+                    </Table>
                 </div>
             </div>
 

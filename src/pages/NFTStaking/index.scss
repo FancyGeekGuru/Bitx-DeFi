@@ -65,3 +65,18 @@
         width: 60%;
     }
 }
+
+.NFT-collection-table {
+    .responsiveTable th {
+        padding: 15px;
+        font-weight: 400;
+    }
+
+    .responsiveTable tr {
+        border-bottom: 1px solid rgba(112, 112, 112, 0.7);
+
+        &:hover {
+            background: rgba(0, 0, 0, 0.2);
+        }
+    }
+}
