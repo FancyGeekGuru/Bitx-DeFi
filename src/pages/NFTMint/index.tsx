@@ -215,7 +215,7 @@ const NFTMint = () => {
                         {"Holders of a BTX NFT VIP PASS will have access to monthly reward lotteries which will be drawn for the varies different tiers with access to special staking pools and the ability to mint future NFT collections that will be released on our NFT minting platform."}
                     </p>
 
-                    <button
+                    {/* <button
                         className="mint-button"
                         style={{ marginTop: "30px", backgroundColor: '#FFCC0011', color: '#ffffff33' }}
                         disabled={true}
@@ -224,9 +224,9 @@ const NFTMint = () => {
                     </button>
                     <p style={{ marginTop: "30px", color: "#FF0000" }}>
                         Minting is finished.
-                    </p>
+                    </p> */}
 
-                    {/* <button
+                    <button
                         className="mint-button"
                         style={{ marginTop: "30px" }}
                         onClick={mintNft}
@@ -235,7 +235,7 @@ const NFTMint = () => {
                     </button>
                     <p style={{ marginTop: "30px", color: "#FEE277" }}>
                         {"You selected " + NFT_CARDS[mintCardType].name + " vip card and need to pay " + (collections.length ? collections[mintCardType].collection_price : '-') + " EGLD."}
-                    </p> */}
+                    </p>
                 </Col>
 
                 <Col md="12" lg="6">
