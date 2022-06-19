@@ -141,14 +141,14 @@ const Farms = () => {
                         <Col sm='6'>
                             <div className='d-flex flex-column'>
                                 <span style={{ fontSize: '15px' }}> Total Value Locked on Farms </span>
-                                <span style={{ fontSize: '20px', color: '#FEE277' }}> $ 693,805,768 </span>
+                                <span style={{ fontSize: '20px', color: '#FEE277' }}> $ 0 </span>
                             </div>
                         </Col>
                         <Col sm='6'>
                             <div className='d-flex flex-column' style={{ fontSize: '14px', gap: '6px' }}>
                                 <span> 1 BTX = <span style={{ color: '#FEE277' }}>$ 0.1234567</span></span>
-                                <span> Market Cap: <span style={{ color: '#FEE277' }}> $ 557,824,072</span></span>
-                                <span> Est. Weekly Rewards: <span style={{ color: '#FEE277' }}>$ 10,912,129 </span></span>
+                                <span> Market Cap: <span style={{ color: '#FEE277' }}> $ 0</span></span>
+                                <span> Est. Weekly Rewards: <span style={{ color: '#FEE277' }}>$ 0 </span></span>
                             </div>
                         </Col>
                     </Row>

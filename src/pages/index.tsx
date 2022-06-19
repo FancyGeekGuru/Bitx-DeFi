@@ -59,14 +59,14 @@ const BTXFinanceHome = () => {
                                 </div>
                             </Link>
                         </Col>
-                        {/* <Col xs="6" sm="3">
+                        <Col xs="6" sm="3">
                             <Link to={routeNames.farms}>
                                 <div className="BTX-home-but">
                                     <img src={FarmImg} />
                                     <p>FARMS</p>
                                 </div>
                             </Link>
-                        </Col> */}
+                        </Col>
                     </Row>
                 </div>
             </div>
