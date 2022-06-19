@@ -404,7 +404,7 @@ const Farms = () => {
                     <label htmlFor='lockRewards' style={{ cursor: 'pointer' }}>
                         <div className='d-flex align-items-center'>
                             <AiFillLock className='mr-1' />
-                            <span>Lock rewards for: <span style={{ color: '#00C4A7' }}>78% LKMEX</span> vs <span style={{ color: '#FEE277' }}>21% BTX</span></span>
+                            <span>Lock rewards for: <span style={{ color: '#00C4A7' }}>1000% LKMEX</span>{/**  vs <span style={{ color: '#FEE277' }}>21% BTX</span>*/}</span>
                         </div>
                     </label>
                 </div>
