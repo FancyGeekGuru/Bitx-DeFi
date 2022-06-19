@@ -56,7 +56,7 @@ const BTXFinanceHome = () => {
                             <Link to={routeNames.farms}>
                                 <div className="BTX-home-but">
                                     <img src={FarmImg} />
-                                    <p>FARMS</p>
+                                    <p>LP FARMS</p>
                                 </div>
                             </Link>
                         </Col>

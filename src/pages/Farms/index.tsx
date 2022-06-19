@@ -7,6 +7,7 @@ import { AiFillLock, AiOutlineInfoCircle } from "react-icons/ai";
 import Modal from 'react-modal';
 import BTXLogo from 'assets/img/token logos/BTX.png';
 import EGLDLogo from 'assets/img/token logos/EGLD.png';
+import LPFarmLogo from 'assets/img/LP Farm.png';
 import './index.scss';
 
 const AirbnbSlider = styled(Slider)(({ theme }) => ({
@@ -87,6 +88,7 @@ const Farms = () => {
     const BTXTotalBalance = 3000; // Current Balance of BTX
 
     /** =============================== staking Farm modal (Stake BTX / LKMEX) ================================== */
+    /*
     const [showStakingFarmModal, setShowStakingFarmModal] = useState(false);
     const [stakingFarmStakeAmount, setStakingFarmStakeAmount] = useState<number | undefined>();
     const [stakingFarmRelockState, setStakingFarmRelockState] = useState(false);
@@ -102,6 +104,7 @@ const Farms = () => {
         setShowStakingFarmModal(false);
     };
 
+    */
     /** =============================== LP Farm modal (Stake BTX - EGLD) ================================== */
     const [showLPFarmModal, setShowLPFarmModal] = useState(false);
     const [LPFarmStakeAmount, setLPFarmStakeAmount] = useState<number | undefined>();
@@ -119,22 +122,30 @@ const Farms = () => {
     };
 
 
+
     /** ============================= harvest all ============================================================ */
+    /*
     const handleStakingFarmHarvestAll = () => {
         console.log("staking farm harvest all");
     };
-
+    */
     const handleLPFarmHarvestAll = () => {
         console.log("LP Farm harvest all");
     };
 
     return (
-        <div className="home-container mb-5" style={{ fontFamily: 'Segoe UI', color: 'white' }}>
-            <div className='text-center d-flex flex-column'>
-                <span style={{ fontFamily: 'Segoe UI', fontWeight: '600', fontSize: '30px' }}>FARMS 🚜</span>
-                <span style={{ color: '#707070' }}>{"Lorem ipsum dolor sit amet, consectetur adipiscing elit."}</span>
+        <div className="home-container mb-5" style={{ fontFamily: 'Segoe UI', color: 'white', marginTop: '28px' }}>
+            <div className='d-flex justify-content-center'>
+                <div style={{ width: '180px' }}>
+                    <img src={LPFarmLogo} width={'100%'} />
+                </div>
             </div>
-
+            <div className='text-center d-flex flex-column mt-3'>
+                <span style={{ fontFamily: 'Segoe UI', fontWeight: '600', fontSize: '30px' }}>FARMS</span>
+                <div className='d-flex justify-content-center mt-3'>
+                    <span style={{ color: '#707070', width: '1000px' }}>{"LP farms allow for BTX holders to stake their LP tokens to generate rewards. BTX holders can create a LP pair through Maiar Exchange by adding liquidity, this liquidity token is created by pairing EGLD with BTX once this is done holders can then stake that LP token into the LP farms"}</span>
+                </div>
+            </div>
             <div className='d-flex align-items-center justify-content-center' style={{ marginTop: '30px' }}>
                 <div className='farms-info-card'>
                     <Row className='d-flex align-items-center'>
@@ -155,6 +166,7 @@ const Farms = () => {
                 </div>
             </div>
 
+            {/** 
             <p style={{ fontSize: '18px', color: '#B5B5B5', marginTop: '30px' }}>Staking Farms</p>
 
             <div className='farm-card'>
@@ -201,7 +213,7 @@ const Farms = () => {
                     </Col>
                 </Row>
             </div>
-
+*/}
             <p style={{ fontSize: '18px', color: '#B5B5B5', marginTop: '30px' }}>LP Farms</p>
 
             <div className='farm-card'>
@@ -220,7 +232,7 @@ const Farms = () => {
 
                             <div className='d-flex flex-column' style={{ marginLeft: '30px', gap: '5px' }}>
                                 <span style={{ fontWeight: '600', fontSize: '16px' }}> BTX - EGLD </span>
-                                <span> $ 381,826,657 </span>
+                                <span> $ 0 </span>
                             </div>
                         </div>
                     </Col>
@@ -228,9 +240,12 @@ const Farms = () => {
                         <div className='d-flex flex-column' style={{ gap: '5px' }}>
                             <span style={{ fontSize: '14px', color: '#B5B5B5' }}> APR </span>
                             <div className='d-flex align-items-center'>
-                                <span> 21% /</span>
+                                <span> 1000%</span>
+                                {/**
+                                <span> / </span>
                                 <AiFillLock className='ml-2 mr-1' />
-                                <span> 78%</span>
+                                <span> 100%</span>
+                                 */}
                             </div>
                         </div>
                     </Col>
@@ -255,6 +270,7 @@ const Farms = () => {
                 </Row>
             </div>
 
+            {/**
             <Modal
                 isOpen={showStakingFarmModal}
                 onRequestClose={() => {
@@ -326,7 +342,7 @@ const Farms = () => {
                     <button className='ml-3 stake-modal-ok-but' onClick={handleStakingFarmStakeClicked}>Stake</button>
                 </div>
             </Modal>
-
+ */}
             <Modal
                 isOpen={showLPFarmModal}
                 onRequestClose={() => {
@@ -388,7 +404,7 @@ const Farms = () => {
                     <label htmlFor='lockRewards' style={{ cursor: 'pointer' }}>
                         <div className='d-flex align-items-center'>
                             <AiFillLock className='mr-1' />
-                            <span>Lock rewards for: <span style={{ color: '#00C4A7' }}>78% LKMEX</span> vs <span style={{ color: '#FEE277' }}>21% BTX</span></span>
+                            <span>Lock rewards for: <span style={{ color: '#00C4A7' }}>1000% LKMEX</span>{/**  vs <span style={{ color: '#FEE277' }}>21% BTX</span>*/}</span>
                         </div>
                     </label>
                 </div>
