@@ -5,7 +5,6 @@ import BTXFinanceHome from './pages';
 import NFTStaking from './pages/NFTStaking';
 import NFTMint from './pages/NFTMint';
 import PreSale from './pages/Presale';
-import Convert from './pages/Convert';
 import StakingHome from './pages/Staking';
 import BitXStaking from './pages/Staking/BitXStaking';
 import CpaStaking from './pages/Staking/CpaStaking';
@@ -33,8 +32,7 @@ export const routeNames = {
   cpastaking: '/cpa-pool',
   lpadstaking: '/lpad-pool',
 
-  // presale: '/presale',
-  convert: '/convert',
+  presale: '/presale',
   nftmint: '/nft-mint',
   nftstaking: '/nft-staking',
 
@@ -49,17 +47,6 @@ const routes: Array<any> = [
     path: routeNames.staking,
     title: 'Staking',
     component: StakingHome
-  },
-
-  // {
-  //   path: routeNames.presale,
-  //   title: 'PreSale',
-  //   component: PreSale
-  // },
-  {
-    path: routeNames.convert,
-    title: 'Convert',
-    component: Convert
   },
 
   {
@@ -139,6 +126,12 @@ const routes: Array<any> = [
     path: routeNames.farms,
     title: 'Farms',
     component: Farms
+  },
+
+  {
+    path: routeNames.presale,
+    title: 'PreSale',
+    component: PreSale
   },
 ];
 

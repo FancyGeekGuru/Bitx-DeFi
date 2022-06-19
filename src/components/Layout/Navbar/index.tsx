@@ -19,7 +19,7 @@ const Navbar = () => {
   const isLoggedIn = Boolean(address);
 
   return (
-    <BsNavbar className='px-4 py-3' expand='md' collapseOnSelect style={{ background: "#141414", borderBottom: "1px solid #707070" }}>
+    <BsNavbar className='px-4 py-3' expand='lg' collapseOnSelect style={{ background: "#141414", borderBottom: "1px solid #707070" }}>
       <div className='container-fluid'>
         <Link
           className='d-flex align-items-center navbar-brand mr-0 c-logo-container'
@@ -62,9 +62,6 @@ const Navbar = () => {
               </NavDropdown.Item>
             </NavDropdown>
 
-            {/* <Link to={routeNames.presale} className='custom-navbar-button custom-navbar-normal-button'>
-              Presale
-            </Link> */}
             {/* <Link to={routeNames.convert} className='custom-navbar-button custom-navbar-normal-button'>
               Convert
             </Link> */}
@@ -77,9 +74,13 @@ const Navbar = () => {
             <Link to={routeNames.bitlock} className='custom-navbar-button custom-navbar-normal-button'>
               Bitlock
             </Link>
-            {/* <Link to={routeNames.farms} className='custom-navbar-button custom-navbar-normal-button'>
+            <Link to={routeNames.farms} className='custom-navbar-button custom-navbar-normal-button'>
               Farms
-            </Link> */}
+            </Link>
+
+            <Link to={routeNames.presale} className='custom-navbar-button custom-navbar-normal-button'>
+              Presale
+            </Link>
 
             {isLoggedIn ? (
               <NavItem className='custom-navbar-button auth-button' onClick={handleLogout}>

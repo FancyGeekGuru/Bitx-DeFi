@@ -27,14 +27,7 @@ const BTXFinanceHome = () => {
                                 </div>
                             </Link>
                         </Col>
-                        {/* <Col xs="6" sm="3">
-                            <Link to={routeNames.presale}>
-                                <div className="BTX-home-but">
-                                    <img src={PresaleImg} />
-                                    <p>PRESALE</p>
-                                </div>
-                            </Link>
-                        </Col> */}
+                        
                         <Col xs="6" sm="3">
                             <Link to={routeNames.nftmint}>
                                 <div className="BTX-home-but">
@@ -64,6 +57,15 @@ const BTXFinanceHome = () => {
                                 <div className="BTX-home-but">
                                     <img src={FarmImg} />
                                     <p>FARMS</p>
+                                </div>
+                            </Link>
+                        </Col>
+
+                        <Col xs="6" sm="3">
+                            <Link to={routeNames.presale}>
+                                <div className="BTX-home-but">
+                                    <img src={PresaleImg} />
+                                    <p>PRESALE</p>
                                 </div>
                             </Link>
                         </Col>
