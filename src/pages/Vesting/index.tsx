@@ -31,8 +31,7 @@ import Symbol1 from 'assets/img/vesting/Symbol for Locked Token Value.png';
 import Symbol2 from 'assets/img/vesting/Symbol for Locked Tokens.png';
 import Symbol3 from 'assets/img/vesting/Symbol for Lockers.png';
 import { routeNames } from 'routes';
-import * as data from './data';
-import { TOKENS } from 'data';
+import { TOKENS, vestingListHeader } from 'data';
 
 import {
     VESTING_CONTRACT_ADDRESS,
@@ -230,7 +229,7 @@ const BitLock = () => {
     };
 
     /** filter vesting list (should filter by search text)*/
-    const [vestingList, setVestingList] = useState(data.vestingList);
+    const [vestingList, setVestingList] = useState([]);
     const [searchText, setSearchText] = useState("");
     useEffect(() => {
         filterVestingList();
@@ -343,7 +342,7 @@ const BitLock = () => {
                     <Thead>
                         <Tr>
                             {
-                                data.vestingListHeader.map((row, index) => {
+                                vestingListHeader.map((row, index) => {
                                     return (
                                         <Th key={index}>{row}</Th>
                                     );

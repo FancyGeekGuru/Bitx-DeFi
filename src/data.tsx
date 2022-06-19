@@ -1,3 +1,5 @@
+import StepxLogo from 'assets/img/token logos/STEPX.png';
+
 // mainnet
 export const TOKENS = {
     "USDC-c76f1f": {
@@ -87,7 +89,25 @@ export const TOKENS = {
         logo: "https://media.elrond.com/tokens/asset/MARE-63e515/logo.svg",
         unit_price_in_usd: 0.000063, // ?
     },
+
+    "STEPX-23bbca": {
+        identifier: "STEPX-23bbca",
+        ticker: "STEPX",
+        decimals: 18,
+        logo: StepxLogo,
+        unit_price_in_usd: 0, // ?
+    },
 };
+
+export const vestingListHeader = [
+    // "Name",
+    "Token Identifier",
+    "Token Amount",
+    "Token Value",
+    "Total Value",
+    "Next Release",
+    "View",
+];
 
 // // devnet
 // export const TOKENS = {

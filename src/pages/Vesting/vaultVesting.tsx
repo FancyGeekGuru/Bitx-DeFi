@@ -31,7 +31,6 @@ import {
     U32Value,
 } from '@elrondnetwork/erdjs';
 
-import * as data from './data';
 import { TOKENS } from 'data';
 
 import {

@@ -45,7 +45,6 @@ import Modal from 'react-modal';
 import { Table, Thead, Tbody, Tr, Th, Td } from 'react-super-responsive-table';
 import finalLockLogo from 'assets/img/vesting/finallock.svg';
 import vestinglogo from 'assets/img/vesting/vesting logo.svg';
-import * as data from './data';
 import { Divider } from '@mui/material';
 import AlertModal from 'components/AlertModal';
 import { TOKENS } from 'data';
@@ -269,7 +268,6 @@ const CreateVesting = () => {
 
     const navigate = useNavigate();
 
-    const paymentTokens = data.tokens;
     const [activeStep, setActiveStep] = useState<number>(0);
     const handleChangeStep = (stepNum) => {
         if (!address || !lockSetting) return;
