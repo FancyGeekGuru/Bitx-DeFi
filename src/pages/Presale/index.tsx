@@ -115,7 +115,7 @@ const Presale = () => {
 
         state,
       };
-      console.log('viewPresale', result);
+      // console.log('viewPresale', result);
       setPresale(result);
     })();
   }, [contractInteractor, hasPendingTransactions]);
@@ -137,7 +137,7 @@ const Presale = () => {
         is_whitelisted,
       };
       
-      console.log('viewAccount', result);
+      // console.log('viewAccount', result);
       setPresaleAccount(result);
     })();
   }, [contractInteractor, account.address]);
@@ -244,8 +244,8 @@ const Presale = () => {
                   </div>
                 </div>
 
-                <div className='custom-buy-card-info color-white'>Minimum Buy Amount:&nbsp;&nbsp;<b>{presale?.min_buy_limit} EGLD</b></div>
-                <div className='custom-buy-card-info color-white'>Maximum Buy Amount:&nbsp;&nbsp;<b>{'No Limit'}</b></div>
+                <div className='custom-buy-card-info color-white'>Minimum Buy Amount:&nbsp;&nbsp;{presale?.min_buy_limit} EGLD</div>
+                <div className='custom-buy-card-info color-white'>Maximum Buy Amount:&nbsp;&nbsp;{'No Limit'}</div>
 
                 <img className="logo-back-elrond" src={ElrondLogo} />
                 <img className="logo-back-bitx" src={BitXLogo} />
