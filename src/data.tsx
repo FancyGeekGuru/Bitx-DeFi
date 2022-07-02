@@ -1,4 +1,5 @@
 import StepxLogo from 'assets/img/token logos/STEPX.png';
+import LpadLogo from 'assets/img/token logos/LPAD.png';
 
 // mainnet
 export const TOKENS = {
@@ -95,6 +96,13 @@ export const TOKENS = {
         ticker: "STEPX",
         decimals: 18,
         logo: StepxLogo,
+        unit_price_in_usd: 0, // ?
+    },
+    "LPAD-84628f": {
+        identifier: "LPAD-84628f",
+        ticker: "LPAD",
+        decimals: 18,
+        logo: LpadLogo,
         unit_price_in_usd: 0, // ?
     },
 };
