@@ -12,10 +12,13 @@ import DiceStaking from './pages/Staking/DiceStaking';
 import HetoStaking from './pages/Staking/HetoStaking';
 import LpadStaking from './pages/Staking/LpadStaking';
 import MareStaking from './pages/Staking/MareStaking';
-
 import BitLock from './pages/Vesting';
 import CreateVesting from './pages/Vesting/createVesting';
 import Farms from './pages/Farms';
+
+import IDOLaunchpad from 'pages/IDO';
+import IDODetail from 'pages/IDO/IDODetail';
+import createIDO from 'pages/IDO/createIDO';
 
 export const routeNames = {
   home: '/',
@@ -39,7 +42,11 @@ export const routeNames = {
   bitlock: '/bitlock',
   createvesting: '/bitlock/create-vesting',
   vaultvesting: '/bitlock/vault-vesting/*',
-  farms: '/farms'
+  farms: '/farms',
+
+  idolaunchpad: '/ido-launchpad',
+  idodetail: '/ido-detail/*',
+  createido: '/create-IDO'
 };
 
 const routes: Array<any> = [
@@ -132,6 +139,24 @@ const routes: Array<any> = [
     path: routeNames.presale,
     title: 'PreSale',
     component: PreSale
+  },
+
+  {
+    path: routeNames.idolaunchpad,
+    title: 'IDOLaunchpad',
+    component: IDOLaunchpad
+  },
+
+  {
+    path: routeNames.idodetail,
+    title: 'IDODetail',
+    component: IDODetail
+  },
+
+  {
+    path: routeNames.createido,
+    title: 'CreateIDO',
+    component: createIDO
   },
 ];
 

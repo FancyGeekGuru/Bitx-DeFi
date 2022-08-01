@@ -7,8 +7,8 @@ import {
 
 function padTo2Digits(num: number) {
     return num.toString().padStart(2, '0');
-  }
-  
+}
+
 function formatDate(date: Date) {
     return [
         date.toLocaleString('default', { month: 'long' }),
@@ -70,7 +70,7 @@ export const convertAPR2APY = (apr: number, periodInDays = 1) => {
 
 export const convertWeiToEsdt = (v: any, decimals = 18, precision = 4) => {
     // conversion for BigNumber operation
-    if (typeof(v) != typeof(BigNumber)) v = new BigNumber(v);
+    if (typeof (v) != typeof (BigNumber)) v = new BigNumber(v);
 
     const number = v.dividedBy(new BigNumber(Math.pow(10, decimals))).toNumber();
     const factor = Math.pow(10, precision);
@@ -92,3 +92,10 @@ export const precisionRound = (number: number, precision = 4) => {
     const factor = Math.pow(10, precision);
     return Math.round(number * factor) / factor;
 };
+
+export function numberWithCommas(x: number) {
+    if (x === undefined) {
+        return "";
+    }
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}

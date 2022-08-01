@@ -4,12 +4,12 @@ import './index.scss';
 import { Link } from 'react-router-dom';
 import BitlockImg from 'assets/img/bitlock.png';
 import BTXFinanceHomeLogo from 'assets/img/BTXFinance Logo.png';
+import IDOImg from 'assets/img/IDO.png';
+import FarmImg from 'assets/img/LP Farm.png';
 import NFTStakingImg from 'assets/img/NFT staking.png';
 import NFTImg from 'assets/img/NFT.png';
 import PresaleImg from 'assets/img/presale.png';
 import StakingImg from 'assets/img/staking.png';
-import FarmImg from 'assets/img/LP Farm.png';
-
 import { routeNames } from 'routes';
 
 const BTXFinanceHome = () => {
@@ -69,6 +69,16 @@ const BTXFinanceHome = () => {
                                 </div>
                             </Link>
                         </Col>
+
+                        <Col xs="6" sm="3">
+                            <Link to={routeNames.idolaunchpad}>
+                                <div className="BTX-home-but">
+                                    <img src={IDOImg} />
+                                    <p>IDO Launchpad</p>
+                                </div>
+                            </Link>
+                        </Col>
+
                     </Row>
                 </div>
             </div>
