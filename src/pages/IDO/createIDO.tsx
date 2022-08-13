@@ -265,7 +265,7 @@ const createIDO = () => {
 												<span className='input-comment'>If I spend 1 EGLD how many tokens will I receive?</span>
 											</div>
 
-											<div className='d-flex flex-column mt-4'>
+											{/* <div className='d-flex flex-column mt-4'>
 												<div className="input-state ">Whitelist</div>
 												<FormControl>
 													<RadioGroup
@@ -296,7 +296,7 @@ const createIDO = () => {
 													</RadioGroup>
 												</FormControl>
 												<span className='input-comment' style={{ marginTop: '-8px' }}>You can enable/disable whitelist anytime</span>
-											</div>
+											</div> */}
 
 											<div className='mt-5'>
 												<Row>
