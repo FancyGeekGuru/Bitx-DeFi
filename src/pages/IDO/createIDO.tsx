@@ -24,6 +24,46 @@ import BTX_logo from 'assets/img/token logos/BTX.png';
 import congratulations_img from 'assets/img/ido/congratulations.png';
 import { routeNames } from 'routes';
 
+import {
+	refreshAccount,
+	sendTransactions,
+	useGetAccountInfo,
+	useGetNetworkConfig,
+	useGetPendingTransactions,
+} from '@elrondnetwork/dapp-core';
+import {
+	Address,
+	AddressValue,
+	AbiRegistry,
+	SmartContractAbi,
+	SmartContract,
+	ProxyProvider,
+	TypedValue,
+	BytesValue,
+	Egld,
+	BigUIntValue,
+	ArgSerializer,
+	GasLimit,
+	DefaultSmartContractController,
+	U64Value,
+} from '@elrondnetwork/erdjs';
+import axios from 'axios';
+import {
+	IDO_CONTRACT_ADDRESS,
+	IDO_CONTRACT_ABI_URL,
+	IDO_CONTRACT_NAME,
+} from 'config';
+import {
+	SECOND_IN_MILLI,
+	TIMEOUT,
+	convertWeiToEsdt,
+	convertTimestampToDateTime,
+	convertTimestampToDays,
+	convertAPR2APY,
+	IContractInteractor,
+	getBalanceOfToken,
+} from 'utils';
+
 const ColorlibConnector = styled(StepConnector)(({ theme }) => ({
 	[`&.${stepConnectorClasses.alternativeLabel}`]: {
 		top: 22,
@@ -100,6 +140,75 @@ function ColorlibStepIcon(props: StepIconProps) {
 }
 
 const createIDO = () => {
+	const { account, address } = useGetAccountInfo();
+	const { network } = useGetNetworkConfig();
+	const { hasPendingTransactions } = useGetPendingTransactions();
+	const provider = new ProxyProvider(network.apiAddress, { timeout: TIMEOUT });
+
+	const [idoContractInteractor, setIdoContractInteractor] = React.useState<IContractInteractor | undefined>();
+	const [idoSetting, setIdoSetting] = React.useState(
+		{
+			fee_percent_as_fund_token1: 0,
+			fee_percent_as_presale_token1: 0,
+			fee_percent_as_fund_token2: 0,
+			fee_percent_as_presale_token2: 0,
+			min_percent_soft_cap: 0,
+			maiar_router_address: '',
+			min_percent_maiar_exchange_liquidity: 0,
+			max_percent_maiar_exchange_liquidity: 0,
+		}
+	);
+
+	// load smart contract abi and parse it to SmartContract object for tx
+	React.useEffect(() => {
+		(async () => {
+			const registry = await AbiRegistry.load({ urls: [IDO_CONTRACT_ABI_URL] });
+			const abi = new SmartContractAbi(registry, [IDO_CONTRACT_NAME]);
+			const contract = new SmartContract({ address: new Address(IDO_CONTRACT_ADDRESS), abi: abi });
+			const controller = new DefaultSmartContractController(abi, provider);
+
+			setIdoContractInteractor({
+				contract,
+				controller,
+			});
+		})();
+	}, []); // [] makes useEffect run once
+
+	React.useEffect(() => {
+		(async () => {
+			if (!idoContractInteractor) return;
+
+			const interaction = idoContractInteractor.contract.methods.getIdoInfo();
+			const res = await idoContractInteractor.controller.query(interaction);
+
+			if (!res || !res.returnCode.isSuccess()) return;
+			const value = res.firstValue.valueOf();
+
+			const fee_percent_as_fund_token1 = value.fee_percent_as_fund_token1.toNumber() / 100;
+			const fee_percent_as_presale_token1 = value.fee_percent_as_presale_token1.toNumber() / 100;
+			const fee_percent_as_fund_token2 = value.fee_percent_as_fund_token2.toNumber() / 100;
+			const fee_percent_as_presale_token2 = value.fee_percent_as_presale_token2.toNumber() / 100;
+			const min_percent_soft_cap = value.min_percent_soft_cap.toNumber() / 100;
+			const maiar_router_address = value.maiar_router_address.toString();
+			const min_percent_maiar_exchange_liquidity = value.min_percent_maiar_exchange_liquidity.toNumber() / 100;
+			const max_percent_maiar_exchange_liquidity = value.max_percent_maiar_exchange_liquidity.toNumber() / 100;
+
+			const result = {
+				fee_percent_as_fund_token1,
+				fee_percent_as_presale_token1,
+				fee_percent_as_fund_token2,
+				fee_percent_as_presale_token2,
+				min_percent_soft_cap,
+				maiar_router_address,
+				min_percent_maiar_exchange_liquidity,
+				max_percent_maiar_exchange_liquidity,
+			};
+			console.log(result);
+
+			setIdoSetting(result);
+		})();
+	}, [idoContractInteractor]);
+
 	const steps = ['Verify Token', 'Add Launchpad Info', 'Add Additional Info', 'Finish and Review'];
 	const [activeStep, setActiveStep] = useState<number>(0);
 	const [idoCreated, setIdoCreated] = useState<boolean>(false);
@@ -109,8 +218,10 @@ const createIDO = () => {
 			stepN = 0;
 		}
 		if (stepN >= 4) {
-			setIdoCreated(true);
-			stepN = 4;
+			// setIdoCreated(true);
+			// stepN = 4;
+			stepN = 3;
+			// handle tx
 		}
 		setActiveStep(stepN);
 	};
@@ -171,7 +282,7 @@ const createIDO = () => {
 								{
 									activeStep == 0 && (
 										<>
-											<p className="step-title">Token Address *</p>
+											<p className="step-title">Token Identifier *</p>
 											<input className='ido-input' />
 
 											<p className="step-title mt-4">Currency </p>
@@ -193,7 +304,7 @@ const createIDO = () => {
 															},
 														}} />}
 														label="EGLD" />
-													<FormControlLabel
+													{/* <FormControlLabel
 														value="MEX"
 														control={<Radio sx={{
 															color: '#6A9B84',
@@ -219,7 +330,7 @@ const createIDO = () => {
 																color: '#6A9B84',
 															},
 														}} />}
-														label="USDC" />
+														label="USDC" /> */}
 												</RadioGroup>
 											</FormControl>
 
@@ -240,7 +351,7 @@ const createIDO = () => {
 																color: '#6A9B84',
 															},
 														}} />}
-														label="5% EGLD raised only" />
+														label={idoSetting?.fee_percent_as_fund_token1 + "% EGLD raised only"} />
 													<FormControlLabel
 														value="fee_type_1"
 														control={<Radio sx={{
@@ -249,7 +360,7 @@ const createIDO = () => {
 																color: '#6A9B84',
 															},
 														}} />}
-														label="2% EGLD raised + 2% token raised" />
+														label={idoSetting?.fee_percent_as_fund_token2 + "% EGLD raised + " + idoSetting?.fee_percent_as_presale_token2 + "% token raised"} />
 												</RadioGroup>
 											</FormControl>
 										</>
@@ -303,7 +414,7 @@ const createIDO = () => {
 													<Col sm={6}>
 														<div className="input-state ">SoftCap (EGLD) *</div>
 														<input className='ido-input mt-2 mb-1' />
-														<span className='input-comment'>{"SoftCap must be >= 50% of HardCap"}</span>
+														<span className='input-comment'>{"SoftCap must be >= " + idoSetting?.min_percent_soft_cap + "% of HardCap"}</span>
 													</Col>
 													<Col sm={6}>
 														<div className="input-state ">HardCap (EGLD) *</div>
@@ -318,12 +429,13 @@ const createIDO = () => {
 														<input className='ido-input mt-2 mb-1' />
 													</Col>
 													<Col sm={6}>
-														<div className="input-state ">Refund type</div>
-														<input className='ido-input mt-2 mb-1' />
+														{/* <div className="input-state ">Refund type</div> */}
+														<div className="input-state ">Token Amount</div>
+														<input className='ido-input mt-2 mb-1' disabled />
 													</Col>
 													<Col sm={6}>
 														<div className="input-state ">Router *</div>
-														<input className='ido-input mt-2 mb-1' />
+														<input className='ido-input mt-2 mb-1' disabled value={idoSetting?.maiar_router_address} />
 													</Col>
 													<Col sm={6}>
 														<div className="input-state ">{"Maiar Exchange liquidity (%) *"}</div>
@@ -338,7 +450,7 @@ const createIDO = () => {
 
 												<div className='d-flex flex-column mt-4' style={{ fontSize: '12px', color: "#6A9B84" }}>
 													<span>
-														{"Enter the percentage of raised funds that should be allocated to Liquidity on Maiar Exchange (Min 51%, Max 100%)"}
+														{"Enter the percentage of raised funds that should be allocated to Liquidity on Maiar Exchange (Min " + idoSetting?.min_percent_maiar_exchange_liquidity + "%, Max " + idoSetting?.max_percent_maiar_exchange_liquidity + "%)"}
 													</span>
 													<span>
 														{" If I spend 1 EGLD on Maiar Exchange how many tokens will I receive? Usually this amount is lower than presale rate to allow for a higher listing price on Maiar Exchange."}
@@ -360,7 +472,7 @@ const createIDO = () => {
 													</Col>
 												</Row>
 
-												<p className="step-title">Vesting Contributor *</p>
+												{/* <p className="step-title">Vesting Contributor *</p>
 
 												<Row className='mt-4'>
 													<Col sm={12}>
@@ -375,7 +487,7 @@ const createIDO = () => {
 														<div className="input-state ">Presale token release each cycle (percent) *</div>
 														<input className='ido-input mt-2 mb-1' />
 													</Col>
-												</Row>
+												</Row> */}
 
 												<div className='d-flex justify-content-center mt-5'>
 													<h5 style={{ color: '#2996B8' }}>
@@ -397,14 +509,14 @@ const createIDO = () => {
 													<div className="input-state ">Description</div>
 													<textarea className='ido-input' />
 												</Col>
-												<Col sm={6}>
+												{/* <Col sm={6}>
 													<div className="input-state ">Token For Presale *</div>
 													<input className='ido-input' />
 												</Col>
 												<Col sm={6}>
 													<div className="input-state ">Token For Liquidity *</div>
 													<input className='ido-input' />
-												</Col>
+												</Col> */}
 											</Row>
 
 											<p className="step-title mt-5">Social Links</p>

@@ -1,4 +1,4 @@
-export const ENVIRONMENT = 'mainnet';
+// export const ENVIRONMENT = 'mainnet';
 
 export const dAppName = 'BitX Platform';
 export const SOCIAL_WEBSITE_URL = 'https://bitxfinance.online/';
@@ -121,9 +121,13 @@ export const CONVERT_CONTRACT_ADDRESS = 'erd1qqqqqqqqqqqqqpgq3stq2jcmg5tevukenzs
 export const CONVERT_CONTRACT_ABI_URL = 'abi/btx-convert.abi.json';
 export const CONVERT_CONTRACT_NAME = 'BtxConvert';
 
+// IDO
+export const IDO_CONTRACT_ABI_URL = 'abi/bitx-ido.abi.json';
+export const IDO_CONTRACT_NAME = 'BitxIdo';
+export const IDO_CONTRACT_ADDRESS = 'erd1qqqqqqqqqqqqqpgqtsdu4etn78w95lmvmljva86kjm5x73uk5zvsgpffe8';
 
 // ///////////////////////////////////////////////////////////////////////////////////////////////////////////
-// export const ENVIRONMENT = 'devnet';
+export const ENVIRONMENT = 'devnet';
 
 // export const dAppName = 'BitX Platform';
 // export const SOCIAL_WEBSITE_URL = 'https://bitxfinance.online/';
