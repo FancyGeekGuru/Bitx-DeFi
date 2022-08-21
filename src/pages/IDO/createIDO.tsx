@@ -1,6 +1,6 @@
 /* eslint-disable import/order */
 /* eslint-disable react-hooks/rules-of-hooks */
-import React, { useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Row, Col } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 
@@ -11,6 +11,10 @@ import { StepIconProps } from '@mui/material/StepIcon';
 import StepLabel from '@mui/material/StepLabel';
 import Stepper from '@mui/material/Stepper';
 import { styled } from '@mui/material/styles';
+import TextField from '@mui/material/TextField';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { MobileDateTimePicker } from '@mui/x-date-pickers/MobileDateTimePicker';
 
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
@@ -63,6 +67,8 @@ import {
 	IContractInteractor,
 	getBalanceOfToken,
 } from 'utils';
+
+import { ICOState } from './data';
 
 const ColorlibConnector = styled(StepConnector)(({ theme }) => ({
 	[`&.${stepConnectorClasses.alternativeLabel}`]: {
@@ -217,10 +223,82 @@ const createIDO = () => {
 		if (stepN < 0) {
 			stepN = 0;
 		}
+		if (stepN === 3) {
+			const socials = [
+				{
+					name: "website",
+					link: inputWebsiteRef.current?.value
+				},
+				{
+					name: "telegram",
+					link: inputTelegramRef.current?.value
+				},
+				{
+					name: "discord",
+					link: inputDiscordRef.current?.value
+				},
+				{
+					name: "twitter",
+					link: inputTwitterRef.current?.value
+				},
+				{
+					name: "youtube",
+					link: inputYoutubeRef.current?.value
+				},
+				{
+					name: "linkedIn",
+					link: inputLinkedInRef.current?.value
+				},
+				{
+					name: "medium",
+					link: inputMediumRef.current?.value
+				},
+			];
+			setSocialLinks(socials);
+		}
 		if (stepN >= 4) {
-			// setIdoCreated(true);
+
+			const ido_pool = {
+				pool_name: "bitxtoken",
+				name: "BitX Token",
+				description: description,
+				ico_status: ICOState.Upcoming,
+				social_links: socialLinks,
+
+				token: "BTX",
+				token_identifier: token_identifier,
+				token_decimal: 18,
+				total_supply: 35000000,
+				tokens_for_presale: 35000,
+				tokens_for_liquidity: 350000,
+
+				currency: currencyType,
+				ico_price: presale_rate,
+
+				soft_cap: soft_cap,
+				hard_cap: hard_cap,
+				liquidity_percent: maiar_exchange_liquidity,
+				lockup_time: liquidity_lockup_days,
+				listing_on: "Maiar Listing",
+				listing_price: maiar_listing_rate,
+				minimum_buy: min_buy,
+				maximum_buy: max_buy,
+
+				ico_start: start_time.toString(),
+				ico_end: end_time.toString(),
+				registration_start: "07/04/2022 11:00 UTC",
+				registration_end: "07/04/2022 11:00 UTC",
+
+				first_release_for_presale_percent: 65,
+				vesting_period_each_cycle: 300,
+				presale_token_release_each_cycle: 50
+			};
+
+			// should add token info
+			console.log(ido_pool);
+			setIdoCreated(true);
 			// stepN = 4;
-			stepN = 3;
+			stepN = 0;
 			// handle tx
 		}
 		setActiveStep(stepN);
@@ -240,11 +318,37 @@ const createIDO = () => {
 
 
 	/** step 2 */
+
+	/*
 	const [isWhitelisted, setWhitelist] = useState<boolean>(true);
 	const handleWhitelistChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		console.log(event.target.value);
 		setWhitelist(event.target.value === 'true');
 	};
+	*/
+	const [token_identifier, setTokenIdentifier] = useState<string | undefined>();
+
+	const [presale_rate, setPreSaleRate] = useState<number | undefined>();
+	const [soft_cap, setSoftCap] = useState<number | undefined>();
+	const [hard_cap, setHardCap] = useState<number | undefined>();
+	const [min_buy, setMinimumBuy] = useState<number | undefined>();
+	const [max_buy, setMaximumBuy] = useState<number | undefined>();
+	const [maiar_exchange_liquidity, setMaiarExchangeLiquidity] = useState<number | undefined>();
+	const [maiar_listing_rate, setMaiarListingRate] = useState<number | undefined>();
+	const [start_time, setStartTime] = useState<Date | null>(new Date());
+	const [end_time, setEndTime] = useState<Date | null>(new Date());
+	const [liquidity_lockup_days, setLiquidityLockupDays] = useState<number | undefined>();
+
+	const [description, setDescription] = useState<string>();
+	const [socialLinks, setSocialLinks] = useState<any>([]);
+
+	const inputWebsiteRef = useRef<HTMLInputElement>(null);
+	const inputTelegramRef = useRef<HTMLInputElement>(null);
+	const inputDiscordRef = useRef<HTMLInputElement>(null);
+	const inputTwitterRef = useRef<HTMLInputElement>(null);
+	const inputYoutubeRef = useRef<HTMLInputElement>(null);
+	const inputLinkedInRef = useRef<HTMLInputElement>(null);
+	const inputMediumRef = useRef<HTMLInputElement>(null);
 
 	return (
 		<>
@@ -283,7 +387,11 @@ const createIDO = () => {
 									activeStep == 0 && (
 										<>
 											<p className="step-title">Token Identifier *</p>
-											<input className='ido-input' />
+											<input
+												className='ido-input'
+												value={token_identifier}
+												onChange={(e) => setTokenIdentifier(e.target.value)}
+											/>
 
 											<p className="step-title mt-4">Currency </p>
 											<FormControl>
@@ -372,7 +480,12 @@ const createIDO = () => {
 										<>
 											<div>
 												<div className="input-state ">Presale Rate *</div>
-												<input className='ido-input mt-2 mb-1' />
+												<input
+													className='ido-input mt-2 mb-1'
+													type='number'
+													value={presale_rate}
+													onChange={(e) => setPreSaleRate(Number(e.target.value))}
+												/>
 												<span className='input-comment'>If I spend 1 EGLD how many tokens will I receive?</span>
 											</div>
 
@@ -413,20 +526,40 @@ const createIDO = () => {
 												<Row>
 													<Col sm={6}>
 														<div className="input-state ">SoftCap (EGLD) *</div>
-														<input className='ido-input mt-2 mb-1' />
+														<input
+															className='ido-input mt-2 mb-1'
+															type='number'
+															value={soft_cap}
+															onChange={(e) => setSoftCap(Number(e.target.value))}
+														/>
 														<span className='input-comment'>{"SoftCap must be >= " + idoSetting?.min_percent_soft_cap + "% of HardCap"}</span>
 													</Col>
 													<Col sm={6}>
 														<div className="input-state ">HardCap (EGLD) *</div>
-														<input className='ido-input mt-2 mb-1' />
+														<input
+															className='ido-input mt-2 mb-1'
+															type='number'
+															value={hard_cap}
+															onChange={(e) => setHardCap(Number(e.target.value))}
+														/>
 													</Col>
 													<Col sm={6}>
 														<div className="input-state ">Minimum Buy (EGLD) *</div>
-														<input className='ido-input mt-2 mb-1' />
+														<input
+															className='ido-input mt-2 mb-1'
+															type='number'
+															value={min_buy}
+															onChange={(e) => setMinimumBuy(Number(e.target.value))}
+														/>
 													</Col>
 													<Col sm={6}>
 														<div className="input-state ">Maximum Buy (EGLD) *</div>
-														<input className='ido-input mt-2 mb-1' />
+														<input
+															className='ido-input mt-2 mb-1'
+															type='number'
+															value={max_buy}
+															onChange={(e) => setMaximumBuy(Number(e.target.value))}
+														/>
 													</Col>
 													<Col sm={6}>
 														{/* <div className="input-state ">Refund type</div> */}
@@ -439,12 +572,22 @@ const createIDO = () => {
 													</Col>
 													<Col sm={6}>
 														<div className="input-state ">{"Maiar Exchange liquidity (%) *"}</div>
-														<input className='ido-input mt-2 mb-1' />
+														<input
+															className='ido-input mt-2 mb-1'
+															type='number'
+															value={maiar_exchange_liquidity}
+															onChange={(e) => setMaiarExchangeLiquidity(Number(e.target.value))}
+														/>
 													</Col>
 													<Col sm={6}>
 														<div className="input-state ">Maiar listing rate *</div>
-														<input className='ido-input mt-2 mb-1' />
-														<span className='input-comment'>{"1 EGLD = 400 BTX"}</span>
+														<input
+															className='ido-input mt-2 mb-1'
+															type='number'
+															value={maiar_listing_rate}
+															onChange={(e) => setMaiarListingRate(Number(e.target.value))}
+														/>
+														<span className='input-comment'>{`1 EGLD = ${maiar_listing_rate} ${token_identifier}`}</span>
 													</Col>
 												</Row>
 
@@ -458,17 +601,39 @@ const createIDO = () => {
 												</div>
 
 												<Row className='mt-4'>
-													<Col sm={6}>
+													<Col sm={3}>
 														<div className="input-state ">Start time (UTC) *</div>
-														<input className='ido-input mt-2 mb-1' />
+														<LocalizationProvider dateAdapter={AdapterDateFns}>
+															<MobileDateTimePicker
+																value={start_time}
+																onChange={(newValue) => {
+																	setStartTime(newValue);
+																}}
+																renderInput={(params) => <TextField {...params} />}
+																minDateTime={new Date()}
+															/>
+														</LocalizationProvider>
+													</Col>
+													<Col sm={3}>
+														<div className="input-state ">End time (UTC) *</div>
+														<LocalizationProvider dateAdapter={AdapterDateFns}>
+															<MobileDateTimePicker
+																value={end_time}
+																onChange={(newValue) => {
+																	setEndTime(newValue);
+																}}
+																renderInput={(params) => <TextField {...params} />}
+																minDateTime={new Date()}
+															/>
+														</LocalizationProvider>
 													</Col>
 													<Col sm={6}>
-														<div className="input-state ">End time (UTC) *</div>
-														<input className='ido-input mt-2 mb-1' />
-													</Col>
-													<Col sm={12}>
 														<div className="input-state ">Liquidity lockup (days) *</div>
-														<input className='ido-input mt-2 mb-1' />
+														<input
+															className='ido-input mt-2 mb-1'
+															value={liquidity_lockup_days}
+															onChange={(e) => setLiquidityLockupDays(Number(e.target.value))}
+														/>
 													</Col>
 												</Row>
 
@@ -507,7 +672,11 @@ const createIDO = () => {
 											<Row>
 												<Col sm={12}>
 													<div className="input-state ">Description</div>
-													<textarea className='ido-input' />
+													<textarea
+														className='ido-input'
+														value={description}
+														onChange={(e) => setDescription(e.target.value)}
+													/>
 												</Col>
 												{/* <Col sm={6}>
 													<div className="input-state ">Token For Presale *</div>
@@ -523,37 +692,37 @@ const createIDO = () => {
 											<div className='d-flex flex-column' style={{ rowGap: '10px' }}>
 												<div className='d-flex align-items-center justify-content-center'>
 													<div style={{ fontSize: '20px' }}> <ImEarth /> </div>
-													<input className='ido-input ml-2' />
+													<input className='ido-input ml-2' ref={inputWebsiteRef} />
 												</div>
 
 												<div className='d-flex'>
 													<div style={{ fontSize: '20px' }}> <SiTelegram /> </div>
-													<input className='ido-input ml-2' />
+													<input className='ido-input ml-2' ref={inputTelegramRef} />
 												</div>
 
 												<div className='d-flex'>
 													<div style={{ fontSize: '20px' }}> <SiDiscord /> </div>
-													<input className='ido-input ml-2' />
+													<input className='ido-input ml-2' ref={inputDiscordRef} />
 												</div>
 
 												<div className='d-flex'>
 													<div style={{ fontSize: '20px' }}> <SiTwitter /> </div>
-													<input className='ido-input ml-2' />
+													<input className='ido-input ml-2' ref={inputTwitterRef} />
 												</div>
 
 												<div className='d-flex'>
 													<div style={{ fontSize: '20px' }}> <SiYoutube /> </div>
-													<input className='ido-input ml-2' />
+													<input className='ido-input ml-2' ref={inputYoutubeRef} />
 												</div>
 
 												<div className='d-flex'>
 													<div style={{ fontSize: '20px' }}> <SiLinkedin /> </div>
-													<input className='ido-input ml-2' />
+													<input className='ido-input ml-2' ref={inputLinkedInRef} />
 												</div>
 
 												<div className='d-flex'>
 													<div style={{ fontSize: '20px' }}> <SiMedium /> </div>
-													<input className='ido-input ml-2' />
+													<input className='ido-input ml-2' ref={inputMediumRef} />
 												</div>
 											</div>
 										</>

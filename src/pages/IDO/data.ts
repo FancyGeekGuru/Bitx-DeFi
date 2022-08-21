@@ -42,7 +42,7 @@ export const advertising_data = [
     }
 ];
 
-enum ICOState {
+export enum ICOState {
     Upcoming = 0,
     Living = 1,
     Ended = 2
