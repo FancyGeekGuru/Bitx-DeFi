@@ -10,7 +10,7 @@
         "contractCrate": {
             "name": "bitx-ido",
             "version": "0.0.0",
-            "git_version": "0b5c4ba-modified"
+            "git_version": "8f14bf2-modified"
         },
         "framework": {
             "name": "elrond-wasm",
@@ -128,11 +128,11 @@
                     "type": "bytes"
                 },
                 {
-                    "name": "project_social_telegram",
+                    "name": "project_social_website",
                     "type": "bytes"
                 },
                 {
-                    "name": "project_social_ball",
+                    "name": "project_social_telegram",
                     "type": "bytes"
                 },
                 {
@@ -144,11 +144,15 @@
                     "type": "bytes"
                 },
                 {
-                    "name": "project_social_reddit",
+                    "name": "project_social_discord",
                     "type": "bytes"
                 },
                 {
                     "name": "project_social_linkedin",
+                    "type": "bytes"
+                },
+                {
+                    "name": "project_social_medium",
                     "type": "bytes"
                 }
             ],
@@ -715,7 +719,7 @@
             ]
         },
         {
-            "name": "getProjectSocialTelegram",
+            "name": "getProjectSocialWebsite",
             "mutability": "readonly",
             "inputs": [
                 {
@@ -730,7 +734,7 @@
             ]
         },
         {
-            "name": "getProjectSocialBall",
+            "name": "getProjectSocialTelegram",
             "mutability": "readonly",
             "inputs": [
                 {
@@ -775,7 +779,7 @@
             ]
         },
         {
-            "name": "getProjectSocialReddit",
+            "name": "getProjectSocialDiscord",
             "mutability": "readonly",
             "inputs": [
                 {
@@ -791,6 +795,21 @@
         },
         {
             "name": "getProjectSocialLinkedin",
+            "mutability": "readonly",
+            "inputs": [
+                {
+                    "name": "project_id",
+                    "type": "u32"
+                }
+            ],
+            "outputs": [
+                {
+                    "type": "bytes"
+                }
+            ]
+        },
+        {
+            "name": "getProjectSocialMedium",
             "mutability": "readonly",
             "inputs": [
                 {
@@ -969,7 +988,7 @@
                     "type": "bytes"
                 },
                 {
-                    "name": "project_social_ball",
+                    "name": "project_social_website",
                     "type": "bytes"
                 },
                 {
@@ -981,11 +1000,15 @@
                     "type": "bytes"
                 },
                 {
-                    "name": "project_social_reddit",
+                    "name": "project_social_discord",
                     "type": "bytes"
                 },
                 {
                     "name": "project_social_linkedin",
+                    "type": "bytes"
+                },
+                {
+                    "name": "project_social_medium",
                     "type": "bytes"
                 },
                 {

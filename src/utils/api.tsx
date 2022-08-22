@@ -82,3 +82,51 @@ export async function getBtxNfts(apiAddress, account, nft_collections) {
 
     return [];
 }
+
+export async function getEsdtTokenId(apiAddress, tokenId) {
+    try {
+        const res = await axios.get(`${apiAddress}/tokens/${tokenId}`);
+        // console.log('res', res);
+        if (res.status === 200) {
+            const result = {
+                status: true, 
+                data: res.data
+            };
+            return result;
+        } else {
+            const result = {
+                status: false, 
+                data: null
+            };
+            return result;
+        }
+    } catch(e) {
+        console.log('getEsdtTokenId error', e);
+        const result = {
+            status: false, 
+            data: null
+        };
+        return result;
+    }
+
+    return [];
+}
+
+export async function getPrice(apiAddress) {
+    try {
+        const res = await axios.get(`${apiAddress}/mex/tokens?from=0&size=10000`);
+        // console.log('res', res);
+        if (res.data?.length > 0) {
+            return res.data;
+        }
+    } catch(e) {
+        console.log('getEsdtTokenId error', e);
+        const result = {
+            status: false, 
+            data: null
+        };
+        return result;
+    }
+
+    return [];
+}

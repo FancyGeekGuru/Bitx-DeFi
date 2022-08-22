@@ -12,6 +12,47 @@ import IDOCard from 'components/Card/IDOCard';
 import { advertising_data } from './data';
 import "react-widgets/styles.css";
 
+import {
+    refreshAccount,
+    sendTransactions,
+    useGetAccountInfo,
+    useGetNetworkConfig,
+    useGetPendingTransactions,
+} from '@elrondnetwork/dapp-core';
+import {
+    Address,
+    AbiRegistry,
+    SmartContractAbi,
+    SmartContract,
+    DefaultSmartContractController,
+    Balance,
+    Interaction,
+    ProxyProvider,
+    GasLimit,
+    ContractFunction,
+    U32Value,
+    ArgSerializer,
+    OptionalValue,
+    TypedValue,
+    BytesValue,
+    BigUIntValue,
+    TransactionPayload,
+    AddressValue,
+    BooleanValue,
+} from '@elrondnetwork/erdjs';
+
+import {
+    IDO_CONTRACT_ABI_URL,
+    IDO_CONTRACT_NAME,
+    IDO_CONTRACT_ADDRESS,
+} from 'config';
+
+import {
+    TIMEOUT,
+    SECOND_IN_MILLI,
+    convertWeiToEsdt,
+} from 'utils';
+
 import BTX_logo from 'assets/img/token logos/BTX.png';
 import { ProgressBar } from 'react-bootstrap';
 
@@ -38,6 +79,11 @@ const table_headers = [
 ];
 
 const IDOLaunchpad = () => {
+    const { address } = useGetAccountInfo();
+    const { hasPendingTransactions } = useGetPendingTransactions();
+    const { network } = useGetNetworkConfig();
+    const isLoggedIn = Boolean(address);
+    const provider = new ProxyProvider(network.apiAddress, { timeout: TIMEOUT });
     const [displayMode, setDisplayMode] = useState<boolean>(false);
 
     const dispatch = useDispatch();
@@ -47,6 +93,77 @@ const IDOLaunchpad = () => {
     useEffect(() => {
         dispatch(fetchIDOPools());
     }, []);
+
+    // load smart contract abi and parse it to SmartContract object for tx
+    const [idoContractInteractor, setIdoContractInteractor] = useState<any>(undefined);
+    useEffect(() => {
+        (async () => {
+            const registry = await AbiRegistry.load({ urls: [IDO_CONTRACT_ABI_URL] });
+            const abi = new SmartContractAbi(registry, [IDO_CONTRACT_NAME]);
+            const contract = new SmartContract({ address: new Address(IDO_CONTRACT_ADDRESS), abi: abi });
+            const controller = new DefaultSmartContractController(abi, provider);
+
+            setIdoContractInteractor({
+                contract,
+                controller,
+            });
+        })();
+    }, []); // [] makes useEffect run once
+
+    const [projects, setProjects] = useState<any>([]);
+    useEffect(() => {
+        (async () => {
+            if (!idoContractInteractor || !isLoggedIn) return;
+
+            const args = [
+                new BooleanValue(true),
+            ];
+            const interaction = idoContractInteractor.contract.methods.getProjects(args);
+            const res = await idoContractInteractor.controller.query(interaction);
+
+            if (!res || !res.returnCode.isSuccess()) return;
+            const value = res.firstValue.valueOf();
+
+            const TOKEN_DECIMAL = 18;
+            const datas: any = [];
+            value.map((item: any) => {
+                const data = {
+                    project_id: item.project_id.toNumber(),
+                    project_owner: item.project_owner.toString(),
+                    project_presale_token_identifier: item.project_presale_token_identifier.toString(),
+                    project_fund_token_identifier: item.project_fund_token_identifier.toString(),
+                    project_fee_option_id: item.project_fee_option_id.toNumber(),
+                    project_presale_rate: convertWeiToEsdt(item.project_presale_rate, TOKEN_DECIMAL),
+                    project_create_time: item.project_create_time.toNumber() * SECOND_IN_MILLI,
+                    project_soft_cap: convertWeiToEsdt(item.project_soft_cap, TOKEN_DECIMAL),
+                    project_hard_cap: convertWeiToEsdt(item.project_hard_cap, TOKEN_DECIMAL),
+                    project_min_buy_limit: convertWeiToEsdt(item.project_min_buy_limit, TOKEN_DECIMAL),
+                    project_max_buy_limit: convertWeiToEsdt(item.project_max_buy_limit, TOKEN_DECIMAL),
+                    project_maiar_liquidity_percent: item.project_maiar_liquidity_percent.toNumber() / 100,
+                    project_maiar_listing_rate: convertWeiToEsdt(item.project_maiar_listing_rate, TOKEN_DECIMAL),
+                    project_presale_start_time: item.project_presale_start_time.toNumber() * SECOND_IN_MILLI,
+                    project_presale_end_time: item.project_presale_end_time.toNumber() * SECOND_IN_MILLI,
+                    project_liquidity_lock_timestamp: item.project_liquidity_lock_timestamp.toNumber() * SECOND_IN_MILLI,
+                    project_description: item.project_description.toString(),
+                    project_social_telegram: item.project_social_telegram.toString(),
+                    project_social_website: item.project_social_website.toString(),
+                    project_social_twitter: item.project_social_twitter.toString(),
+                    project_social_youtube: item.project_social_youtube.toString(),
+                    project_social_discord: item.project_social_discord.toString(),
+                    project_social_linkedin: item.project_social_linkedin.toString(),
+                    project_social_medium: item.project_social_medium.toString(),
+                    project_total_bought_amount_in_egld: convertWeiToEsdt(item.project_total_bought_amount_in_egld, 18),
+                    project_total_bought_amount_in_esdt: convertWeiToEsdt(item.project_total_bought_amount_in_esdt, TOKEN_DECIMAL),
+                    project_is_lived: item.project_is_lived,
+                };
+                datas.push(data);
+            });
+            console.log(datas);
+
+            setProjects(datas);
+
+        })();
+    }, [idoContractInteractor, hasPendingTransactions]);
 
     const navigate = useNavigate();
     const handleIDONavigate = () => {
@@ -145,7 +262,7 @@ const IDOLaunchpad = () => {
                                                 <div className='IDOCard-link'>
                                                     <IDOCard data={row} />
                                                 </div>
-                                            </Col> 
+                                            </Col>
                                         );
                                     })
                                 }

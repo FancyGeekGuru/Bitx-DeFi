@@ -50,12 +50,15 @@ import {
 	GasLimit,
 	DefaultSmartContractController,
 	U64Value,
+	U32Value,
 } from '@elrondnetwork/erdjs';
 import axios from 'axios';
+import BigNumber from 'bignumber.js/bignumber.js';
 import {
 	IDO_CONTRACT_ADDRESS,
 	IDO_CONTRACT_ABI_URL,
 	IDO_CONTRACT_NAME,
+	WEGLD_ID,
 } from 'config';
 import {
 	SECOND_IN_MILLI,
@@ -66,6 +69,8 @@ import {
 	convertAPR2APY,
 	IContractInteractor,
 	getBalanceOfToken,
+	getEsdtTokenId,
+	getPrice,
 } from 'utils';
 
 import { ICOState } from './data';
@@ -218,12 +223,81 @@ const createIDO = () => {
 	const steps = ['Verify Token', 'Add Launchpad Info', 'Add Additional Info', 'Finish and Review'];
 	const [activeStep, setActiveStep] = useState<number>(0);
 	const [idoCreated, setIdoCreated] = useState<boolean>(false);
-	const handleChangeStep = (n: number) => {
+	const [tokenInfo, setTokenInfo] = useState<any>();
+	const [egldPrice, setEgldPrice] = useState<number>(0);
+
+	const handleChangeStep = async (n: number) => {
 		let stepN = n;
 		if (stepN < 0) {
 			stepN = 0;
 		}
+		if (stepN === 1) {
+			// console.log(token_identifier);
+			console.log(currencyType, feeType);
+			// check token id
+			if (token_identifier.length > 0) {
+				const res: any = await getEsdtTokenId(network.apiAddress, token_identifier);
+				if (res.status) {
+					console.log(res.data);
+					setTokenInfo(res.data);
+				} else {
+					stepN = 0;
+				}
+				const prices: any = await getPrice(network.apiAddress);
+				if(prices.length > 0) {
+					for (let i = 0; i < prices.length; i++) {
+						if (prices[i].id === WEGLD_ID) {
+							// console.log(prices[i].price);
+							setEgldPrice(prices[i].price);
+							break;
+						}
+					}
+				}
+			} else {
+				stepN = 0;
+			}
+		}
+		if (stepN === 2) {
+			console.log(presale_rate);
+			if (presale_rate === undefined || presale_rate <= 0) {
+				stepN = 1;
+			}
+			console.log(hard_cap);
+			if (hard_cap === undefined || hard_cap <= 0) {
+				stepN = 1;
+			}
+			console.log(soft_cap);
+			if (soft_cap === undefined || soft_cap <= 0 || soft_cap < (hard_cap * idoSetting?.min_percent_soft_cap / 100)) {
+				stepN = 1;
+			}
+			console.log(min_buy);
+			if (min_buy === undefined || min_buy <= 0) {
+				stepN = 1;
+			}
+			console.log(max_buy);
+			if (max_buy === undefined || max_buy <= 0) {
+				stepN = 1;
+			}
+			console.log(maiar_exchange_liquidity);
+			if (maiar_exchange_liquidity === undefined || maiar_exchange_liquidity <= 0 || maiar_exchange_liquidity <= idoSetting?.min_percent_maiar_exchange_liquidity || maiar_exchange_liquidity >idoSetting?.max_percent_maiar_exchange_liquidity) {
+				stepN = 1;
+			}
+			console.log(maiar_listing_rate);
+			if (maiar_listing_rate === undefined || maiar_listing_rate <= 0) {
+				stepN = 1;
+			}
+			console.log(start_time);
+			console.log(end_time);
+			console.log(liquidity_lockup_days);
+			if (liquidity_lockup_days === undefined || liquidity_lockup_days <= 0) {
+				stepN = 1;
+			}
+		}
 		if (stepN === 3) {
+			console.log(description);
+			if (description === undefined || description.length <= 0) {
+				stepN = 2;
+			}
 			const socials = [
 				{
 					name: "website",
@@ -296,10 +370,64 @@ const createIDO = () => {
 
 			// should add token info
 			console.log(ido_pool);
-			setIdoCreated(true);
-			// stepN = 4;
-			stepN = 0;
+			stepN = 3;
+
 			// handle tx
+			let fee_option_id = 1;
+			if (feeType === 'fee_type_0') {
+				fee_option_id = 1;
+			}
+			if (feeType === 'fee_type_1') {
+				fee_option_id = 2;
+			}
+			const amount = (new BigNumber(presale_rate * hard_cap)).multipliedBy(Math.pow(10, tokenInfo.decimals));
+			const presaleRate = (new BigNumber(presale_rate)).multipliedBy(Math.pow(10, tokenInfo.decimals));
+			const softCap = (new BigNumber(soft_cap)).multipliedBy(Math.pow(10, tokenInfo.decimals));
+			const hardCap = (new BigNumber(hard_cap)).multipliedBy(Math.pow(10, tokenInfo.decimals));
+			const minBuyAmount = (new BigNumber(min_buy)).multipliedBy(Math.pow(10, tokenInfo.decimals));
+			const maxBuyAmount = (new BigNumber(max_buy)).multipliedBy(Math.pow(10, tokenInfo.decimals));
+			const maiarListingRate = (new BigNumber(maiar_listing_rate)).multipliedBy(Math.pow(10, tokenInfo.decimals));
+			const args: TypedValue[] = [
+				BytesValue.fromUTF8(token_identifier),
+				new BigUIntValue(amount.valueOf()),
+				BytesValue.fromUTF8('create'),
+				BytesValue.fromUTF8(token_identifier),
+				// new U32Value(tokenInfo.decimals),
+				// BytesValue.fromUTF8(tokenInfo.name),
+				BytesValue.fromUTF8(currencyType),
+				new U32Value(fee_option_id),
+				new BigUIntValue(presaleRate.valueOf()),
+				new BigUIntValue(softCap.valueOf()),
+				new BigUIntValue(hardCap.valueOf()),
+				new BigUIntValue(minBuyAmount.valueOf()),
+				new BigUIntValue(maxBuyAmount.valueOf()),
+				new U32Value(maiar_exchange_liquidity * 100),
+				new BigUIntValue(maiarListingRate.valueOf()),
+				new U64Value(start_time.getUTCMilliseconds()),
+				new U64Value(end_time.getUTCMilliseconds()),
+				new U64Value(liquidity_lockup_days * 24 * 3600 * 1000),
+				BytesValue.fromUTF8(description),
+				BytesValue.fromUTF8(socialLinks[0].link),
+				BytesValue.fromUTF8(socialLinks[1].link),
+				BytesValue.fromUTF8(socialLinks[2].link),
+				BytesValue.fromUTF8(socialLinks[3].link),
+				BytesValue.fromUTF8(socialLinks[4].link),
+				BytesValue.fromUTF8(socialLinks[5].link),
+				BytesValue.fromUTF8(socialLinks[6].link),
+			];
+			const { argumentsString } = new ArgSerializer().valuesToString(args);
+			const data = `ESDTTransfer@${argumentsString}`;
+
+			const tx = {
+				receiver: IDO_CONTRACT_ADDRESS,
+				gasLimit: new GasLimit(10000000),
+				data: data,
+			};
+
+			// await refreshAccount();
+			// sendTransactions({
+			// 	transactions: tx,
+			// });
 		}
 		setActiveStep(stepN);
 	};
@@ -326,7 +454,7 @@ const createIDO = () => {
 		setWhitelist(event.target.value === 'true');
 	};
 	*/
-	const [token_identifier, setTokenIdentifier] = useState<string | undefined>();
+	const [token_identifier, setTokenIdentifier] = useState<string | undefined>('');
 
 	const [presale_rate, setPreSaleRate] = useState<number | undefined>();
 	const [soft_cap, setSoftCap] = useState<number | undefined>();
@@ -564,7 +692,10 @@ const createIDO = () => {
 													<Col sm={6}>
 														{/* <div className="input-state ">Refund type</div> */}
 														<div className="input-state ">Token Amount</div>
-														<input className='ido-input mt-2 mb-1' disabled />
+														<input className='ido-input mt-2 mb-1'
+															value={presale_rate === undefined || hard_cap === undefined ? 0 : presale_rate * hard_cap}
+															disabled
+														/>
 													</Col>
 													<Col sm={6}>
 														<div className="input-state ">Router *</div>
@@ -580,14 +711,14 @@ const createIDO = () => {
 														/>
 													</Col>
 													<Col sm={6}>
-														<div className="input-state ">Maiar listing rate *</div>
+														<div className="input-state ">{"Maiar listing rate *"}</div>
 														<input
 															className='ido-input mt-2 mb-1'
 															type='number'
 															value={maiar_listing_rate}
 															onChange={(e) => setMaiarListingRate(Number(e.target.value))}
 														/>
-														<span className='input-comment'>{`1 EGLD = ${maiar_listing_rate} ${token_identifier}`}</span>
+														<span className='input-comment'>{`1 EGLD = ${maiar_listing_rate === undefined ? 0 : maiar_listing_rate} ${token_identifier}`}</span>
 													</Col>
 												</Row>
 
@@ -733,43 +864,72 @@ const createIDO = () => {
 									activeStep == 3 && (
 										<>
 											<div className="d-flex align-items-center">
-												<div className='d-flex'>
+												{/* <div className='d-flex'>
 													<div>
 														<img src={BTX_logo} alt="BitX logo" width={'60px'} />
 													</div>
-												</div>
-												<div className='d-flex flex-column ml-4'>
-													<span className='IDO-Card-title' style={{ fontSize: '20px' }}>{"BitX"}</span>
+												</div> */}
+												<div className='d-flex flex-column'>
+													<span className='IDO-Card-title' style={{ fontSize: '20px' }}>{tokenInfo.name}</span>
 												</div>
 											</div>
 
 											<div className='mt-3'>
-												<div style={{ fontSize: '16px' }}>{"BTX is the ultimate utility token on the Elrond Network allowing for staking swapping farming and locking."}</div>
+												{/* <div style={{ fontSize: '16px' }}>{"BTX is the ultimate utility token on the Elrond Network allowing for staking swapping farming and locking."}</div> */}
+												<div style={{ fontSize: '16px' }}>{description}</div>
 												<div className='mt-2' style={{ fontSize: '16px', color: '#E3E3E3' }}>{"Your investment is protected, this sale is under the Safeguarded Launch Protocol rules."}</div>
 											</div>
 
 											<div className='social-box mt-4'>
-												<div>
-													<ImEarth />
-												</div>
-												<div>
-													<SiTelegram />
-												</div>
-												<div>
-													<SiDiscord />
-												</div>
-												<div>
-													<SiTwitter />
-												</div>
-												<div>
-													<SiYoutube />
-												</div>
-												<div>
-													<SiLinkedin />
-												</div>
-												<div>
-													<SiMedium />
-												</div>
+												{socialLinks[0].link === undefined || socialLinks[0].link.length === 0 ? (
+													<div></div>
+												) : (
+													<div>
+														<a href={socialLinks[0].link} rel="noreferrer" target="_blank"><ImEarth /></a>
+													</div>
+												)}
+												{socialLinks[1].link === undefined || socialLinks[1].link.length === 0 ? (
+													<div></div>
+												) : (
+													<div>
+														<a href={socialLinks[1].link} rel="noreferrer" target="_blank"><SiTelegram /></a>
+													</div>
+												)}
+												{socialLinks[2].link === undefined || socialLinks[2].link.length === 0 ? (
+													<div></div>
+												) : (
+													<div>
+														<a href={socialLinks[2].link} rel="noreferrer" target="_blank"><SiDiscord /></a>
+													</div>
+												)}
+												{socialLinks[3].link === undefined || socialLinks[3].link.length === 0 ? (
+													<div></div>
+												) : (
+													<div>
+														<a href={socialLinks[3].link} rel="noreferrer" target="_blank"><SiTwitter /></a>
+													</div>
+												)}
+												{socialLinks[4].link === undefined || socialLinks[4].link.length === 0 ? (
+													<div></div>
+												) : (
+													<div>
+														<a href={socialLinks[4].link} rel="noreferrer" target="_blank"><SiYoutube /></a>
+													</div>
+												)}
+												{socialLinks[5].link === undefined || socialLinks[5].link.length === 0 ? (
+													<div></div>
+												) : (
+													<div>
+														<a href={socialLinks[5].link} rel="noreferrer" target="_blank"><SiLinkedin /></a>
+													</div>
+												)}
+												{socialLinks[6].link === undefined || socialLinks[6].link.length === 0 ? (
+													<div></div>
+												) : (
+													<div>
+														<a href={socialLinks[6].link} rel="noreferrer" target="_blank"><SiMedium /></a>
+													</div>
+												)}
 											</div>
 
 											<div className='mt-5'>
@@ -777,27 +937,27 @@ const createIDO = () => {
 													<p style={{ fontSize: '22px', color: "#6a9b84", fontWeight: '700' }}>TOKEN</p>
 													<div>
 														<span>Token: </span>
-														<span style={{ color: '#6a9b84' }}>BTX</span>
+														<span style={{ color: '#6a9b84' }}>{tokenInfo.name}</span>
 													</div>
 													<div>
 														<span>Token Identifier: </span>
-														<span style={{ color: '#6a9b84' }}>BTX-0f676d</span>
+														<span style={{ color: '#6a9b84' }}>{tokenInfo.identifier}</span>
 													</div>
 													<div>
 														<span>Token Decimal: </span>
-														<span style={{ color: '#6a9b84' }}>18</span>
+														<span style={{ color: '#6a9b84' }}>{tokenInfo.decimals}</span>
 													</div>
 													<div>
 														<span>Total Supply: </span>
-														<span style={{ color: '#6a9b84' }}>35,000,000 BTX</span>
+														<span style={{ color: '#6a9b84' }}>{tokenInfo.supply?.toLocaleString()} {tokenInfo.name}</span>
 													</div>
 													<div>
 														<span>Tokens For Presale: </span>
-														<span style={{ color: '#6a9b84' }}>35,000 BTX</span>
+														<span style={{ color: '#6a9b84' }}>{presale_rate * hard_cap} {tokenInfo.name}</span>
 													</div>
 													<div>
 														<span>Tokens For Liquidity: </span>
-														<span style={{ color: '#6a9b84' }}>350,000 BTX</span>
+														<span style={{ color: '#6a9b84' }}>{presale_rate * hard_cap * maiar_exchange_liquidity / 100} {tokenInfo?.name}</span>
 													</div>
 												</div>
 
@@ -805,7 +965,7 @@ const createIDO = () => {
 													<p style={{ fontSize: '20px', color: "#6a9b84", fontWeight: '700' }}>PRICE</p>
 													<div>
 														<span>IDO: </span>
-														<span style={{ color: '#6a9b84' }}>$0.125</span>
+														<span style={{ color: '#6a9b84' }}>${(egldPrice / presale_rate).toFixed(5)}</span>
 													</div>
 												</div>
 
@@ -813,23 +973,24 @@ const createIDO = () => {
 													<p style={{ fontSize: '20px', color: "#6a9b84", fontWeight: '700' }}>POOL DETAILS</p>
 													<div>
 														<span>Soft Cap: </span>
-														<span style={{ color: '#6a9b84' }}>100 EGLD</span>
+														<span style={{ color: '#6a9b84' }}>{soft_cap} {currencyType}</span>
 													</div>
 													<div>
 														<span>Hard Cap: </span>
-														<span style={{ color: '#6a9b84' }}>100 EGLD</span>
+														<span style={{ color: '#6a9b84' }}>{hard_cap} {currencyType}</span>
 													</div>
 													<div>
 														<span>Liquidity Percent: </span>
-														<span style={{ color: '#6a9b84' }}>65%</span>
+														<span style={{ color: '#6a9b84' }}>{maiar_exchange_liquidity}%</span>
 													</div>
 													<div>
 														<span>Lockup Time: </span>
-														<span style={{ color: '#6a9b84' }}>365 days</span>
+														<span style={{ color: '#6a9b84' }}>{liquidity_lockup_days} days</span>
 													</div>
 													<div>
 														<span>Starts / end: </span>
-														<span style={{ color: '#6a9b84' }}>07/04/2022, 11:00 UTC - 07/04/2022, 11:00 UTC</span>
+														{/* <span style={{ color: '#6a9b84' }}>07/04/2022, 11:00 UTC - 07/04/2022, 11:00 UTC</span> */}
+														<span style={{ color: '#6a9b84' }}>{start_time.toString()} - {end_time.toString()}</span>
 													</div>
 													<div>
 														<span>Listing On: </span>
@@ -837,11 +998,12 @@ const createIDO = () => {
 													</div>
 													<div>
 														<span>Registration: </span>
-														<span style={{ color: '#6a9b84' }}>07/02/2022, 11:00 UTC - 07/03/2022, 11:00 UTC</span>
+														{/* <span style={{ color: '#6a9b84' }}>07/02/2022, 11:00 UTC - 07/03/2022, 11:00 UTC</span> */}
+														<span style={{ color: '#6a9b84' }}>{Date.now()}</span>
 													</div>
 												</div>
 
-												<div className='d-flex flex-column mt-5' style={{ rowGap: '6px' }}>
+												{/* <div className='d-flex flex-column mt-5' style={{ rowGap: '6px' }}>
 													<p style={{ fontSize: '20px', color: "#6a9b84", fontWeight: '700' }}>DISTRIBUTION</p>
 													<div>
 														<span>Distribution: </span>
@@ -851,7 +1013,7 @@ const createIDO = () => {
 														<span>Vesting: </span>
 														<span style={{ color: '#6a9b84' }}>Loerem Ipsum dollar</span>
 													</div>
-												</div>
+												</div> */}
 											</div>
 										</>
 									)
