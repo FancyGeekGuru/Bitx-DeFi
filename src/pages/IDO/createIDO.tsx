@@ -28,12 +28,16 @@ import BTX_logo from 'assets/img/token logos/BTX.png';
 import congratulations_img from 'assets/img/ido/congratulations.png';
 import { routeNames } from 'routes';
 
+import { toast } from 'react-toastify';
+import { swtichSocialIcon } from 'utils/social';
+
 import {
 	refreshAccount,
 	sendTransactions,
 	useGetAccountInfo,
 	useGetNetworkConfig,
 	useGetPendingTransactions,
+	transactionServices
 } from '@elrondnetwork/dapp-core';
 import {
 	Address,
@@ -242,9 +246,10 @@ const createIDO = () => {
 					setTokenInfo(res.data);
 				} else {
 					stepN = 0;
+					toast.error("Token Identifier is incorrect");
 				}
 				const prices: any = await getPrice(network.apiAddress);
-				if(prices.length > 0) {
+				if (prices.length > 0) {
 					for (let i = 0; i < prices.length; i++) {
 						if (prices[i].id === WEGLD_ID) {
 							// console.log(prices[i].price);
@@ -255,42 +260,51 @@ const createIDO = () => {
 				}
 			} else {
 				stepN = 0;
+				toast.error("Token Identifier is incorrect");
 			}
 		}
 		if (stepN === 2) {
 			console.log(presale_rate);
 			if (presale_rate === undefined || presale_rate <= 0) {
 				stepN = 1;
+				toast.error("Presale rate is incorrect");
 			}
 			console.log(hard_cap);
 			if (hard_cap === undefined || hard_cap <= 0) {
 				stepN = 1;
+				toast.error("Hard Cap is incorrect");
 			}
 			console.log(soft_cap);
 			if (soft_cap === undefined || soft_cap <= 0 || soft_cap < (hard_cap * idoSetting?.min_percent_soft_cap / 100)) {
 				stepN = 1;
+				toast.error("Soft Cap is incorrect");
 			}
 			console.log(min_buy);
 			if (min_buy === undefined || min_buy <= 0) {
 				stepN = 1;
+				toast.error("Minimum buy is incorrect");
 			}
 			console.log(max_buy);
 			if (max_buy === undefined || max_buy <= 0) {
 				stepN = 1;
+				toast.error("Maximum buy is incorrect");
 			}
 			console.log(maiar_exchange_liquidity);
-			if (maiar_exchange_liquidity === undefined || maiar_exchange_liquidity <= 0 || maiar_exchange_liquidity <= idoSetting?.min_percent_maiar_exchange_liquidity || maiar_exchange_liquidity >idoSetting?.max_percent_maiar_exchange_liquidity) {
+			if (maiar_exchange_liquidity === undefined || maiar_exchange_liquidity <= 0 || maiar_exchange_liquidity <= idoSetting?.min_percent_maiar_exchange_liquidity || maiar_exchange_liquidity > idoSetting?.max_percent_maiar_exchange_liquidity) {
 				stepN = 1;
+				toast.error("Maiar exchange liquidity is incorrect");
 			}
 			console.log(maiar_listing_rate);
 			if (maiar_listing_rate === undefined || maiar_listing_rate <= 0) {
 				stepN = 1;
+				toast.error("Maiar listing rate is incorrect");
 			}
 			console.log(start_time);
 			console.log(end_time);
 			console.log(liquidity_lockup_days);
 			if (liquidity_lockup_days === undefined || liquidity_lockup_days <= 0) {
 				stepN = 1;
+				toast.error("Liquidity lockup days is incorrect");
 			}
 		}
 		if (stepN === 3) {
@@ -332,44 +346,44 @@ const createIDO = () => {
 		}
 		if (stepN >= 4) {
 
-			const ido_pool = {
-				pool_name: "bitxtoken",
-				name: "BitX Token",
-				description: description,
-				ico_status: ICOState.Upcoming,
-				social_links: socialLinks,
+			// const ido_pool = {
+			// 	pool_name: "bitxtoken",
+			// 	name: "BitX Token",
+			// 	description: description,
+			// 	ico_status: ICOState.Upcoming,
+			// 	social_links: socialLinks,
 
-				token: "BTX",
-				token_identifier: token_identifier,
-				token_decimal: 18,
-				total_supply: 35000000,
-				tokens_for_presale: 35000,
-				tokens_for_liquidity: 350000,
+			// 	token: "BTX",
+			// 	token_identifier: token_identifier,
+			// 	token_decimal: 18,
+			// 	total_supply: 35000000,
+			// 	tokens_for_presale: 35000,
+			// 	tokens_for_liquidity: 350000,
 
-				currency: currencyType,
-				ico_price: presale_rate,
+			// 	currency: currencyType,
+			// 	ico_price: presale_rate,
 
-				soft_cap: soft_cap,
-				hard_cap: hard_cap,
-				liquidity_percent: maiar_exchange_liquidity,
-				lockup_time: liquidity_lockup_days,
-				listing_on: "Maiar Listing",
-				listing_price: maiar_listing_rate,
-				minimum_buy: min_buy,
-				maximum_buy: max_buy,
+			// 	soft_cap: soft_cap,
+			// 	hard_cap: hard_cap,
+			// 	liquidity_percent: maiar_exchange_liquidity,
+			// 	lockup_time: liquidity_lockup_days,
+			// 	listing_on: "Maiar Listing",
+			// 	listing_price: maiar_listing_rate,
+			// 	minimum_buy: min_buy,
+			// 	maximum_buy: max_buy,
 
-				ico_start: start_time.toString(),
-				ico_end: end_time.toString(),
-				registration_start: "07/04/2022 11:00 UTC",
-				registration_end: "07/04/2022 11:00 UTC",
+			// 	ico_start: start_time.toString(),
+			// 	ico_end: end_time.toString(),
+			// 	registration_start: "07/04/2022 11:00 UTC",
+			// 	registration_end: "07/04/2022 11:00 UTC",
 
-				first_release_for_presale_percent: 65,
-				vesting_period_each_cycle: 300,
-				presale_token_release_each_cycle: 50
-			};
+			// 	first_release_for_presale_percent: 65,
+			// 	vesting_period_each_cycle: 300,
+			// 	presale_token_release_each_cycle: 50
+			// };
 
-			// should add token info
-			console.log(ido_pool);
+			// // should add token info
+			// console.log(ido_pool);
 			stepN = 3;
 
 			// handle tx
@@ -424,13 +438,26 @@ const createIDO = () => {
 				data: data,
 			};
 
-			// await refreshAccount();
-			// sendTransactions({
-			// 	transactions: tx,
-			// });
+			await refreshAccount();
+			const result = await sendTransactions({
+				transactions: tx,
+			});
+
+			setSessionId(result.sessionId);
 		}
 		setActiveStep(stepN);
 	};
+
+	const [sessionId, setSessionId] = useState<string>('');
+	const transactionStatus = transactionServices.useTrackTransactionStatus({
+		transactionId: sessionId,
+	});
+	useEffect(() => {
+		if (transactionStatus.isSuccessful) {
+			console.log("success");
+			setIdoCreated(true);
+		}
+	}, [sessionId, hasPendingTransactions]);
 
 	/** step 1 */
 	const [currencyType, setCurrencyType] = useState<string>("EGLD");
@@ -881,7 +908,56 @@ const createIDO = () => {
 											</div>
 
 											<div className='social-box mt-4'>
-												{socialLinks[0].link === undefined || socialLinks[0].link.length === 0 ? (
+												{
+													socialLinks[0].link !== "" && (
+														<a className='social-link' href={socialLinks[0].link} rel="noreferrer" target="_blank">
+															{swtichSocialIcon('website')}
+														</a>
+													)
+												}
+												{
+													socialLinks[1].link !== "" && (
+														<a className='social-link' href={socialLinks[1].link} rel="noreferrer" target="_blank">
+															{swtichSocialIcon('telegram')}
+														</a>
+													)
+												}
+												{
+													socialLinks[2].link !== "" && (
+														<a className='social-link' href={socialLinks[2].link} rel="noreferrer" target="_blank">
+															{swtichSocialIcon('discord')}
+														</a>
+													)
+												}
+												{
+													socialLinks[3].link !== "" && (
+														<a className='social-link' href={socialLinks[3].link} rel="noreferrer" target="_blank">
+															{swtichSocialIcon('twitter')}
+														</a>
+													)
+												}
+												{
+													socialLinks[4].link !== "" && (
+														<a className='social-link' href={socialLinks[4].link} rel="noreferrer" target="_blank">
+															{swtichSocialIcon('youtube')}
+														</a>
+													)
+												}
+												{
+													socialLinks[5].link !== "" && (
+														<a className='social-link' href={socialLinks[5].link} rel="noreferrer" target="_blank">
+															{swtichSocialIcon('linkedIn')}
+														</a>
+													)
+												}
+												{
+													socialLinks[6].link !== "" && (
+														<a className='social-link' href={socialLinks[6].link} rel="noreferrer" target="_blank">
+															{swtichSocialIcon('medium')}
+														</a>
+													)
+												}
+												{/* {socialLinks[0].link === undefined || socialLinks[0].link.length === 0 ? (
 													<div></div>
 												) : (
 													<div>
@@ -929,7 +1005,7 @@ const createIDO = () => {
 													<div>
 														<a href={socialLinks[6].link} rel="noreferrer" target="_blank"><SiMedium /></a>
 													</div>
-												)}
+												)} */}
 											</div>
 
 											<div className='mt-5'>

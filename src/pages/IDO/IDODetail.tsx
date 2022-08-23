@@ -2,17 +2,41 @@
 import React, { useEffect, useState } from 'react';
 import { ProgressBar, Row, Col } from 'react-bootstrap';
 import Countdown from 'react-countdown';
-import { ImEarth } from "react-icons/im";
-import { SiTelegram, SiDiscord, SiTwitter, SiYoutube, SiLinkedin, SiMedium } from "react-icons/si";
 import BTX_logo from 'assets/img/token logos/BTX.png';
 import { paddingTwoDigits } from 'utils/convert';
-import { useDispatch, useSelector } from 'react-redux';
-import * as selectors from 'store/selectors';
-import { fetchIDODetail } from "store/actions/thunks/IDO";
 import { useLocation } from "react-router-dom";
 import moment from 'moment';
 import { swtichSocialIcon } from 'utils/social';
 import { numberWithCommas } from 'utils/convert';
+
+import {
+    IDO_CONTRACT_ABI_URL,
+    IDO_CONTRACT_NAME,
+    IDO_CONTRACT_ADDRESS,
+} from 'config';
+
+import {
+    useGetAccountInfo,
+    useGetNetworkConfig,
+    useGetPendingTransactions,
+} from '@elrondnetwork/dapp-core';
+
+import {
+    Address,
+    AbiRegistry,
+    SmartContractAbi,
+    SmartContract,
+    DefaultSmartContractController,
+    ProxyProvider,
+    U32Value
+} from '@elrondnetwork/erdjs';
+
+import {
+    TIMEOUT,
+    SECOND_IN_MILLI,
+    convertWeiToEsdt,
+    getEsdtTokenId,
+} from 'utils';
 
 const IDODetail = () => {
     interface Props {
@@ -23,16 +47,84 @@ const IDODetail = () => {
         completed: boolean;
     }
 
-    const dispatch = useDispatch();
-    const IDOState = useSelector(selectors.IDOState);
-    const currentPoolDetail = IDOState.currentPoolDetail.data;
-
     const location = useLocation();
+
+    const { address } = useGetAccountInfo();
+    const { hasPendingTransactions } = useGetPendingTransactions();
+    const { network } = useGetNetworkConfig();
+    const isLoggedIn = Boolean(address);
+    const provider = new ProxyProvider(network.apiAddress, { timeout: TIMEOUT });
+
+    const [idoContractInteractor, setIdoContractInteractor] = useState<any>(undefined);
     useEffect(() => {
-        const pathname = location.pathname;
-        const pool_detail_name = pathname.substring(pathname.lastIndexOf('/') + 1);
-        dispatch(fetchIDODetail({ data: pool_detail_name }));
+        (async () => {
+            const registry = await AbiRegistry.load({ urls: [`/${IDO_CONTRACT_ABI_URL}`] });
+            const abi = new SmartContractAbi(registry, [IDO_CONTRACT_NAME]);
+            const contract = new SmartContract({ address: new Address(IDO_CONTRACT_ADDRESS), abi: abi });
+            const controller = new DefaultSmartContractController(abi, provider);
+
+            setIdoContractInteractor({
+                contract,
+                controller,
+            });
+        })();
     }, []);
+
+
+    const [project, setProject] = useState<any>();
+    const [tokenInfo, setTokenInfo] = useState<any>();
+
+    useEffect(() => {
+        (async () => {
+            if (!idoContractInteractor || !isLoggedIn) return;
+            const pathname = location.pathname;
+            const project_id = pathname.substring(pathname.lastIndexOf('/') + 1);
+
+            const args = [
+                new U32Value(Number(project_id)),
+            ];
+
+            const interaction = idoContractInteractor.contract.methods.getProject(args);
+            const res = await idoContractInteractor.controller.query(interaction);
+
+            if (!res || !res.returnCode.isSuccess()) return;
+            const item = res.firstValue.valueOf();
+            const TOKEN_DECIMAL = 18;
+            const data = {
+                project_id: item.project_id.toNumber(),
+                project_owner: item.project_owner.toString(),
+                project_presale_token_identifier: item.project_presale_token_identifier.toString(),
+                project_fund_token_identifier: item.project_fund_token_identifier.toString(),
+                project_fee_option_id: item.project_fee_option_id.toNumber(),
+                project_presale_rate: convertWeiToEsdt(item.project_presale_rate, TOKEN_DECIMAL),
+                project_create_time: item.project_create_time.toNumber() * SECOND_IN_MILLI,
+                project_soft_cap: convertWeiToEsdt(item.project_soft_cap, TOKEN_DECIMAL),
+                project_hard_cap: convertWeiToEsdt(item.project_hard_cap, TOKEN_DECIMAL),
+                project_min_buy_limit: convertWeiToEsdt(item.project_min_buy_limit, TOKEN_DECIMAL),
+                project_max_buy_limit: convertWeiToEsdt(item.project_max_buy_limit, TOKEN_DECIMAL),
+                project_maiar_liquidity_percent: item.project_maiar_liquidity_percent.toNumber() / 100,
+                project_maiar_listing_rate: convertWeiToEsdt(item.project_maiar_listing_rate, TOKEN_DECIMAL),
+                project_presale_start_time: item.project_presale_start_time.toNumber() * SECOND_IN_MILLI,
+                project_presale_end_time: item.project_presale_end_time.toNumber() * SECOND_IN_MILLI,
+                project_liquidity_lock_timestamp: item.project_liquidity_lock_timestamp.toNumber() * SECOND_IN_MILLI,
+                project_description: item.project_description.toString(),
+                project_social_telegram: item.project_social_telegram.toString(),
+                project_social_website: item.project_social_website.toString(),
+                project_social_twitter: item.project_social_twitter.toString(),
+                project_social_youtube: item.project_social_youtube.toString(),
+                project_social_discord: item.project_social_discord.toString(),
+                project_social_linkedin: item.project_social_linkedin.toString(),
+                project_social_medium: item.project_social_medium.toString(),
+                project_total_bought_amount_in_egld: convertWeiToEsdt(item.project_total_bought_amount_in_egld, 18),
+                project_total_bought_amount_in_esdt: convertWeiToEsdt(item.project_total_bought_amount_in_esdt, TOKEN_DECIMAL),
+                project_is_lived: item.project_is_lived,
+            };
+            setProject(data);
+
+            const res1: any = await getEsdtTokenId(network.apiAddress, data.project_presale_token_identifier);
+            setTokenInfo(res1.data);
+        })();
+    }, [idoContractInteractor, hasPendingTransactions]);
 
     const renderer: React.FC<Props> = ({ days, hours, minutes, seconds }) => {
         return (
@@ -58,8 +150,8 @@ const IDODetail = () => {
                                     </div>
                                 </div>
                                 <div className='d-flex flex-column ml-5'>
-                                    <span className='IDO-Card-title'>{currentPoolDetail.name}</span>
-                                    <span className='IDO-Card-token-identifier mt-2'>{`${currentPoolDetail.token}/${currentPoolDetail.currency}`}</span>
+                                    <span className='IDO-Card-title'>{project ? project.project_presale_token_identifier : '-'}</span>
+                                    <span className='IDO-Card-token-identifier mt-2'>{`${tokenInfo ? tokenInfo.name : '-'}/${project ? project.project_fund_token_identifier : '-'}`}</span>
                                 </div>
                             </div>
 
@@ -69,22 +161,22 @@ const IDODetail = () => {
                                 </div>
 
                                 <div className='d-flex flex-column mt-3'>
-                                    <span className='IDO-prize'>{`1${currentPoolDetail.currency} = 400${currentPoolDetail.token}`}</span>
-                                    <span className='IDO-prize' style={{ fontSize: '13px' }}>{`1${currentPoolDetail.token} = $0.125`}</span>
+                                    <span className='IDO-prize'>{`1 ${project ? project.project_fund_token_identifier : '-'} = ${project ? project.project_presale_rate : 'undefined'} ${tokenInfo ? tokenInfo.name : '-'}`}</span>
+                                    <span className='IDO-prize' style={{ fontSize: '13px' }}>{`1 ${tokenInfo ? tokenInfo.name : '-'} = $0.125`}</span>
                                 </div>
 
                                 <div className='mt-3'>
                                     <span>{"Progress (0.00%)"}</span>
                                     <ProgressBar className='mt-1' now={0} />
                                     <div className='d-flex justify-content-between mt-1'>
-                                        <span>{`0 ${currentPoolDetail.currency}`}</span>
-                                        <span>{`- ${currentPoolDetail.token}`}</span>
+                                        <span>{`0 ${project ? project.project_fund_token_identifier : '-'}`}</span>
+                                        <span>{`- ${project ? project.project_fund_token_identifier : '-'}`}</span>
                                     </div>
                                 </div>
                             </div>
 
                             <div className='d-flex justify-content-center mt-4'>
-                                <Countdown className='IDO-Card-Countdown' date={moment(currentPoolDetail.ico_start).utc().toDate()} renderer={renderer} autoStart />
+                                <Countdown className='IDO-Card-Countdown' date={moment(project?.project_presale_start_time).utc().toDate()} renderer={renderer} autoStart />
                             </div>
 
                             <div className='mt-4 d-flex'>
@@ -99,21 +191,21 @@ const IDODetail = () => {
                         </div>
 
                         <div className='IDO-Card-box mt-4' style={{ border: "none", fontSize: '14px', padding: "30px" }}>
-                            <div className='d-flex justify-content-between'>
+                            {/* <div className='d-flex justify-content-between'>
                                 <span>Registration Start: </span>
                                 <span style={{ color: 'white' }}>{`${currentPoolDetail.registration_start}`}</span>
                             </div>
                             <div className='d-flex justify-content-between mt-2'>
                                 <span>Registration Start: </span>
                                 <span style={{ color: 'white' }}>{`${currentPoolDetail.registration_end}`}</span>
-                            </div>
+                            </div> */}
                             <div className='d-flex justify-content-between mt-2'>
                                 <span>Minimum Buy: </span>
-                                <span style={{ color: 'white' }}>{`${currentPoolDetail.minimum_buy} ${currentPoolDetail.currency}`}</span>
+                                <span style={{ color: 'white' }}>{`${project ? project.project_min_buy_limit : 'NAN'} ${project ? project.project_fund_token_identifier : '-'}`}</span>
                             </div>
                             <div className='d-flex justify-content-between mt-2'>
                                 <span>Maximum Buy: </span>
-                                <span style={{ color: 'white' }}>{`- ${currentPoolDetail.currency}`}</span>
+                                <span style={{ color: 'white' }}>{`${project ? project.project_max_buy_limit : 'NAN'} ${project ? project.project_fund_token_identifier : '-'}`}</span>
                             </div>
                         </div>
                     </Col>
@@ -127,27 +219,66 @@ const IDODetail = () => {
                                     </div>
                                 </div>
                                 <div className='d-flex flex-column ml-4'>
-                                    <span className='IDO-Card-title' style={{ fontSize: '20px' }}>{currentPoolDetail.token}</span>
+                                    <span className='IDO-Card-title' style={{ fontSize: '20px' }}>{project ? project.project_presale_token_identifier : '-'}</span>
                                 </div>
                             </div>
 
                             <div className='mt-3'>
-                                <div style={{ fontSize: '16px' }}>{currentPoolDetail.description}</div>
+                                <div style={{ fontSize: '16px' }}>{project ? project.project_description : ''}</div>
                                 <div className='mt-2' style={{ fontSize: '16px', color: '#E3E3E3' }}>{"Your investment is protected, this sale is under the Safeguarded Launch Protocol rules."}</div>
                             </div>
 
                             <div className='social-box mt-4'>
                                 {
-                                    currentPoolDetail.social_links?.map((row, index) => {
-                                        return (
-                                            <a className='social-link' href={row.link} key={index} rel="noreferrer" target="_blank">
-                                                {
-                                                    swtichSocialIcon(row.name)
-                                                }
-                                            </a>
-                                        );
-                                    })
+                                    project?.project_social_website !== "" && (
+                                        <a className='social-link' href={project?.project_social_website} rel="noreferrer" target="_blank">
+                                            {swtichSocialIcon('website')}
+                                        </a>
+                                    )
                                 }
+                                {
+                                    project?.project_social_telegram !== "" && (
+                                        <a className='social-link' href={project?.project_social_telegram} rel="noreferrer" target="_blank">
+                                            {swtichSocialIcon('telegram')}
+                                        </a>
+                                    )
+                                }
+                                {
+                                    project?.project_social_discord !== "" && (
+                                        <a className='social-link' href={project?.project_social_discord} rel="noreferrer" target="_blank">
+                                            {swtichSocialIcon('discord')}
+                                        </a>
+                                    )
+                                }
+                                {
+                                    project?.project_social_twitter !== "" && (
+                                        <a className='social-link' href={project?.project_social_twitter} rel="noreferrer" target="_blank">
+                                            {swtichSocialIcon('twitter')}
+                                        </a>
+                                    )
+                                }
+                                {
+                                    project?.project_social_youtube !== "" && (
+                                        <a className='social-link' href={project?.project_social_youtube} rel="noreferrer" target="_blank">
+                                            {swtichSocialIcon('youtube')}
+                                        </a>
+                                    )
+                                }
+                                {
+                                    project?.project_social_linkedin !== "" && (
+                                        <a className='social-link' href={project?.project_social_linkedin} rel="noreferrer" target="_blank">
+                                            {swtichSocialIcon('linkedIn')}
+                                        </a>
+                                    )
+                                }
+                                {
+                                    project?.project_social_medium !== "" && (
+                                        <a className='social-link' href={project?.project_social_medium} rel="noreferrer" target="_blank">
+                                            {swtichSocialIcon('medium')}
+                                        </a>
+                                    )
+                                }
+
                             </div>
 
                             <div className='mt-5'>
@@ -155,28 +286,28 @@ const IDODetail = () => {
                                     <p style={{ fontSize: '22px', color: "#6a9b84", fontWeight: '700' }}>TOKEN</p>
                                     <div>
                                         <span>Token: </span>
-                                        <span style={{ color: '#6a9b84' }}>{currentPoolDetail.token}</span>
+                                        <span style={{ color: '#6a9b84' }}>{tokenInfo ? tokenInfo.name : '-'}</span>
                                     </div>
                                     <div>
                                         <span>Token Identifier: </span>
-                                        <span style={{ color: '#6a9b84' }}>{currentPoolDetail.token_identifier}</span>
+                                        <span style={{ color: '#6a9b84' }}>{project?.project_presale_token_identifier}</span>
                                     </div>
                                     <div>
                                         <span>Token Decimal: </span>
-                                        <span style={{ color: '#6a9b84' }}>{currentPoolDetail.token_decimal}</span>
+                                        <span style={{ color: '#6a9b84' }}>{tokenInfo ? tokenInfo.decimals : 'undefiend'}</span>
                                     </div>
                                     <div>
                                         <span>Total Supply: </span>
-                                        <span style={{ color: '#6a9b84' }}>{`${numberWithCommas(currentPoolDetail.total_supply)} ${currentPoolDetail.token}`}</span>
+                                        <span style={{ color: '#6a9b84' }}>{`${numberWithCommas(tokenInfo?.supply)} ${tokenInfo ? tokenInfo.name : '-'}`}</span>
                                     </div>
-                                    <div>
+                                    {/* <div>
                                         <span>Tokens For Presale: </span>
                                         <span style={{ color: '#6a9b84' }}>{`${numberWithCommas(currentPoolDetail.tokens_for_presale)} ${currentPoolDetail.token}`}</span>
                                     </div>
                                     <div>
                                         <span>Tokens For Liquidity: </span>
                                         <span style={{ color: '#6a9b84' }}>{`${numberWithCommas(currentPoolDetail.tokens_for_liquidity)} ${currentPoolDetail.token}`}</span>
-                                    </div>
+                                    </div> */}
                                 </div>
 
                                 <div className='d-flex flex-column mt-5' style={{ rowGap: '6px' }}>
@@ -191,32 +322,32 @@ const IDODetail = () => {
                                     <p style={{ fontSize: '20px', color: "#6a9b84", fontWeight: '700' }}>POOL DETAILS</p>
                                     <div>
                                         <span>Soft Cap: </span>
-                                        <span style={{ color: '#6a9b84' }}>{`${currentPoolDetail.soft_cap} ${currentPoolDetail.currency}`}</span>
+                                        <span style={{ color: '#6a9b84' }}>{`${project ? project.project_soft_cap : '-'} ${project ? project.project_fund_token_identifier : '-'}`}</span>
                                     </div>
                                     <div>
                                         <span>Hard Cap: </span>
-                                        <span style={{ color: '#6a9b84' }}>{`${currentPoolDetail.hard_cap} ${currentPoolDetail.currency}`}</span>
+                                        <span style={{ color: '#6a9b84' }}>{`${project ? project.project_hard_cap : '-'} ${project ? project.project_fund_token_identifier : '-'}`}</span>
                                     </div>
                                     <div>
                                         <span>Liquidity Percent: </span>
-                                        <span style={{ color: '#6a9b84' }}>{currentPoolDetail.liquidity_percent}%</span>
+                                        <span style={{ color: '#6a9b84' }}>{project ? project.project_maiar_liquidity_percent : '-'}%</span>
                                     </div>
                                     <div>
                                         <span>Lockup Time: </span>
-                                        <span style={{ color: '#6a9b84' }}>{`${currentPoolDetail.lockup_time} days`}</span>
+                                        <span style={{ color: '#6a9b84' }}>{`${project ? project.project_liquidity_lock_timestamp / 1000 / 1000 / 3600 / 24 : '-'} days`}</span>
                                     </div>
                                     <div>
                                         <span>Starts / end: </span>
-                                        <span style={{ color: '#6a9b84' }}>{`${currentPoolDetail.ico_start} - ${currentPoolDetail.ico_end}`}</span>
+                                        <span style={{ color: '#6a9b84' }}>{`${moment(project?.project_presale_start_time).utc().toDate()} - ${moment(project?.project_presale_end_time).utc().toDate()}`}</span>
                                     </div>
                                     <div>
                                         <span>Listing On: </span>
-                                        <span style={{ color: '#6a9b84' }}>{currentPoolDetail.listing_on}</span>
+                                        <span style={{ color: '#6a9b84' }}>{'Maiar Listing'}</span>
                                     </div>
-                                    <div>
+                                    {/* <div>
                                         <span>Registration: </span>
                                         <span style={{ color: '#6a9b84' }}>{`${currentPoolDetail.registration_start} - ${currentPoolDetail.registration_end}`}</span>
-                                    </div>
+                                    </div> */}
                                 </div>
 
                                 <div className='d-flex flex-column mt-5' style={{ rowGap: '6px' }}>
@@ -225,10 +356,10 @@ const IDODetail = () => {
                                         <span>Distribution: </span>
                                         <span style={{ color: '#6a9b84' }}>Claimed on BitX IDO Launchpad</span>
                                     </div>
-                                    <div>
+                                    {/* <div>
                                         <span>Vesting: </span>
                                         <span style={{ color: '#6a9b84' }}>Loerem Ipsum dollar</span>
-                                    </div>
+                                    </div> */}
                                 </div>
                             </div>
                         </div>

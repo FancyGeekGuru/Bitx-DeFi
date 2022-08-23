@@ -11,7 +11,6 @@ import './index.scss';
 import IDOCard from 'components/Card/IDOCard';
 import { advertising_data } from './data';
 import "react-widgets/styles.css";
-
 import {
     refreshAccount,
     sendTransactions,
@@ -40,32 +39,27 @@ import {
     AddressValue,
     BooleanValue,
 } from '@elrondnetwork/erdjs';
-
 import {
     IDO_CONTRACT_ABI_URL,
     IDO_CONTRACT_NAME,
     IDO_CONTRACT_ADDRESS,
 } from 'config';
-
 import {
     TIMEOUT,
     SECOND_IN_MILLI,
     convertWeiToEsdt,
 } from 'utils';
-
 import BTX_logo from 'assets/img/token logos/BTX.png';
 import { ProgressBar } from 'react-bootstrap';
-
 import { ImEarth } from "react-icons/im";
 import { SiTelegram, SiDiscord, SiTwitter, SiYoutube, SiLinkedin, SiMedium } from "react-icons/si";
 import { IoRocketOutline } from "react-icons/io5";
-
 import Countdown from 'react-countdown';
 import { routeNames } from 'routes';
 
-import { useDispatch, useSelector } from 'react-redux';
-import * as selectors from 'store/selectors';
-import { fetchIDOPools } from "store/actions/thunks/IDO";
+// import { useDispatch, useSelector } from 'react-redux';
+// import * as selectors from 'store/selectors';
+// import { fetchIDOPools } from "store/actions/thunks/IDO";
 
 const table_headers = [
     "Name",
@@ -86,13 +80,12 @@ const IDOLaunchpad = () => {
     const provider = new ProxyProvider(network.apiAddress, { timeout: TIMEOUT });
     const [displayMode, setDisplayMode] = useState<boolean>(false);
 
-    const dispatch = useDispatch();
-    const IDOState = useSelector(selectors.IDOState);
-    const pools_list = IDOState.poolLists.data;
-
-    useEffect(() => {
-        dispatch(fetchIDOPools());
-    }, []);
+    // const dispatch = useDispatch();
+    // const IDOState = useSelector(selectors.IDOState);
+    // const pools_list = IDOState.poolLists.data;
+    // useEffect(() => {
+    //     dispatch(fetchIDOPools());
+    // }, []);
 
     // load smart contract abi and parse it to SmartContract object for tx
     const [idoContractInteractor, setIdoContractInteractor] = useState<any>(undefined);
@@ -158,16 +151,14 @@ const IDOLaunchpad = () => {
                 };
                 datas.push(data);
             });
-            console.log(datas);
-
             setProjects(datas);
 
         })();
     }, [idoContractInteractor, hasPendingTransactions]);
 
     const navigate = useNavigate();
-    const handleIDONavigate = () => {
-        navigate(`/ido-detail`);
+    const handleIDONavigate = (project_id) => {
+        navigate(`/ido-detail/${project_id}`);
     };
 
     return (
@@ -255,11 +246,11 @@ const IDOLaunchpad = () => {
                         !displayMode ? (
                             <Row style={{ rowGap: '20px' }}>
                                 {
-                                    pools_list.map((row, index) => {
+                                    projects.map((row, index) => {
                                         return (
                                             <Col key={index} md={6} lg={6} xl={4} xxl={3}>
-                                                {/* <div className='IDOCard-link' onClick={() => { handleIDONavigate(); }}> */}
-                                                <div className='IDOCard-link'>
+                                                <div className='IDOCard-link' onClick={() => { handleIDONavigate(row.project_id); }}>
+                                                    {/* <div className='IDOCard-link'> */}
                                                     <IDOCard data={row} />
                                                 </div>
                                             </Col>
