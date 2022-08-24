@@ -153,7 +153,7 @@ const IDOLaunchpad = () => {
                 datas.push(data);
             });
             setProjects(datas);
-
+            setFilteredProjects(datas);
         })();
     }, [idoContractInteractor, hasPendingTransactions]);
 
@@ -164,6 +164,40 @@ const IDOLaunchpad = () => {
 
     const getTokenNameFromIdentifier = (token_identifier) => {
         return token_identifier.substring(0, token_identifier.indexOf('-'));
+    };
+
+    const [searchValue, setSearchValue] = useState<string>("");
+    const [filteredProjects, setFilteredProjects] = useState<any>([]);
+
+    useEffect(() => {
+        const filteredData = projects.filter(v => v?.project_presale_token_identifier.toLowerCase().includes(searchValue));
+        setFilteredProjects(filteredData);
+    }, [searchValue]);
+
+    // const sortData = () => {
+
+    // };
+
+    const sortChange = (filter_type) => {
+        const sortedData = filteredProjects;
+        switch (filter_type) {
+            case "Hard Cap":
+                sortedData.sort((a, b) => a.project_hard_cap - b.project_hard_cap);
+                break;
+            case "Soft Cap":
+                sortedData.sort((a, b) => a.project_soft_cap - b.project_soft_cap);
+                break;
+            case "LP Percent":
+                sortedData.sort((a, b) => a.project_maiar_liquidity_percent - b.project_maiar_liquidity_percent);
+                break;
+            case "Start time":
+                sortedData.sort((a, b) => b.project_presale_start_time - a.project_presale_start_time);
+                break;
+            case "End Time":
+                sortedData.sort((a, b) => b.project_presale_end_time - a.project_presale_end_time);
+                break;
+        }
+        setFilteredProjects(sortedData);
     };
 
     return (
@@ -218,7 +252,7 @@ const IDOLaunchpad = () => {
             <div className='ido-container' style={{ marginBottom: '80px', minHeight: "100vh" }}>
                 <div className='d-flex flex-wrap' style={{ rowGap: '10px', columnGap: '10px' }}>
                     <div style={{ width: '300px' }}>
-                        <input className='ido-input' placeholder="Enter token name or symbol" />
+                        <input className='ido-input' placeholder="Enter token name or symbol" value={searchValue} onChange={(e) => setSearchValue(e.target.value)} />
                     </div>
                     {/* <div style={{ width: '150px' }}>
                         <DropdownList
@@ -230,6 +264,7 @@ const IDOLaunchpad = () => {
                         <DropdownList
                             defaultValue="No Filter"
                             data={["No Filter", "Hard Cap", "Soft Cap", "LP Percent", "Start time", "End Time"]}
+                            onChange={sortChange}
                         />
                     </div>
                     <div className='d-flex' style={{ columnGap: '10px' }}>
@@ -251,7 +286,7 @@ const IDOLaunchpad = () => {
                         !displayMode ? (
                             <Row style={{ rowGap: '20px' }}>
                                 {
-                                    projects.map((row, index) => {
+                                    filteredProjects.map((row, index) => {
                                         return (
                                             <Col key={index} md={6} lg={6} xl={4} xxl={3}>
                                                 <div className='IDOCard-link' onClick={() => { handleIDONavigate(row.project_id); }}>
@@ -278,7 +313,7 @@ const IDOLaunchpad = () => {
                                 </Thead>
                                 <Tbody>
                                     {
-                                        projects.map((row, index) => {
+                                        filteredProjects.map((row, index) => {
                                             return (
                                                 <Tr key={index}>
                                                     <Td>

@@ -17,11 +17,11 @@ import {
 } from 'config';
 import {
     refreshAccount,
-	sendTransactions,
-	useGetAccountInfo,
-	useGetNetworkConfig,
-	useGetPendingTransactions,
-	transactionServices
+    sendTransactions,
+    useGetAccountInfo,
+    useGetNetworkConfig,
+    useGetPendingTransactions,
+    transactionServices
 } from '@elrondnetwork/dapp-core';
 import {
     Address,
@@ -44,6 +44,7 @@ import {
     getPrice
 } from 'utils';
 import { routeNames } from 'routes';
+import emptyLogo from 'assets/img/token logos/empty.png';
 
 const IDODetail = () => {
     interface Props {
@@ -132,6 +133,7 @@ const IDODetail = () => {
 
             const res1: any = await getEsdtTokenId(network.apiAddress, data.project_presale_token_identifier);
             setTokenInfo(res1.data);
+            setLogoUrl(`https://devnet-media.elrond.com/tokens/asset/${res1.data.identifier}/logo.png`);
 
             const prices: any = await getPrice(network.apiAddress);
             if (prices.length > 0) {
@@ -170,7 +172,7 @@ const IDODetail = () => {
         }
     };
 
-    const handleBuy = async() => {
+    const handleBuy = async () => {
         if (buyAmount < project.project_min_buy_limit || buyAmount > project.project_max_buy_limit || buyAmount > (project.project_max_buy_limit - project.project_min_buy_limit)) {
             toast.error("You must input the correct amount to buy.");
             return;
@@ -195,6 +197,11 @@ const IDODetail = () => {
         });
     };
 
+    const [logoUrl, setLogoUrl] = useState<string>();
+    const onErrorLogo = () => {
+        setLogoUrl(emptyLogo);
+    };
+
     return (
         <>
             <div className='home-container mb-5'>
@@ -206,12 +213,12 @@ const IDODetail = () => {
                     <Col lg={4}>
                         <div className='IDO-Card-box'>
                             <div className="d-flex align-items-center">
-                                {/* <div className='d-flex'>
+                                <div className='d-flex'>
                                     <div>
-                                        <img src={`https://devnet-media.elrond.com/tokens/asset/${tokenInfo?.identifier}/logo.png`} alt="BitX logo" width={'80px'} />
+                                        <img src={logoUrl} alt={project?.project_presale_token_identifier} width={'80px'} onError={onErrorLogo} />
                                     </div>
-                                </div> */}
-                                <div className='d-flex flex-column'>
+                                </div>
+                                <div className='d-flex flex-column ml-4'>
                                     <span className='IDO-Card-title'>{project ? project.project_presale_token_identifier : '-'}</span>
                                     <span className='IDO-Card-token-identifier mt-2'>{`${tokenInfo ? tokenInfo.name : '-'} / ${project ? project.project_fund_token_identifier : '-'}`}</span>
                                 </div>
@@ -275,12 +282,12 @@ const IDODetail = () => {
                     <Col lg={8}>
                         <div className='IDO-Card-box'>
                             <div className="d-flex align-items-center">
-                                {/* <div className='d-flex'>
+                                <div className='d-flex'>
                                     <div>
-                                        <img src={`https://devnet-media.elrond.com/tokens/asset/${tokenInfo?.identifier}/logo.png`} alt="BitX logo" width={'60px'} />
+                                        <img src={logoUrl} alt={project?.project_presale_token_identifier} width={'60px'} onError={onErrorLogo} />
                                     </div>
-                                </div> */}
-                                <div className='d-flex flex-column'>
+                                </div>
+                                <div className='d-flex flex-column ml-4'>
                                     <span className='IDO-Card-title' style={{ fontSize: '20px' }}>{project ? project.project_presale_token_identifier : '-'}</span>
                                 </div>
                             </div>

@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { ProgressBar } from 'react-bootstrap';
 import Countdown from 'react-countdown';
 import { swtichSocialIcon } from 'utils/social';
-import BTX_logo from 'assets/img/token logos/BTX.png';
+import emptyLogo from 'assets/img/token logos/empty.png';
 import EGLD_logo from 'assets/img/token logos/EGLD.png';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
@@ -25,11 +25,17 @@ const IDOCard = (props: any) => {
             console.log(network.apiAddress);
             const res: any = await getEsdtTokenId(network.apiAddress, data.project_presale_token_identifier);
             setTokenInfo(res.data);
+            setLogoUrl(`https://devnet-media.elrond.com/tokens/asset/${tokenInfo?.identifier}/logo.png`);
         };
 
         fetchTokenInfo();
     }, []);
 
+    const [logoUrl, setLogoUrl] = useState<string>();
+    const onErrorLogo = () => {
+        setLogoUrl(emptyLogo);
+    };
+    
     return (
         <>
             <div className='IDO-Card-box'>
@@ -41,7 +47,7 @@ const IDOCard = (props: any) => {
                     </div>
                     <div className='d-flex justify-content-end'>
                         <div>
-                            <img src={`https://devnet-media.elrond.com/tokens/asset/${tokenInfo?.identifier}/logo.png`} alt={data.project_presale_token_identifier} width={'80px'} />
+                            <img src={logoUrl} alt={data.project_presale_token_identifier} width={'80px'} onError={onErrorLogo} />
                         </div>
                         <div style={{ marginLeft: '-25px', marginTop: '56px' }}>
                             <img src={EGLD_logo} alt="BitX logo" width={'30px'} />
