@@ -115,23 +115,23 @@ const IDOLaunchpad = () => {
             if (!res || !res.returnCode.isSuccess()) return;
             const value = res.firstValue.valueOf();
 
-            const TOKEN_DECIMAL = 18;
             const datas: any = [];
             value.map((item: any) => {
+                const token_decimal = item.project_presale_token_decimal.toNumber();
                 const data = {
                     project_id: item.project_id.toNumber(),
                     project_owner: item.project_owner.toString(),
                     project_presale_token_identifier: item.project_presale_token_identifier.toString(),
                     project_fund_token_identifier: item.project_fund_token_identifier.toString(),
                     project_fee_option_id: item.project_fee_option_id.toNumber(),
-                    project_presale_rate: convertWeiToEsdt(item.project_presale_rate, TOKEN_DECIMAL),
+                    project_presale_rate: convertWeiToEsdt(item.project_presale_rate, token_decimal),
                     project_create_time: item.project_create_time.toNumber() * SECOND_IN_MILLI,
-                    project_soft_cap: convertWeiToEsdt(item.project_soft_cap, TOKEN_DECIMAL),
-                    project_hard_cap: convertWeiToEsdt(item.project_hard_cap, TOKEN_DECIMAL),
-                    project_min_buy_limit: convertWeiToEsdt(item.project_min_buy_limit, TOKEN_DECIMAL),
-                    project_max_buy_limit: convertWeiToEsdt(item.project_max_buy_limit, TOKEN_DECIMAL),
+                    project_soft_cap: convertWeiToEsdt(item.project_soft_cap, 18),
+                    project_hard_cap: convertWeiToEsdt(item.project_hard_cap, 18),
+                    project_min_buy_limit: convertWeiToEsdt(item.project_min_buy_limit, 18),
+                    project_max_buy_limit: convertWeiToEsdt(item.project_max_buy_limit, 18),
                     project_maiar_liquidity_percent: item.project_maiar_liquidity_percent.toNumber() / 100,
-                    project_maiar_listing_rate: convertWeiToEsdt(item.project_maiar_listing_rate, TOKEN_DECIMAL),
+                    project_maiar_listing_rate: convertWeiToEsdt(item.project_maiar_listing_rate, token_decimal),
                     project_presale_start_time: item.project_presale_start_time.toNumber() * SECOND_IN_MILLI,
                     project_presale_end_time: item.project_presale_end_time.toNumber() * SECOND_IN_MILLI,
                     project_liquidity_lock_timestamp: item.project_liquidity_lock_timestamp.toNumber() * SECOND_IN_MILLI,
@@ -144,8 +144,11 @@ const IDOLaunchpad = () => {
                     project_social_linkedin: item.project_social_linkedin.toString(),
                     project_social_medium: item.project_social_medium.toString(),
                     project_total_bought_amount_in_egld: convertWeiToEsdt(item.project_total_bought_amount_in_egld, 18),
-                    project_total_bought_amount_in_esdt: convertWeiToEsdt(item.project_total_bought_amount_in_esdt, TOKEN_DECIMAL),
+                    project_total_bought_amount_in_esdt: convertWeiToEsdt(item.project_total_bought_amount_in_esdt, token_decimal),
                     project_is_lived: item.project_is_lived,
+                    project_presale_token_decimal: token_decimal,
+                    project_presale_token_name: item.project_presale_token_name.toString(),
+                    project_presale_percentage: convertWeiToEsdt(item.project_total_bought_amount_in_egld, 18) * 100 / convertWeiToEsdt(item.project_hard_cap, 18),
                 };
                 datas.push(data);
             });
@@ -294,7 +297,7 @@ const IDOLaunchpad = () => {
                                                         <span className='ml-2'>{`1 ${row ? row.project_fund_token_identifier : '-'} = ${row ? row.project_presale_rate : 'undefined'} ${getTokenNameFromIdentifier(row?.project_presale_token_identifier)}`}</span>
                                                     </Td>
                                                     <Td>
-                                                        <ProgressBar now={0} />
+                                                        <ProgressBar now={row.project_presale_percentage} />
                                                     </Td>
                                                     <Td>
                                                         <div className='table-social-box'>

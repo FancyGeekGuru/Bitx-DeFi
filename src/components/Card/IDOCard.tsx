@@ -104,8 +104,8 @@ const IDOCard = (props: any) => {
                 <div className='mt-4'>
                     <p className='IDO-prize'>{`1 ${data.project_fund_token_identifier} = ${data.project_presale_rate} ${tokenInfo?.name}`}</p>
 
-                    <span>{"Progress (0.00%)"}</span>
-                    <ProgressBar className='mt-1' now={0} />
+                    <span>{"Progress (" + data.project_presale_percentage.toFixed(2) + "%)"}</span>
+                    <ProgressBar className='mt-1' now={data.project_presale_percentage} />
                     <div className='d-flex justify-content-between mt-1'>
                         <span>{`0 ${data.project_fund_token_identifier}`}</span>
                         <span>{`- ${data.project_fund_token_identifier}`}</span>

@@ -124,7 +124,7 @@ export const CONVERT_CONTRACT_NAME = 'BtxConvert';
 // IDO
 export const IDO_CONTRACT_ABI_URL = 'abi/bitx-ido.abi.json';
 export const IDO_CONTRACT_NAME = 'BitxIdo';
-export const IDO_CONTRACT_ADDRESS = 'erd1qqqqqqqqqqqqqpgq42fehlcsh049jpy5f9xw8lvj2u27z56m5zvsfrz09e';
+export const IDO_CONTRACT_ADDRESS = 'erd1qqqqqqqqqqqqqpgq9kjqzsem8sk9kmjehkpjk9exaf5ujqaq5zvsppznsl';
 export const WEGLD_ID = 'WEGLD-d7c6bb';
 
 // ///////////////////////////////////////////////////////////////////////////////////////////////////////////

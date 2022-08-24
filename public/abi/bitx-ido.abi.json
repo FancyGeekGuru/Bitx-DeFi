@@ -10,7 +10,7 @@
         "contractCrate": {
             "name": "bitx-ido",
             "version": "0.0.0",
-            "git_version": "8f14bf2-modified"
+            "git_version": "fed6cdd-modified"
         },
         "framework": {
             "name": "elrond-wasm",
@@ -74,6 +74,14 @@
                 {
                     "name": "project_presale_token_identifier",
                     "type": "TokenIdentifier"
+                },
+                {
+                    "name": "project_presale_token_decimal",
+                    "type": "u32"
+                },
+                {
+                    "name": "project_presale_token_name",
+                    "type": "bytes"
                 },
                 {
                     "name": "project_fund_token_identifier",
@@ -854,6 +862,36 @@
             ]
         },
         {
+            "name": "getProjectPresaleTokenDecimal",
+            "mutability": "readonly",
+            "inputs": [
+                {
+                    "name": "project_id",
+                    "type": "u32"
+                }
+            ],
+            "outputs": [
+                {
+                    "type": "u32"
+                }
+            ]
+        },
+        {
+            "name": "getProjectPresaleTokenName",
+            "mutability": "readonly",
+            "inputs": [
+                {
+                    "name": "project_id",
+                    "type": "u32"
+                }
+            ],
+            "outputs": [
+                {
+                    "type": "bytes"
+                }
+            ]
+        },
+        {
             "name": "getProjectIsLived",
             "mutability": "readonly",
             "inputs": [
@@ -1022,6 +1060,14 @@
                 {
                     "name": "project_is_lived",
                     "type": "bool"
+                },
+                {
+                    "name": "project_presale_token_decimal",
+                    "type": "u32"
+                },
+                {
+                    "name": "project_presale_token_name",
+                    "type": "bytes"
                 }
             ]
         }

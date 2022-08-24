@@ -5,6 +5,8 @@ import Countdown from 'react-countdown';
 import { paddingTwoDigits } from 'utils/convert';
 import { Link, useLocation } from "react-router-dom";
 import moment from 'moment';
+import { toast } from 'react-toastify';
+import BigNumber from 'bignumber.js/bignumber.js';
 import { swtichSocialIcon } from 'utils/social';
 import { numberWithCommas } from 'utils/convert';
 import {
@@ -14,9 +16,12 @@ import {
     WEGLD_ID
 } from 'config';
 import {
-    useGetAccountInfo,
-    useGetNetworkConfig,
-    useGetPendingTransactions,
+    refreshAccount,
+	sendTransactions,
+	useGetAccountInfo,
+	useGetNetworkConfig,
+	useGetPendingTransactions,
+	transactionServices
 } from '@elrondnetwork/dapp-core';
 import {
     Address,
@@ -25,7 +30,11 @@ import {
     SmartContract,
     DefaultSmartContractController,
     ProxyProvider,
-    U32Value
+    U32Value,
+    TypedValue,
+    ArgSerializer,
+    GasLimit,
+    BytesValue,
 } from '@elrondnetwork/erdjs';
 import {
     TIMEOUT,
@@ -46,7 +55,7 @@ const IDODetail = () => {
     }
 
     const location = useLocation();
-    const { address } = useGetAccountInfo();
+    const { address, account } = useGetAccountInfo();
     const { hasPendingTransactions } = useGetPendingTransactions();
     const { network } = useGetNetworkConfig();
     const isLoggedIn = Boolean(address);
@@ -86,21 +95,21 @@ const IDODetail = () => {
 
             if (!res || !res.returnCode.isSuccess()) return;
             const item = res.firstValue.valueOf();
-            const TOKEN_DECIMAL = 18;
+            const token_decimal = item.project_presale_token_decimal.toNumber();
             const data = {
                 project_id: item.project_id.toNumber(),
                 project_owner: item.project_owner.toString(),
                 project_presale_token_identifier: item.project_presale_token_identifier.toString(),
                 project_fund_token_identifier: item.project_fund_token_identifier.toString(),
                 project_fee_option_id: item.project_fee_option_id.toNumber(),
-                project_presale_rate: convertWeiToEsdt(item.project_presale_rate, TOKEN_DECIMAL),
+                project_presale_rate: convertWeiToEsdt(item.project_presale_rate, token_decimal),
                 project_create_time: item.project_create_time.toNumber() * SECOND_IN_MILLI,
-                project_soft_cap: convertWeiToEsdt(item.project_soft_cap, TOKEN_DECIMAL),
-                project_hard_cap: convertWeiToEsdt(item.project_hard_cap, TOKEN_DECIMAL),
-                project_min_buy_limit: convertWeiToEsdt(item.project_min_buy_limit, TOKEN_DECIMAL),
-                project_max_buy_limit: convertWeiToEsdt(item.project_max_buy_limit, TOKEN_DECIMAL),
+                project_soft_cap: convertWeiToEsdt(item.project_soft_cap, 18),
+                project_hard_cap: convertWeiToEsdt(item.project_hard_cap, 18),
+                project_min_buy_limit: convertWeiToEsdt(item.project_min_buy_limit, 18),
+                project_max_buy_limit: convertWeiToEsdt(item.project_max_buy_limit, 18),
                 project_maiar_liquidity_percent: item.project_maiar_liquidity_percent.toNumber() / 100,
-                project_maiar_listing_rate: convertWeiToEsdt(item.project_maiar_listing_rate, TOKEN_DECIMAL),
+                project_maiar_listing_rate: convertWeiToEsdt(item.project_maiar_listing_rate, token_decimal),
                 project_presale_start_time: item.project_presale_start_time.toNumber() * SECOND_IN_MILLI,
                 project_presale_end_time: item.project_presale_end_time.toNumber() * SECOND_IN_MILLI,
                 project_liquidity_lock_timestamp: item.project_liquidity_lock_timestamp.toNumber() * SECOND_IN_MILLI,
@@ -113,8 +122,11 @@ const IDODetail = () => {
                 project_social_linkedin: item.project_social_linkedin.toString(),
                 project_social_medium: item.project_social_medium.toString(),
                 project_total_bought_amount_in_egld: convertWeiToEsdt(item.project_total_bought_amount_in_egld, 18),
-                project_total_bought_amount_in_esdt: convertWeiToEsdt(item.project_total_bought_amount_in_esdt, TOKEN_DECIMAL),
+                project_total_bought_amount_in_esdt: convertWeiToEsdt(item.project_total_bought_amount_in_esdt, token_decimal),
                 project_is_lived: item.project_is_lived,
+                project_presale_token_decimal: token_decimal,
+                project_presale_token_name: item.project_presale_token_name.toString(),
+                project_presale_percentage: convertWeiToEsdt(item.project_total_bought_amount_in_egld, 18) * 100 / convertWeiToEsdt(item.project_hard_cap, 18),
             };
             setProject(data);
 
@@ -145,6 +157,44 @@ const IDODetail = () => {
         );
     };
 
+    const [buyAmount, setBuyAmount] = useState(0);
+    const handleBuyAmount = (e) => {
+        setBuyAmount(e.target.value);
+    };
+
+    const handleMax = () => {
+        if (account.balance > project.project_max_buy_limit) {
+            setBuyAmount(project.project_max_buy_limit);
+        } else {
+            setBuyAmount(account.balance);
+        }
+    };
+
+    const handleBuy = async() => {
+        if (buyAmount < project.project_min_buy_limit || buyAmount > project.project_max_buy_limit || buyAmount > (project.project_max_buy_limit - project.project_min_buy_limit)) {
+            toast.error("You must input the correct amount to buy.");
+            return;
+        }
+        const amount = (new BigNumber(buyAmount)).multipliedBy(Math.pow(10, 18));
+        const args: TypedValue[] = [
+            new U32Value(project.project_id),
+        ];
+        const { argumentsString } = new ArgSerializer().valuesToString(args);
+        const data = `buy@${argumentsString}`;
+
+        const tx = {
+            receiver: IDO_CONTRACT_ADDRESS,
+            gasLimit: new GasLimit(10000000),
+            value: amount,
+            data: data,
+        };
+
+        await refreshAccount();
+        const result = await sendTransactions({
+            transactions: tx,
+        });
+    };
+
     return (
         <>
             <div className='home-container mb-5'>
@@ -156,12 +206,12 @@ const IDODetail = () => {
                     <Col lg={4}>
                         <div className='IDO-Card-box'>
                             <div className="d-flex align-items-center">
-                                <div className='d-flex'>
+                                {/* <div className='d-flex'>
                                     <div>
                                         <img src={`https://devnet-media.elrond.com/tokens/asset/${tokenInfo?.identifier}/logo.png`} alt="BitX logo" width={'80px'} />
                                     </div>
-                                </div>
-                                <div className='d-flex flex-column ml-5'>
+                                </div> */}
+                                <div className='d-flex flex-column'>
                                     <span className='IDO-Card-title'>{project ? project.project_presale_token_identifier : '-'}</span>
                                     <span className='IDO-Card-token-identifier mt-2'>{`${tokenInfo ? tokenInfo.name : '-'} / ${project ? project.project_fund_token_identifier : '-'}`}</span>
                                 </div>
@@ -178,11 +228,11 @@ const IDODetail = () => {
                                 </div>
 
                                 <div className='mt-3'>
-                                    <span>{"Progress (0.00%)"}</span>
-                                    <ProgressBar className='mt-1' now={0} />
+                                    <span>{"Progress (" + project?.project_presale_percentage.toFixed(2) + "%)"}</span>
+                                    <ProgressBar className='mt-1' now={project?.project_presale_percentage} />
                                     <div className='d-flex justify-content-between mt-1'>
                                         <span>{`0 ${project ? project.project_fund_token_identifier : '-'}`}</span>
-                                        <span>{`- ${project ? project.project_fund_token_identifier : '-'}`}</span>
+                                        <span>{`${project ? project.project_hard_cap : '-'} ${project ? project.project_fund_token_identifier : '-'}`}</span>
                                     </div>
                                 </div>
                             </div>
@@ -192,12 +242,12 @@ const IDODetail = () => {
                             </div>
 
                             <div className='mt-4 d-flex'>
-                                <input className='ido-input' />
-                                <button className='ido-card-but ml-2' style={{ padding: '5px 10px' }}> MAX </button>
+                                <input className='ido-input' value={buyAmount} onChange={handleBuyAmount} />
+                                <button className='ido-card-but ml-2' style={{ padding: '5px 10px' }} onClick={handleMax}> MAX </button>
                             </div>
 
                             <div className='d-flex justify-content-center mt-4'>
-                                <button className='ido-card-buy-but'> Buy </button>
+                                <button className='ido-card-buy-but' onClick={handleBuy}> Buy </button>
                             </div>
 
                         </div>
@@ -225,12 +275,12 @@ const IDODetail = () => {
                     <Col lg={8}>
                         <div className='IDO-Card-box'>
                             <div className="d-flex align-items-center">
-                                <div className='d-flex'>
+                                {/* <div className='d-flex'>
                                     <div>
                                         <img src={`https://devnet-media.elrond.com/tokens/asset/${tokenInfo?.identifier}/logo.png`} alt="BitX logo" width={'60px'} />
                                     </div>
-                                </div>
-                                <div className='d-flex flex-column ml-4'>
+                                </div> */}
+                                <div className='d-flex flex-column'>
                                     <span className='IDO-Card-title' style={{ fontSize: '20px' }}>{project ? project.project_presale_token_identifier : '-'}</span>
                                 </div>
                             </div>
