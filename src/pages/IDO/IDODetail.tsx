@@ -2,25 +2,22 @@
 import React, { useEffect, useState } from 'react';
 import { ProgressBar, Row, Col } from 'react-bootstrap';
 import Countdown from 'react-countdown';
-import BTX_logo from 'assets/img/token logos/BTX.png';
 import { paddingTwoDigits } from 'utils/convert';
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import moment from 'moment';
 import { swtichSocialIcon } from 'utils/social';
 import { numberWithCommas } from 'utils/convert';
-
 import {
     IDO_CONTRACT_ABI_URL,
     IDO_CONTRACT_NAME,
     IDO_CONTRACT_ADDRESS,
+    WEGLD_ID
 } from 'config';
-
 import {
     useGetAccountInfo,
     useGetNetworkConfig,
     useGetPendingTransactions,
 } from '@elrondnetwork/dapp-core';
-
 import {
     Address,
     AbiRegistry,
@@ -30,13 +27,14 @@ import {
     ProxyProvider,
     U32Value
 } from '@elrondnetwork/erdjs';
-
 import {
     TIMEOUT,
     SECOND_IN_MILLI,
     convertWeiToEsdt,
     getEsdtTokenId,
+    getPrice
 } from 'utils';
+import { routeNames } from 'routes';
 
 const IDODetail = () => {
     interface Props {
@@ -73,6 +71,7 @@ const IDODetail = () => {
 
     const [project, setProject] = useState<any>();
     const [tokenInfo, setTokenInfo] = useState<any>();
+    const [egldPrice, setEgldPrice] = useState<number>(0);
 
     useEffect(() => {
         (async () => {
@@ -123,6 +122,17 @@ const IDODetail = () => {
 
             const res1: any = await getEsdtTokenId(network.apiAddress, data.project_presale_token_identifier);
             setTokenInfo(res1.data);
+
+            const prices: any = await getPrice(network.apiAddress);
+            if (prices.length > 0) {
+                for (let i = 0; i < prices.length; i++) {
+                    if (prices[i].id === WEGLD_ID) {
+                        // console.log(prices[i].price);
+                        setEgldPrice(prices[i].price);
+                        break;
+                    }
+                }
+            }
         })();
     }, [idoContractInteractor, hasPendingTransactions]);
 
@@ -140,29 +150,33 @@ const IDODetail = () => {
     return (
         <>
             <div className='home-container mb-5'>
+                <Link to={routeNames.idolaunchpad}>
+                    <p className="go-back"> {"< go home"}</p>
+                </Link>
+
                 <Row>
                     <Col lg={4}>
                         <div className='IDO-Card-box'>
                             <div className="d-flex align-items-center">
                                 <div className='d-flex'>
                                     <div>
-                                        <img src={BTX_logo} alt="BitX logo" width={'80px'} />
+                                        <img src={`https://devnet-media.elrond.com/tokens/asset/${tokenInfo?.identifier}/logo.png`} alt="BitX logo" width={'80px'} />
                                     </div>
                                 </div>
                                 <div className='d-flex flex-column ml-5'>
                                     <span className='IDO-Card-title'>{project ? project.project_presale_token_identifier : '-'}</span>
-                                    <span className='IDO-Card-token-identifier mt-2'>{`${tokenInfo ? tokenInfo.name : '-'}/${project ? project.project_fund_token_identifier : '-'}`}</span>
+                                    <span className='IDO-Card-token-identifier mt-2'>{`${tokenInfo ? tokenInfo.name : '-'} / ${project ? project.project_fund_token_identifier : '-'}`}</span>
                                 </div>
                             </div>
 
                             <div className='mt-4'>
-                                <div className='connect-but-box d-flex justify-content-center'>
+                                {/* <div className='connect-but-box d-flex justify-content-center'>
                                     <button className='ido-card-but'> Connect Wallet </button>
-                                </div>
+                                </div> */}
 
                                 <div className='d-flex flex-column mt-3'>
                                     <span className='IDO-prize'>{`1 ${project ? project.project_fund_token_identifier : '-'} = ${project ? project.project_presale_rate : 'undefined'} ${tokenInfo ? tokenInfo.name : '-'}`}</span>
-                                    <span className='IDO-prize' style={{ fontSize: '13px' }}>{`1 ${tokenInfo ? tokenInfo.name : '-'} = $0.125`}</span>
+                                    <span className='IDO-prize' style={{ fontSize: '13px' }}>{`1 ${tokenInfo ? tokenInfo.name : '-'} = $${(egldPrice / project?.project_presale_rate).toFixed(5)}`}</span>
                                 </div>
 
                                 <div className='mt-3'>
@@ -176,7 +190,7 @@ const IDODetail = () => {
                             </div>
 
                             <div className='d-flex justify-content-center mt-4'>
-                                <Countdown className='IDO-Card-Countdown' date={moment(project?.project_presale_start_time).utc().toDate()} renderer={renderer} autoStart />
+                                <Countdown className='IDO-Card-Countdown' date={moment(project?.project_presale_start_time / 1000).format("DD MMM YYYY hh:mm a")} renderer={renderer} autoStart />
                             </div>
 
                             <div className='mt-4 d-flex'>
@@ -215,7 +229,7 @@ const IDODetail = () => {
                             <div className="d-flex align-items-center">
                                 <div className='d-flex'>
                                     <div>
-                                        <img src={BTX_logo} alt="BitX logo" width={'60px'} />
+                                        <img src={`https://devnet-media.elrond.com/tokens/asset/${tokenInfo?.identifier}/logo.png`} alt="BitX logo" width={'60px'} />
                                     </div>
                                 </div>
                                 <div className='d-flex flex-column ml-4'>
@@ -278,7 +292,6 @@ const IDODetail = () => {
                                         </a>
                                     )
                                 }
-
                             </div>
 
                             <div className='mt-5'>
@@ -300,21 +313,21 @@ const IDODetail = () => {
                                         <span>Total Supply: </span>
                                         <span style={{ color: '#6a9b84' }}>{`${numberWithCommas(tokenInfo?.supply)} ${tokenInfo ? tokenInfo.name : '-'}`}</span>
                                     </div>
-                                    {/* <div>
+                                    <div>
                                         <span>Tokens For Presale: </span>
-                                        <span style={{ color: '#6a9b84' }}>{`${numberWithCommas(currentPoolDetail.tokens_for_presale)} ${currentPoolDetail.token}`}</span>
+                                        <span style={{ color: '#6a9b84' }}>{project?.project_presale_rate * project?.project_hard_cap} {tokenInfo?.name}</span>
                                     </div>
                                     <div>
                                         <span>Tokens For Liquidity: </span>
-                                        <span style={{ color: '#6a9b84' }}>{`${numberWithCommas(currentPoolDetail.tokens_for_liquidity)} ${currentPoolDetail.token}`}</span>
-                                    </div> */}
+                                        <span style={{ color: '#6a9b84' }}>{project?.project_presale_rate * project?.project_hard_cap * project?.project_maiar_liquidity_percent / 100} {tokenInfo?.name}</span>
+                                    </div>
                                 </div>
 
                                 <div className='d-flex flex-column mt-5' style={{ rowGap: '6px' }}>
                                     <p style={{ fontSize: '20px', color: "#6a9b84", fontWeight: '700' }}>PRICE</p>
                                     <div>
                                         <span>IDO: </span>
-                                        <span style={{ color: '#6a9b84' }}>$0.125</span>
+                                        <span style={{ color: '#6a9b84' }}>${(egldPrice / project?.project_presale_rate).toFixed(5)}</span>
                                     </div>
                                 </div>
 
@@ -338,7 +351,7 @@ const IDODetail = () => {
                                     </div>
                                     <div>
                                         <span>Starts / end: </span>
-                                        <span style={{ color: '#6a9b84' }}>{`${moment(project?.project_presale_start_time).utc().toDate()} - ${moment(project?.project_presale_end_time).utc().toDate()}`}</span>
+                                        <span style={{ color: '#6a9b84' }}>{`${moment(project?.project_presale_start_time / 1000).format("DD MMM YYYY hh:mm a")} - ${moment(project?.project_presale_end_time / 1000).format("DD MMM YYYY hh:mm a")}`}</span>
                                     </div>
                                     <div>
                                         <span>Listing On: </span>

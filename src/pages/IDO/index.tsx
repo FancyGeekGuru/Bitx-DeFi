@@ -49,14 +49,12 @@ import {
     SECOND_IN_MILLI,
     convertWeiToEsdt,
 } from 'utils';
-import BTX_logo from 'assets/img/token logos/BTX.png';
+import { swtichSocialIcon } from 'utils/social';
+import moment from 'moment';
 import { ProgressBar } from 'react-bootstrap';
-import { ImEarth } from "react-icons/im";
-import { SiTelegram, SiDiscord, SiTwitter, SiYoutube, SiLinkedin, SiMedium } from "react-icons/si";
 import { IoRocketOutline } from "react-icons/io5";
 import Countdown from 'react-countdown';
 import { routeNames } from 'routes';
-
 // import { useDispatch, useSelector } from 'react-redux';
 // import * as selectors from 'store/selectors';
 // import { fetchIDOPools } from "store/actions/thunks/IDO";
@@ -161,6 +159,10 @@ const IDOLaunchpad = () => {
         navigate(`/ido-detail/${project_id}`);
     };
 
+    const getTokenNameFromIdentifier = (token_identifier) => {
+        return token_identifier.substring(0, token_identifier.indexOf('-'));
+    };
+
     return (
         <>
             <div className='first-section'>
@@ -215,12 +217,12 @@ const IDOLaunchpad = () => {
                     <div style={{ width: '300px' }}>
                         <input className='ido-input' placeholder="Enter token name or symbol" />
                     </div>
-                    <div style={{ width: '150px' }}>
+                    {/* <div style={{ width: '150px' }}>
                         <DropdownList
                             defaultValue="All Status"
                             data={["All Status", "Upcoming", "KYC", "In progress", "Filled", "Ended", "Canceled"]}
                         />;
-                    </div>
+                    </div> */}
                     <div style={{ width: '150px' }}>
                         <DropdownList
                             defaultValue="No Filter"
@@ -273,57 +275,85 @@ const IDOLaunchpad = () => {
                                 </Thead>
                                 <Tbody>
                                     {
-                                        [0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map((_, index) => {
+                                        projects.map((row, index) => {
                                             return (
                                                 <Tr key={index}>
                                                     <Td>
                                                         <div className='d-flex align-items-center justify-content-center'>
-                                                            <img src={BTX_logo} alt="BitX logo" width={'40px'} />
-                                                            <span className='ml-2'>{"BTX Token"}</span>
+                                                            <img src={`https://devnet-media.elrond.com/tokens/asset/${row?.project_presale_token_identifier}/logo.png`} alt={row?.project_presale_token_identifier} width={'40px'} />
+                                                            <span className='ml-2'>{getTokenNameFromIdentifier(row?.project_presale_token_identifier)} Token</span>
                                                         </div>
                                                     </Td>
                                                     <Td>
-                                                        <span className='ml-2'>{"BTX-06x4234"}</span>
+                                                        <span className='ml-2'>{row?.project_presale_token_identifier}</span>
                                                     </Td>
                                                     <Td>
-                                                        <span className='ml-2'>{"350,000"}</span>
+                                                        <span className='ml-2'>{row?.project_presale_rate * row?.project_hard_cap}</span>
                                                     </Td>
                                                     <Td>
-                                                        <span className='ml-2'>{"1EGLD = 400BTX"}</span>
+                                                        <span className='ml-2'>{`1 ${row ? row.project_fund_token_identifier : '-'} = ${row ? row.project_presale_rate : 'undefined'} ${getTokenNameFromIdentifier(row?.project_presale_token_identifier)}`}</span>
                                                     </Td>
                                                     <Td>
                                                         <ProgressBar now={0} />
                                                     </Td>
                                                     <Td>
                                                         <div className='table-social-box'>
-                                                            <div>
-                                                                <ImEarth />
-                                                            </div>
-                                                            <div>
-                                                                <SiTelegram />
-                                                            </div>
-                                                            <div>
-                                                                <SiDiscord />
-                                                            </div>
-                                                            <div>
-                                                                <SiTwitter />
-                                                            </div>
-                                                            <div>
-                                                                <SiYoutube />
-                                                            </div>
-                                                            <div>
-                                                                <SiLinkedin />
-                                                            </div>
-                                                            <div>
-                                                                <SiMedium />
-                                                            </div>
+                                                            {
+                                                                row?.project_social_website !== "" && (
+                                                                    <a className='social-link' href={row?.project_social_website} rel="noreferrer" target="_blank">
+                                                                        {swtichSocialIcon('website')}
+                                                                    </a>
+                                                                )
+                                                            }
+                                                            {
+                                                                row?.project_social_telegram !== "" && (
+                                                                    <a className='social-link' href={row?.project_social_telegram} rel="noreferrer" target="_blank">
+                                                                        {swtichSocialIcon('telegram')}
+                                                                    </a>
+                                                                )
+                                                            }
+                                                            {
+                                                                row?.project_social_discord !== "" && (
+                                                                    <a className='social-link' href={row?.project_social_discord} rel="noreferrer" target="_blank">
+                                                                        {swtichSocialIcon('discord')}
+                                                                    </a>
+                                                                )
+                                                            }
+                                                            {
+                                                                row?.project_social_twitter !== "" && (
+                                                                    <a className='social-link' href={row?.project_social_twitter} rel="noreferrer" target="_blank">
+                                                                        {swtichSocialIcon('twitter')}
+                                                                    </a>
+                                                                )
+                                                            }
+                                                            {
+                                                                row?.project_social_youtube !== "" && (
+                                                                    <a className='social-link' href={row?.project_social_youtube} rel="noreferrer" target="_blank">
+                                                                        {swtichSocialIcon('youtube')}
+                                                                    </a>
+                                                                )
+                                                            }
+                                                            {
+                                                                row?.project_social_linkedin !== "" && (
+                                                                    <a className='social-link' href={row?.project_social_linkedin} rel="noreferrer" target="_blank">
+                                                                        {swtichSocialIcon('linkedIn')}
+                                                                    </a>
+                                                                )
+                                                            }
+                                                            {
+                                                                row?.project_social_medium !== "" && (
+                                                                    <a className='social-link' href={row?.project_social_medium} rel="noreferrer" target="_blank">
+                                                                        {swtichSocialIcon('medium')}
+                                                                    </a>
+                                                                )
+                                                            }
                                                         </div>
                                                     </Td>
                                                     <Td>
-                                                        <Countdown date={Date.now() + 60000} autoStart />
+                                                        <Countdown date={moment(row?.project_presale_start_time / 1000).format("DD MMM YYYY hh:mm a")} autoStart />
                                                     </Td>
                                                     <Td>
-                                                        <button className='view-but'>
+                                                        <button className='view-but' onClick={() => { handleIDONavigate(row.project_id); }}>
                                                             view
                                                         </button>
                                                     </Td>

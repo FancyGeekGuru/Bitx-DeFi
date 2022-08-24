@@ -79,6 +79,8 @@ import {
 
 import { ICOState } from './data';
 
+import moment from 'moment';
+
 const ColorlibConnector = styled(StepConnector)(({ theme }) => ({
 	[`&.${stepConnectorClasses.alternativeLabel}`]: {
 		top: 22,
@@ -299,7 +301,7 @@ const createIDO = () => {
 				stepN = 1;
 				toast.error("Maiar listing rate is incorrect");
 			}
-			console.log(start_time);
+			console.log(moment(start_time).valueOf());
 			console.log(end_time);
 			console.log(liquidity_lockup_days);
 			if (liquidity_lockup_days === undefined || liquidity_lockup_days <= 0) {
@@ -311,6 +313,7 @@ const createIDO = () => {
 			console.log(description);
 			if (description === undefined || description.length <= 0) {
 				stepN = 2;
+				toast.error("Please type description.");
 			}
 			const socials = [
 				{
@@ -417,8 +420,8 @@ const createIDO = () => {
 				new BigUIntValue(maxBuyAmount.valueOf()),
 				new U32Value(maiar_exchange_liquidity * 100),
 				new BigUIntValue(maiarListingRate.valueOf()),
-				new U64Value(start_time.getUTCMilliseconds()),
-				new U64Value(end_time.getUTCMilliseconds()),
+				new U64Value(moment(start_time).valueOf()),
+				new U64Value(moment(end_time).valueOf()),
 				new U64Value(liquidity_lockup_days * 24 * 3600 * 1000),
 				BytesValue.fromUTF8(description),
 				BytesValue.fromUTF8(socialLinks[0].link),
@@ -957,55 +960,6 @@ const createIDO = () => {
 														</a>
 													)
 												}
-												{/* {socialLinks[0].link === undefined || socialLinks[0].link.length === 0 ? (
-													<div></div>
-												) : (
-													<div>
-														<a href={socialLinks[0].link} rel="noreferrer" target="_blank"><ImEarth /></a>
-													</div>
-												)}
-												{socialLinks[1].link === undefined || socialLinks[1].link.length === 0 ? (
-													<div></div>
-												) : (
-													<div>
-														<a href={socialLinks[1].link} rel="noreferrer" target="_blank"><SiTelegram /></a>
-													</div>
-												)}
-												{socialLinks[2].link === undefined || socialLinks[2].link.length === 0 ? (
-													<div></div>
-												) : (
-													<div>
-														<a href={socialLinks[2].link} rel="noreferrer" target="_blank"><SiDiscord /></a>
-													</div>
-												)}
-												{socialLinks[3].link === undefined || socialLinks[3].link.length === 0 ? (
-													<div></div>
-												) : (
-													<div>
-														<a href={socialLinks[3].link} rel="noreferrer" target="_blank"><SiTwitter /></a>
-													</div>
-												)}
-												{socialLinks[4].link === undefined || socialLinks[4].link.length === 0 ? (
-													<div></div>
-												) : (
-													<div>
-														<a href={socialLinks[4].link} rel="noreferrer" target="_blank"><SiYoutube /></a>
-													</div>
-												)}
-												{socialLinks[5].link === undefined || socialLinks[5].link.length === 0 ? (
-													<div></div>
-												) : (
-													<div>
-														<a href={socialLinks[5].link} rel="noreferrer" target="_blank"><SiLinkedin /></a>
-													</div>
-												)}
-												{socialLinks[6].link === undefined || socialLinks[6].link.length === 0 ? (
-													<div></div>
-												) : (
-													<div>
-														<a href={socialLinks[6].link} rel="noreferrer" target="_blank"><SiMedium /></a>
-													</div>
-												)} */}
 											</div>
 
 											<div className='mt-5'>

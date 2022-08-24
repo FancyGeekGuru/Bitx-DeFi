@@ -16,16 +16,17 @@ import {
 
 const IDOCard = (props: any) => {
     const { data } = props;
-    const ico_start_time = moment(data.project_presale_start_time).utc().toDate();
+    const ico_start_time = moment(data.project_presale_start_time / 1000).format("DD MMM YYYY hh:mm a");
     const { network } = useGetNetworkConfig();
     const [tokenInfo, setTokenInfo] = useState<any>();
 
     useEffect(() => {
         const fetchTokenInfo = async () => {
+            console.log(network.apiAddress);
             const res: any = await getEsdtTokenId(network.apiAddress, data.project_presale_token_identifier);
             setTokenInfo(res.data);
         };
-        
+
         fetchTokenInfo();
     }, []);
 
@@ -40,7 +41,7 @@ const IDOCard = (props: any) => {
                     </div>
                     <div className='d-flex justify-content-end'>
                         <div>
-                            <img src={tokenInfo?.pngUrl} alt={data.project_presale_token_identifier} width={'80px'} />
+                            <img src={`https://devnet-media.elrond.com/tokens/asset/${tokenInfo?.identifier}/logo.png`} alt={data.project_presale_token_identifier} width={'80px'} />
                         </div>
                         <div style={{ marginLeft: '-25px', marginTop: '56px' }}>
                             <img src={EGLD_logo} alt="BitX logo" width={'30px'} />
@@ -98,28 +99,16 @@ const IDOCard = (props: any) => {
                             </a>
                         )
                     }
-
-                    {/* {
-                        data.social_links.map((row, index) => {
-                            return (
-                                <a className='social-link' href={row.link} key={index} rel="noreferrer" target="_blank">
-                                    {
-                                        swtichSocialIcon(row.name)
-                                    }
-                                </a>
-                            );
-                        })
-                    } */}
                 </div>
 
                 <div className='mt-4'>
-                    <p className='IDO-prize'>{`1${data.project_fund_token_identifier} = ${data.project_presale_rate}${data.project_presale_token_identifier}`}</p>
+                    <p className='IDO-prize'>{`1 ${data.project_fund_token_identifier} = ${data.project_presale_rate} ${tokenInfo?.name}`}</p>
 
                     <span>{"Progress (0.00%)"}</span>
                     <ProgressBar className='mt-1' now={0} />
                     <div className='d-flex justify-content-between mt-1'>
-                        <span>{`0${data.project_fund_token_identifier}`}</span>
-                        <span>{`-${data.project_fund_token_identifier}`}</span>
+                        <span>{`0 ${data.project_fund_token_identifier}`}</span>
+                        <span>{`- ${data.project_fund_token_identifier}`}</span>
                     </div>
 
                     <div className='mt-4' style={{ fontSize: '15px' }}>
@@ -135,7 +124,7 @@ const IDOCard = (props: any) => {
 
                         <div className='d-flex justify-content-between mt-1'>
                             <span>{"Starts:"}</span>
-                            <span>{data.project_presale_start_time}</span>
+                            <span>{ico_start_time}</span>
                         </div>
                     </div>
                 </div>
