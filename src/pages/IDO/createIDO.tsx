@@ -406,6 +406,7 @@ const createIDO = () => {
 				transactions: tx,
 			});
 
+			console.log(result);
 			setSessionId(result.sessionId);
 		}
 		setActiveStep(stepN);

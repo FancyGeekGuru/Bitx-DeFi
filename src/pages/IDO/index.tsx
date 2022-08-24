@@ -318,7 +318,7 @@ const IDOLaunchpad = () => {
                                                 <Tr key={index}>
                                                     <Td>
                                                         <div className='d-flex align-items-center justify-content-center'>
-                                                            <img src={`https://devnet-media.elrond.com/tokens/asset/${row?.project_presale_token_identifier}/logo.png`} alt={row?.project_presale_token_identifier} width={'40px'} />
+                                                            {/* <img src={`https://devnet-media.elrond.com/tokens/asset/${row?.project_presale_token_identifier}/logo.png`} alt={row?.project_presale_token_identifier} width={'40px'} /> */}
                                                             <span className='ml-2'>{getTokenNameFromIdentifier(row?.project_presale_token_identifier)} Token</span>
                                                         </div>
                                                     </Td>
