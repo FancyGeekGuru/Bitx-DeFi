@@ -46,14 +46,13 @@ const IDODetail = () => {
     }
 
     const location = useLocation();
-
     const { address } = useGetAccountInfo();
     const { hasPendingTransactions } = useGetPendingTransactions();
     const { network } = useGetNetworkConfig();
     const isLoggedIn = Boolean(address);
     const provider = new ProxyProvider(network.apiAddress, { timeout: TIMEOUT });
-
     const [idoContractInteractor, setIdoContractInteractor] = useState<any>(undefined);
+
     useEffect(() => {
         (async () => {
             const registry = await AbiRegistry.load({ urls: [`/${IDO_CONTRACT_ABI_URL}`] });
@@ -68,7 +67,6 @@ const IDODetail = () => {
         })();
     }, []);
 
-
     const [project, setProject] = useState<any>();
     const [tokenInfo, setTokenInfo] = useState<any>();
     const [egldPrice, setEgldPrice] = useState<number>(0);
@@ -76,9 +74,9 @@ const IDODetail = () => {
     useEffect(() => {
         (async () => {
             if (!idoContractInteractor || !isLoggedIn) return;
+
             const pathname = location.pathname;
             const project_id = pathname.substring(pathname.lastIndexOf('/') + 1);
-
             const args = [
                 new U32Value(Number(project_id)),
             ];

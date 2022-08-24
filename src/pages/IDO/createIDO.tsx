@@ -348,47 +348,7 @@ const createIDO = () => {
 			setSocialLinks(socials);
 		}
 		if (stepN >= 4) {
-
-			// const ido_pool = {
-			// 	pool_name: "bitxtoken",
-			// 	name: "BitX Token",
-			// 	description: description,
-			// 	ico_status: ICOState.Upcoming,
-			// 	social_links: socialLinks,
-
-			// 	token: "BTX",
-			// 	token_identifier: token_identifier,
-			// 	token_decimal: 18,
-			// 	total_supply: 35000000,
-			// 	tokens_for_presale: 35000,
-			// 	tokens_for_liquidity: 350000,
-
-			// 	currency: currencyType,
-			// 	ico_price: presale_rate,
-
-			// 	soft_cap: soft_cap,
-			// 	hard_cap: hard_cap,
-			// 	liquidity_percent: maiar_exchange_liquidity,
-			// 	lockup_time: liquidity_lockup_days,
-			// 	listing_on: "Maiar Listing",
-			// 	listing_price: maiar_listing_rate,
-			// 	minimum_buy: min_buy,
-			// 	maximum_buy: max_buy,
-
-			// 	ico_start: start_time.toString(),
-			// 	ico_end: end_time.toString(),
-			// 	registration_start: "07/04/2022 11:00 UTC",
-			// 	registration_end: "07/04/2022 11:00 UTC",
-
-			// 	first_release_for_presale_percent: 65,
-			// 	vesting_period_each_cycle: 300,
-			// 	presale_token_release_each_cycle: 50
-			// };
-
-			// // should add token info
-			// console.log(ido_pool);
 			stepN = 3;
-
 			// handle tx
 			let fee_option_id = 1;
 			if (feeType === 'fee_type_0') {
